@@ -1,7 +1,7 @@
 // 헤더 - 내비게이션 기능
 
 import { Link } from "react-router-dom";
-import "../styles/layout.scss";
+import "../styles/navbar.scss";
 
 const Navbar = () => {
   return (
@@ -15,7 +15,7 @@ const Navbar = () => {
             <Link to="/dashboard">📊 Dashboard</Link> {/** 대시보드 페이지로 */}
           </li>
           <li>
-            <Link to="/emotionList">😊 Emotion Board</Link> {/** 감정 게시판판 */}
+            <Link to="/emotionList">😊 Emotion Board</Link> {/** 감정 게시판 */}
           </li>
           <li>
             <Link to="/contact">📞 Contact Board</Link> {/** 나를 소개하는 페이지로 */}

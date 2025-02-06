@@ -11,6 +11,10 @@ body {
   color: var(--text-color);
   margin: 0;
   padding: 0;
+  height: auto; // 높이 자동 조정 (스크롤 방지)
+  overflow-x: hidden; // 가로 스크롤 기본 제거, 세로는 필요하면 생성
+  display: flex;
+  flex-direction: column;
 }
 
 // 기본 컨테이너 스타일

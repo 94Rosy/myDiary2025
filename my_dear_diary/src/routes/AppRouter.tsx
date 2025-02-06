@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import MainPage from "../pages/MainPage";
-import DashboardPage from "../pages/DashboardPage";
-import EmotionBoardPage from "../pages/EmotionBoardPage";
-import ContactBoardPage from "../pages/ContactBoardPage";
+import MainPage from "../pages/main/MainPage";
+import DashboardPage from "../pages/dashboard/DashboardPage";
+import EmotionBoardPage from "../pages/emotionBoard/EmotionBoardPage";
+import ContactBoardPage from "../pages/contact/ContactBoardPage";
 
 const AppRouter = () => {
   return (

@@ -1,0 +1,50 @@
+@import "../../styles/global"; // 전역 스타일 가져오기
+
+/* 메인 페이지 전체를 화면 중앙에 정렬 */
+.main-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 85vh;
+  height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 20px; // 반응형에서 여백 추가
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); // 첫 번째 줄 3개 배치
+  grid-template-rows: auto auto;
+  gap: 20px;
+  max-width: 800px;
+  width: 90%;
+  height: 100%;
+}
+
+/* 첫 번째 줄 (어제의 감정, 오늘의 감정, 감정 게시판) */
+.card:nth-child(1),
+.card:nth-child(2),
+.card:nth-child(3) {
+  grid-column: span 1;
+}
+
+/* 두 번째 줄 (대시보드, 캘린더) */
+.card:nth-child(4),
+.card:nth-child(5) {
+  grid-column: span 1;
+}
+
+/* 🌟 반응형 설정 */
+@media (max-width: 768px) {
+  .main-content {
+    grid-template-columns: repeat(2, 1fr); // 태블릿에서는 2개씩 배치
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    grid-template-columns: repeat(1, 1fr); // 모바일에서는 1개씩 배치
+  }
+}
