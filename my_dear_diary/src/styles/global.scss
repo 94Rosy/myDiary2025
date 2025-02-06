@@ -1,0 +1,22 @@
+:root {
+  --primary-color: #6ea8d9; // 강조색 (헤더보다 조금 더 짙은 하늘색)
+  --secondary-color: #aee2ff; // 기본 하늘색 (헤더 배경색)
+  --background-color: #fff5e1; // 아이보리
+  --text-color: #4a4a4a; // 너무 까맣지 않은 글자색
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+}
+
+// 기본 컨테이너 스타일
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}

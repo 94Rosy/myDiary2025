@@ -1,12 +1,9 @@
-import React from "react";
-import "./styles.scss"; // SCSS 파일 불러오기
+import "./styles/global.scss";
+import "./styles/layout.scss";
+import AppRouter from "./routes/AppRouter";
 
 function App() {
-  return (
-    <div>
-      <h1>Hello, My Diary!</h1>
-    </div>
-  );
+  return <AppRouter />;
 }
 
 export default App;
