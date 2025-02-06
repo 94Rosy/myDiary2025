@@ -32,6 +32,7 @@ const MainPage = () => {
           mainText="캘린더"
           subText="어떤 날의 감정들"
         />
+        <EmotionCard cardType="contact" link="/contact" mainText="Contact" />
       </div>
     </div>
   );
