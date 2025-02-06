@@ -5,19 +5,33 @@ const MainPage = () => {
   return (
     <div className="main-wrapper">
       <div className="main-content">
-        <EmotionCard cardType="yesterday" description="어제 나의 감정은?" />
-        <EmotionCard cardType="today" description="오늘 나의 감정은?" />
+        <EmotionCard
+          cardType="yesterday"
+          mainText="어제의 감정"
+          subText="어제 나의 감정은 어땠을까?"
+        />
+        <EmotionCard
+          cardType="today"
+          mainText="오늘의 감정"
+          subText="오늘 나의 감정 한 줄 적기"
+        />
         <EmotionCard
           cardType="journal"
           link="/emotionList"
-          description="나의 감정들 보러 가기"
+          mainText="감정 다이어리"
+          subText="나의 감정들 보러 가기"
         />
         <EmotionCard
           cardType="dashboard"
           link="/dashboard"
-          description="내 감정들이 어땠을까?"
+          mainText="감정 차트"
+          subText="요즘 내 감정들은 어땠을까?"
         />
-        <EmotionCard cardType="calendar" description="어떤 날의 감정들" />
+        <EmotionCard
+          cardType="calendar"
+          mainText="캘린더"
+          subText="어떤 날의 감정들"
+        />
       </div>
     </div>
   );

@@ -18,21 +18,21 @@ const images: { [key: string]: string } = {
 
 interface EmotionCardProps {
   cardType: string;
-  title?: string;
-  description?: string;
+  mainText: string;
+  subText?: string;
   link?: string;
   onClick?: () => void;
 }
 
 const EmotionCard = ({
   cardType,
-  title,
-  description,
+  mainText,
+  subText,
   link,
   onClick,
 }: EmotionCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
-  const bgImage = images[cardType];
+  const bgImage = images[cardType]; // JS에서 배경 이미지 동적 적용
 
   const content = (
     <div
@@ -44,14 +44,10 @@ const EmotionCard = ({
       <div
         className="card-top"
         style={{ backgroundImage: `url(${bgImage})` }}
-      ></div>
-      <div className="card-bottom">
-        <h3 className="card-title">{title}</h3>
-        {description && (
-          <div className={`description ${isHovered ? "visible" : ""}`}>
-            {description}
-          </div>
-        )}
+      />
+      <div className="description">
+        <div className="main-text">{mainText}</div>
+        {subText && <div className="sub-text">{subText}</div>}
       </div>
     </div>
   );
