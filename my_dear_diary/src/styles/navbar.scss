@@ -5,13 +5,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--secondary-color);
+  background-color: var(--header-bg);
   padding: 10px 20px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 
   .logo {
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 17px;
+    font-weight: 500;
 
     a {
       text-decoration: none;
@@ -35,16 +35,15 @@
       li {
         a {
           text-decoration: none;
-          color: var(--text-color);
-          font-weight: bold;
           padding: 10px 15px;
           border-radius: 8px;
           transition: 0.3s;
-          font-size: 18px;
+          font-size: 17px;
+          font-weight: 500;
+          color: var(--text-color);
 
           &:hover {
-            background-color: var(--primary-color);
-            color: #fff;
+            color: var(--primary-color);
           }
         }
       }

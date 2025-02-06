@@ -5,34 +5,19 @@ const MainPage = () => {
   return (
     <div className="main-wrapper">
       <div className="main-content">
+        <EmotionCard cardType="yesterday" description="어제 나의 감정은?" />
+        <EmotionCard cardType="today" description="오늘 나의 감정은?" />
         <EmotionCard
-          icon="😌"
-          title="어제의 감정"
-          description="어제 기록한 감정을 확인하세요."
-        />
-        <EmotionCard
-          icon="✍"
-          title="오늘의 감정"
-          description="오늘의 감정을 작성하세요."
-          onClick={() => alert("오늘의 감정 입력")} // 일단 alert로 이벤트 임시 처리
-        />
-        <EmotionCard
-          icon="📖"
-          title="감정 게시판"
-          description="기록된 감정을 확인하세요."
+          cardType="journal"
           link="/emotionList"
+          description="나의 감정들 보러 가기"
         />
         <EmotionCard
-          icon="📊"
-          title="대시보드"
-          description="나의 감정 통계를 확인하세요."
+          cardType="dashboard"
           link="/dashboard"
+          description="내 감정들이 어땠을까?"
         />
-        <EmotionCard
-          icon="📅"
-          title="캘린더"
-          description="날짜별 감정을 한눈에 확인하세요."
-        />
+        <EmotionCard cardType="calendar" description="어떤 날의 감정들" />
       </div>
     </div>
   );

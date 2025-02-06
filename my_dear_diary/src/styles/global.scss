@@ -1,8 +1,10 @@
 :root {
-  --primary-color: #6ea8d9; // 강조색 (헤더보다 조금 더 짙은 하늘색)
-  --secondary-color: #aee2ff; // 기본 하늘색 (헤더 배경색)
-  --background-color: #fff5e1; // 아이보리
-  --text-color: #4a4a4a; // 너무 까맣지 않은 글자색
+  --primary-color: #cc808f; /* 강조색 */
+  --secondary-color: #aee2ff; /* 기본 하늘색 */
+  --background-color: #f3f3f3; /* 아이보리 계열 */
+  --header-bg: #e7d6d6e8; /* 탁한 회색빛 분홍색 */
+  --main-bg: #eeeaeae8; /* 연한 회색 */
+  --text-color: #4a3f35; /* Dark Coffee 브라운 계열 검정 */
 }
 
 body {
