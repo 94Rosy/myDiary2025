@@ -1,6 +1,6 @@
 @import "global";
 
-// 헤더 스타일
+/* 헤더 스타일 */
 .header {
   display: flex;
   align-items: center;
@@ -33,17 +33,37 @@
       margin: 0;
 
       li {
+        position: relative;
+
         a {
           text-decoration: none;
-          padding: 10px 15px;
-          border-radius: 8px;
-          transition: 0.3s;
           font-size: 14px;
           font-weight: 500;
           color: var(--text-color);
+          padding: 10px 15px;
+          border-radius: 8px;
+          transition: 0.3s;
+          position: relative;
 
           &:hover {
-            color: var(--primary-color);
+            color: var(--highlight-text-color);
+          }
+
+          /* 호버 시 아랫줄 추가 */
+          &::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -3px; /* 밑줄 위치 조정 */
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-color);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+          }
+
+          &:hover::after {
+            opacity: 1;
           }
         }
       }

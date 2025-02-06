@@ -7,15 +7,15 @@ const Navbar = () => {
   return (
     <header className="header">
       <div className="logo">
-        <Link to="/">📖 나의 감정 일기장</Link> {/* 로고 클릭 시 홈으로 이동 */}
+        <Link to="/">🩷💛💚💙❤️</Link> {/* 로고 클릭 시 홈으로 이동 */}
       </div>
       <nav>
         <ul>
           <li>
-            <Link to="/dashboard">📊 감정 차트</Link> {/** 대시보드 페이지로 */}
+            <Link to="/dashboard">📊 Chart</Link> {/** 대시보드 페이지로 */}
           </li>
           <li>
-            <Link to="/emotionList">😊 감정 다이어리</Link> {/** 감정 게시판 */}
+            <Link to="/emotionList">😊 Diary</Link> {/** 감정 게시판 */}
           </li>
           <li>
             <Link to="/contact">📞 Contact</Link> {/** 나를 소개하는 페이지로 */}

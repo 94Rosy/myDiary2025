@@ -1,26 +1,46 @@
 @import "../../styles/global"; // 전역 스타일 가져오기
 
-/* 메인 페이지 전체를 화면 중앙에 정렬 */
+.title-content {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--highlight-text-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.title-content div:last-child {
+  font-size: 14px;
+  font-weight: normal;
+  color: var(--text-color);
+  margin-top: 8px;
+}
+
 .main-wrapper {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  width: 100%;
+  justify-content: center;
   min-height: 85vh;
   height: 100%;
   overflow: auto;
   box-sizing: border-box;
-  padding: 20px; // 반응형에서 여백 추가
+  padding: 100px;
 }
 
 .main-content {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); // 첫 번째 줄 3개 배치
+  grid-template-columns: repeat(3, 1fr);
   grid-template-rows: auto auto;
   gap: 20px;
   max-width: 800px;
   width: 90%;
   height: 100%;
+  justify-content: center;
 }
 
 /* 첫 번째 줄 (어제의 감정, 오늘의 감정, 감정 게시판) */
@@ -39,12 +59,12 @@
 /* 🌟 반응형 설정 */
 @media (max-width: 768px) {
   .main-content {
-    grid-template-columns: repeat(2, 1fr); // 태블릿에서는 2개씩 배치
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 480px) {
   .main-content {
-    grid-template-columns: repeat(1, 1fr); // 모바일에서는 1개씩 배치
+    grid-template-columns: repeat(1, 1fr);
   }
 }
