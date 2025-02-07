@@ -12,13 +12,14 @@ const Navbar = () => {
       <nav>
         <ul>
           <li>
-            <Link to="/dashboard">📊 Chart</Link> {/** 대시보드 페이지로 */}
-          </li>
-          <li>
             <Link to="/emotionList">😊 Diary</Link> {/** 감정 게시판 */}
           </li>
           <li>
-            <Link to="/contact">📞 Contact</Link> {/** 나를 소개하는 페이지로 */}
+            <Link to="/dashboard">📊 Chart</Link> {/** 대시보드 페이지로 */}
+          </li>
+          <li>
+            <Link to="/contact">📞 Contact</Link>{" "}
+            {/** 나를 소개하는 페이지로 */}
           </li>
         </ul>
       </nav>
