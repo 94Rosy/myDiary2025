@@ -1,7 +1,4 @@
-// 감정 게시판
-
-import React, { useState, useEffect } from "react";
-import "./EmotionBoard.scss";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Box,
@@ -14,8 +11,9 @@ import {
   Tooltip,
 } from "@mui/material";
 import classNames from "classnames";
+import { supabase } from "../../utils/supabaseClient"; // Supabase 불러오기
+import "./EmotionBoard.scss";
 
-// 감정 데이터 타입 정의
 type EmotionEntry = {
   id: string;
   date: string;
@@ -40,67 +38,21 @@ const EmotionBoard: React.FC = () => {
   );
   const [emotion, setEmotion] = useState("😊 기쁨");
   const [note, setNote] = useState("");
-  const [canAdd, setCanAdd] = useState(true);
 
-  // API에서 데이터 가져오기 (Read)
   useEffect(() => {
-    fetch("http://localhost:5000/emotions")
-      .then((res) => res.json())
-      .then((data) => {
-        setEmotions(data);
-        // 오늘 날짜에 등록된 감정이 있는지 확인
-        const today = new Date().toISOString().split("T")[0];
-        setCanAdd(!data.some((entry: EmotionEntry) => entry.date === today));
-      });
+    const fetchEmotions = async () => {
+      const { data, error } = await supabase.from("emotions").select("*");
+
+      if (error) {
+        console.error("err:", error);
+        return;
+      }
+
+      setEmotions(data || []);
+    };
+
+    fetchEmotions();
   }, []);
-
-  // 감정 추가 또는 수정 (Create & Update)
-  const handleSave = async () => {
-    const today = new Date().toISOString().split("T")[0];
-    if (selectedEmotion) {
-      // Update (수정)
-      await fetch(`http://localhost:5000/emotions/${selectedEmotion.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...selectedEmotion, emotion, note }),
-      });
-    } else {
-      // Create (새로운 감정 추가)
-      const newEntry = {
-        id: String(Date.now()),
-        date: today,
-        emotion,
-        note,
-      };
-      await fetch("http://localhost:5000/emotions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newEntry),
-      });
-
-      setEmotions((prev) => [...prev, newEntry]); // 바로 업데이트
-      setCanAdd(false);
-    }
-
-    // 변경된 데이터 다시 불러오기
-    fetch("http://localhost:5000/emotions")
-      .then((res) => res.json())
-      .then((data) => setEmotions(data));
-
-    closeModal();
-  };
-
-  // 감정 삭제 (Delete)
-  const handleDelete = async (id: string) => {
-    await fetch(`http://localhost:5000/emotions/${id}`, { method: "DELETE" });
-    setEmotions(emotions.filter((entry) => entry.id !== id));
-
-    // 삭제 후 오늘 날짜의 감정이 없으면 등록 버튼 활성화
-    const today = new Date().toISOString().split("T")[0];
-    setCanAdd(
-      !emotions.some((entry) => entry.id !== id && entry.date === today)
-    );
-  };
 
   const openModal = (emotion?: EmotionEntry) => {
     setSelectedEmotion(emotion || null);
@@ -109,23 +61,77 @@ const EmotionBoard: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => {
+    setSelectedEmotion(null);
+    setIsModalOpen(false);
+  };
+
+  const handleSave = async () => {
+    if (selectedEmotion) {
+      // 감정 수정
+      const { error } = await supabase
+        .from("emotions")
+        .update({ emotion, note })
+        .eq("id", selectedEmotion.id);
+
+      if (error) {
+        console.error("err:", error);
+        return;
+      }
+
+      setEmotions((prev) =>
+        prev.map((entry) =>
+          entry.id === selectedEmotion.id ? { ...entry, emotion, note } : entry
+        )
+      );
+    } else {
+      // 감정 추가
+      const today = new Date().toISOString().split("T")[0];
+      const newEntry = { id: crypto.randomUUID(), date: today, emotion, note };
+
+      const { error } = await supabase.from("emotions").insert([newEntry]);
+
+      if (error) {
+        console.error("err:", error);
+        return;
+      }
+
+      setEmotions((prev) => [...prev, newEntry]);
+    }
+
+    closeModal();
+  };
+
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase.from("emotions").delete().eq("id", id);
+
+    if (error) {
+      console.error("err:", error);
+      return;
+    }
+
+    setEmotions((prev) => prev.filter((entry) => entry.id !== id));
+  };
 
   return (
     <div className="emotion-board">
       <h2>
         감정 다이어리
         <Tooltip
-          title={canAdd ? "" : "🩷 오늘의 감정은 이미 등록되어 있어요 🩷"}
+          title={
+            !emotions.length ? "" : "🩷 오늘의 감정은 이미 등록되어 있어요 🩷"
+          }
           placement="bottom-start"
           arrow
-          disableHoverListener={canAdd}
+          disableHoverListener={!emotions.length}
         >
           <span>
             <button
-              className={classNames("add-button", { disabled: !canAdd })}
+              className={classNames("add-button", {
+                disabled: emotions.length,
+              })}
               onClick={() => openModal()}
-              disabled={!canAdd}
+              disabled={emotions.length > 0}
             >
               등록
             </button>
@@ -161,6 +167,7 @@ const EmotionBoard: React.FC = () => {
         ))}
       </div>
 
+      {/* 감정 추가 & 수정 모달 */}
       <Modal open={isModalOpen} onClose={closeModal}>
         <Box className="modal-box">
           <h3>{selectedEmotion ? "감정 수정" : "감정 등록"}</h3>
