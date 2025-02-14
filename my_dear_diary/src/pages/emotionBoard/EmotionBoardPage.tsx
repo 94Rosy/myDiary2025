@@ -38,6 +38,10 @@ const EmotionBoard: React.FC = () => {
   );
   const [emotion, setEmotion] = useState("😊 기쁨");
   const [note, setNote] = useState("");
+  const today = new Date().toISOString().split("T")[0];
+  const isToday = emotions.some((entry) => entry.date === today);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEmotions = async () => {
@@ -70,39 +74,58 @@ const EmotionBoard: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleSave = async () => {
-    if (selectedEmotion) {
-      // 감정 수정
-      const { error } = await supabase
-        .from("emotions")
-        .update({ emotion, note })
-        .eq("id", selectedEmotion.id);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    setSelectedFile(file);
 
-      if (error) {
-        console.error("err:", error);
-        return;
-      }
-
-      setEmotions((prev) =>
-        prev.map((entry) =>
-          entry.id === selectedEmotion.id ? { ...entry, emotion, note } : entry
-        )
-      );
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     } else {
-      // 감정 추가
-      const today = new Date().toISOString().split("T")[0];
-      const newEntry = { id: crypto.randomUUID(), date: today, emotion, note };
+      setPreviewUrl(null);
+    }
+  };
 
-      const { error } = await supabase.from("emotions").insert([newEntry]);
+  const handleSave = async () => {
+    const today = new Date().toISOString().split("T")[0];
+    let uploadedImageUrl = "";
+
+    // 이미지를 업로드한 경우 Supabase Storage에 업로드
+    if (selectedFile) {
+      const { data, error } = await supabase.storage
+        .from("emotion-images") // Storage 버킷 이름
+        .upload(`images/${Date.now()}-${selectedFile.name}`, selectedFile);
 
       if (error) {
-        console.error("err:", error);
+        console.error("upload err:", error);
         return;
       }
 
-      setEmotions((prev) => [...prev, newEntry]);
+      uploadedImageUrl = data?.path;
+      // ? `https://test.supabase.co/storage/v1/object/public/emotion-images/${data.path}`
+      // : "";
     }
 
+    // 감정 데이터 저장
+    const newEntry = {
+      id: crypto.randomUUID(),
+      date: today,
+      emotion,
+      note,
+      image_url: uploadedImageUrl, // 업로드된 이미지 URL 저장
+    };
+
+    const { error } = await supabase.from("emotions").insert([newEntry]);
+
+    if (error) {
+      console.error("err:", error);
+      return;
+    }
+
+    setEmotions((prev) => [newEntry, ...prev]);
     closeModal();
   };
 
@@ -116,9 +139,6 @@ const EmotionBoard: React.FC = () => {
 
     setEmotions((prev) => prev.filter((entry) => entry.id !== id));
   };
-
-  const today = new Date().toISOString().split("T")[0];
-  const isToday = emotions.some((entry) => entry.date === today);
 
   return (
     <div className="emotion-board">
@@ -199,6 +219,15 @@ const EmotionBoard: React.FC = () => {
             multiline
             rows={3}
           />
+          {/* 파일 첨부 */}
+          <input type="file" accept="image/*" onChange={handleFileChange} />
+
+          {previewUrl && (
+            <div className="image-preview">
+              <img src={previewUrl} alt="미리보기" />
+            </div>
+          )}
+
           <div className="modal-buttons">
             <Button
               variant="contained"

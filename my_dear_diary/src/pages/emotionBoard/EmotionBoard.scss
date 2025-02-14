@@ -132,6 +132,18 @@
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 
+  .image-preview {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .image-preview img {
+    width: 100%;
+    max-width: 250px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+
   .modal-buttons {
     display: flex;
     justify-content: flex-end;
