@@ -41,7 +41,11 @@ const EmotionBoard: React.FC = () => {
 
   useEffect(() => {
     const fetchEmotions = async () => {
-      const { data, error } = await supabase.from("emotions").select("*");
+      const { data, error } = await supabase
+        .from("emotions")
+        .select("id, date, emotion, note, created_at")
+        .order("date", { ascending: false }) // 날짜 최신순
+        .order("created_at", { ascending: false }); // 같은 날짜라면, 업로드 시간 최신순
 
       if (error) {
         console.error("err:", error);
@@ -113,25 +117,26 @@ const EmotionBoard: React.FC = () => {
     setEmotions((prev) => prev.filter((entry) => entry.id !== id));
   };
 
+  const today = new Date().toISOString().split("T")[0];
+  const isToday = emotions.some((entry) => entry.date === today);
+
   return (
     <div className="emotion-board">
       <h2>
         감정 다이어리
         <Tooltip
-          title={
-            !emotions.length ? "" : "🩷 오늘의 감정은 이미 등록되어 있어요 🩷"
-          }
+          title={!isToday ? "" : "🩷 오늘의 감정은 이미 등록되어 있어요 🩷"}
           placement="bottom-start"
           arrow
-          disableHoverListener={!emotions.length}
+          disableHoverListener={!isToday}
         >
           <span>
             <button
               className={classNames("add-button", {
-                disabled: emotions.length,
+                disabled: isToday,
               })}
               onClick={() => openModal()}
-              disabled={emotions.length > 0}
+              disabled={isToday}
             >
               등록
             </button>
