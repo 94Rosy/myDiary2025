@@ -143,7 +143,7 @@ const EmotionBoard: React.FC = () => {
   return (
     <div className="emotion-board">
       <h2>
-        감정 다이어리
+        게시판
         <Tooltip
           title={!isToday ? "" : "🩷 오늘의 감정은 이미 등록되어 있어요 🩷"}
           placement="bottom-start"

@@ -7,25 +7,6 @@ import "../styles/navbar.scss";
 const Navbar = () => {
   const [user, setUser] = useState<any>(null);
 
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     const { data } = await supabase.auth.getUser();
-  //     setUser(data?.user);
-  //   };
-
-  //   fetchUser();
-
-  //   const { data: authListener } = supabase.auth.onAuthStateChange(
-  //     (_event, session) => {
-  //       setUser(session?.user || null);
-  //     }
-  //   );
-
-  //   return () => {
-  //     authListener?.subscription.unsubscribe();
-  //   };
-  // }, []);
-
   useEffect(() => {
     const fetchUser = async () => {
       const { data } = await supabase.auth.getUser();
