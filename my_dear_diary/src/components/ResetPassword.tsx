@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { supabase } from "../utils/supabaseClient";
-import { TextField, Button, Box } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
@@ -8,54 +8,60 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // 로그인 상태 확인
+  const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
 
-  // 📌 페이지 진입 시 로그인 상태 확인 후 자동 로그아웃 처리
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (!data.user) {
-        setIsLoggedIn(false); // 유저 정보가 없으면 로그인되지 않은 상태
-      } else {
-        await supabase.auth.signOut(); // 로그인된 경우 로그아웃
-        setIsLoggedIn(false); // 로그아웃 후 비로그인 상태로 변경
-      }
-    };
-    checkAuth();
-  }, []);
+  // 비밀번호 유효성 검사 (8자 이상, 숫자 & 특수문자 포함)
+  const validatePassword = (password: string) => {
+    const regex = /^(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
+  };
 
-  // 📌 비밀번호 재설정 함수
+  // 비밀번호 재설정 함수
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
+    setPasswordError("");
+
+    if (!validatePassword(newPassword)) {
+      setPasswordError(
+        "⚠ 비밀번호는 8자 이상, 숫자와 특수문자를 포함해야 합니다."
+      );
+      return;
+    }
 
     if (newPassword !== confirmPassword) {
-      setError("⚠ 비밀번호가 일치하지 않습니다!");
+      setError("⚠ 비밀번호가 일치하지 않습니다.");
       return;
     }
 
-    if (newPassword.length < 8) {
-      setError("⚠ 비밀번호는 8자 이상이어야 합니다!");
-      return;
-    }
-
+    // Supabase 비밀번호 변경 요청
     const { error } = await supabase.auth.updateUser({
       password: newPassword,
     });
 
+    // 기존 비밀번호와 동일하면 Supabase에서 422 오류 반환
     if (error) {
-      setError("비밀번호 변경 실패! 다시 시도해 주세요.");
+      if (
+        error.message.includes(
+          "New password should be different from the old password"
+        )
+      ) {
+        setPasswordError("⚠ 기존 비밀번호와 동일할 수 없습니다.");
+        return;
+      }
+
+      setError("⚠ 비밀번호 변경 실패! 다시 시도해 주세요.");
       console.error("비밀번호 변경 오류:", error.message);
       return;
     }
 
-    setSuccessMessage(
-      "✅ 비밀번호가 변경되었습니다! 로그인 페이지로 이동합니다."
-    );
+    setSuccessMessage("😊 비밀번호가 변경되었습니다! 다시 로그인해 주세요.");
 
-    setTimeout(() => {
+    // 2초 후 자동 로그아웃 & 로그인 페이지 이동
+    setTimeout(async () => {
+      await supabase.auth.signOut();
       navigate("/login");
     }, 2000);
   };
@@ -63,40 +69,42 @@ const ResetPassword = () => {
   return (
     <div className="auth-container">
       <h2>비밀번호 재설정</h2>
+      <p>새 비밀번호를 입력하고 변경하세요.</p>
 
-      {isLoggedIn ? (
-        <p>잠시만 기다려 주세요...</p> // 로그인 확인 중
-      ) : (
-        <>
-          <p>새 비밀번호를 입력하고 변경하세요.</p>
+      <form onSubmit={handleResetPassword}>
+        {/* 기존 비밀번호와 동일한 경우 에러 메시지로 표시 */}
+        <TextField
+          label="새 비밀번호"
+          type="password"
+          value={newPassword}
+          onChange={(e) => {
+            setNewPassword(e.target.value);
+            setPasswordError(""); // 입력 시 에러 메시지 초기화
+          }}
+          required
+          margin="normal"
+          error={!!passwordError}
+          helperText={passwordError}
+        />
 
-          <form onSubmit={handleResetPassword}>
-            <TextField
-              label="새 비밀번호"
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-              margin="normal"
-            />
-            <TextField
-              label="새 비밀번호 확인"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              margin="normal"
-            />
+        {/* 비밀번호 확인 필드 */}
+        <TextField
+          label="새 비밀번호 확인"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+          margin="normal"
+          error={!!error}
+          helperText={error}
+        />
 
-            {error && <p className="error-msg">{error}</p>}
-            {successMessage && <p className="success-msg">{successMessage}</p>}
+        {successMessage && <p className="success-msg">{successMessage}</p>}
 
-            <Button type="submit" variant="contained">
-              비밀번호 변경
-            </Button>
-          </form>
-        </>
-      )}
+        <Button type="submit" variant="contained">
+          비밀번호 변경
+        </Button>
+      </form>
     </div>
   );
 };

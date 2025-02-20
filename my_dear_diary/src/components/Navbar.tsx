@@ -8,12 +8,29 @@ const Navbar = () => {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
+    // 1. 최초 렌더링 시 유저 정보 가져오기
     const fetchUser = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data?.user);
     };
 
     fetchUser();
+
+    // 2. Supabase 인증 상태 변화 감지 후 자동 업데이트
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session?.user) {
+          setUser(session.user); // 로그인 or 비밀번호 변경 후 업데이트
+        } else {
+          setUser(null); // 로그아웃 or 세션 만료 시 업데이트
+        }
+      }
+    );
+
+    // 3. 컴포넌트 언마운트 시 리스너 정리
+    return () => {
+      authListener?.subscription.unsubscribe();
+    };
   }, []);
 
   const handleLogout = async () => {
@@ -29,17 +46,15 @@ const Navbar = () => {
       <nav>
         <ul>
           {user ? (
-            // 로그인 상태일 경우 로그아웃 버튼 표시
+            // 로그인 상태일 경우
             <li>
-              <span className="user-email">
-                {user.email} ({user.app_metadata?.provider})
-              </span>
+              <span className="user-email">{user.email}</span>
               <button className="logout-btn" onClick={handleLogout}>
                 🔓LogOut
               </button>
             </li>
           ) : (
-            // 로그아웃 상태일 때는 로그인 & 회원가입 버튼 표시
+            // 로그아웃 상태일 경우
             <>
               <li>
                 <Link to="/signup" className="signup-btn">
