@@ -1,35 +1,33 @@
-import { serve } from "std/server";
-import { createClient } from "@supabase/supabase-js";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-serve(async () => {
-  const supabaseAdmin = createClient(
+serve(async (req) => {
+  const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")! // 관리자 키 사용
   );
 
-  // ✅ 6개월 지난 회원들의 이메일 삭제 (개인정보 보호)
-  const { error } = await supabaseAdmin
+  // 6개월 지난 사용자 삭제 로직
+  const { error } = await supabase
     .from("users")
-    .update({ email: null }) // 이메일 삭제
-    .lt("deleted_at", "NOW() - INTERVAL '6 months'"); // 6개월 지난 계정만 대상
+    .delete()
+    .lt(
+      "deleted_at",
+      new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString()
+    );
 
   if (error) {
-    console.error("개인정보 삭제 실패:", error.message);
-    return new Response("삭제 중 오류 발생", { status: 500 });
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
-  console.log("✅ 6개월 지난 회원들의 개인정보 삭제 완료!");
-  return new Response("개인정보 삭제 완료", { status: 200 });
+  return new Response(
+    JSON.stringify({ message: "Old users deleted successfully" }),
+    {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    }
+  );
 });
-
-/* To invoke locally:
-
-  1. Run `supabase start` (see: https://supabase.com/docs/reference/cli/supabase-start)
-  2. Make an HTTP request:
-
-  curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/delete-old-users' \
-    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0' \
-    --header 'Content-Type: application/json' \
-    --data '{"name":"Functions"}'
-
-*/
