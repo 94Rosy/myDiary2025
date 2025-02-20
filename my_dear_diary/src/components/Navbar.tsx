@@ -50,7 +50,7 @@ const Navbar = () => {
             <li>
               <span className="user-email">{user.email}</span>
               <button className="logout-btn" onClick={handleLogout}>
-                🔓LogOut
+                🔓로그아웃
               </button>
             </li>
           ) : (
@@ -58,25 +58,25 @@ const Navbar = () => {
             <>
               <li>
                 <Link to="/signup" className="signup-btn">
-                  💡Join
+                  💡회원가입
                 </Link>
               </li>
               <li>
                 <Link to="/login" className="login-btn">
-                  🔒LogIn
+                  🔒로그인
                 </Link>
               </li>
             </>
           )}
 
           <li>
-            <Link to="/emotionList">💟Diary</Link> {/** 감정 게시판 */}
+            <Link to="/emotionList">💟나의 감정 일기</Link> {/** 감정 게시판 */}
           </li>
           <li>
-            <Link to="/dashboard">📊Chart</Link> {/** 대시보드 페이지로 */}
+            <Link to="/dashboard">📊대시보드</Link> {/** 대시보드 페이지로 */}
           </li>
           <li>
-            <Link to="/contact">📞Contact</Link>
+            <Link to="/contact">📞CONTACT</Link>
             {/** 나를 소개하는 페이지로 */}
           </li>
         </ul>
