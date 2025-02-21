@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { supabase } from "../utils/supabaseClient";
+import { supabase } from "../../utils/supabaseClient";
 import { TextField, Button, Modal, Box } from "@mui/material";
 
 const Login = () => {

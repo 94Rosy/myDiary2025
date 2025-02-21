@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient"; // Supabase 연결
 import "../styles/navbar.scss";
+import DeleteAccountModal from "./leave/DeleteAccountModal";
 
 const Navbar = () => {
   const [user, setUser] = useState<any>(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     // 1. 최초 렌더링 시 유저 정보 가져오기
@@ -38,6 +40,50 @@ const Navbar = () => {
     setUser(null);
   };
 
+  const handleDelete = async (reason: string, password: string) => {
+    console.log("탈퇴 사유:", reason);
+    console.log("입력한 비밀번호:", password);
+
+    // 현재 로그인한 사용자 가져오기
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
+
+    if (error || !user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    // 비밀번호 확인 (Supabase Auth)
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email: user?.email || "",
+      password: password,
+    });
+
+    if (authError) {
+      alert("비밀번호가 올바르지 않습니다.");
+      return;
+    }
+
+    // 탈퇴 처리: `deleted_at` 업데이트
+    const { error: updateError } = await supabase
+      .from("users")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", user.id);
+
+    if (updateError) {
+      alert("탈퇴 처리 중 오류가 발생했습니다.");
+      return;
+    }
+
+    // 로그아웃 처리
+    await supabase.auth.signOut();
+    setUser(null);
+    alert("회원탈퇴가 완료되었습니다.");
+    setShowModal(false);
+  };
+
   return (
     <header className="header">
       <div className="logo">
@@ -52,6 +98,15 @@ const Navbar = () => {
               <button className="logout-btn" onClick={handleLogout}>
                 🔓로그아웃
               </button>
+              <nav>
+                <button onClick={() => setShowModal(true)}>회원탈퇴</button>
+              </nav>
+              {showModal && (
+                <DeleteAccountModal
+                  onClose={() => setShowModal(false)}
+                  onDelete={handleDelete}
+                />
+              )}
             </li>
           ) : (
             // 로그아웃 상태일 경우

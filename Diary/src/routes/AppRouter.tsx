@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import Login from "../components/Login";
+import Login from "../components/login/Login";
 import Signup from "../components/signup/Signup";
-import ResetPassword from "../components/ResetPassword";
+import ResetPassword from "../components/login/ResetPassword";
 import MainPage from "../pages/main/MainPage";
 import DashboardPage from "../pages/dashboard/DashboardPage";
 import EmotionBoardPage from "../pages/emotionBoard/EmotionBoardPage";
