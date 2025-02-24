@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { supabase } from "../../utils/supabaseClient";
 import { TextField, Button, Modal, Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,11 +22,11 @@ const Login = () => {
     });
 
     if (error) {
-      setError("로그인 실패!!! 이메일 또는 비밀번호를 확인하세요.");
+      setError("로그인 실패. 이메일 또는 비밀번호를 확인하세요.");
       return;
     }
 
-    window.location.href = "/"; // 로그인 성공 시 메인 화면으로 이동
+    navigate("/"); // 로그인 성공 시 메인 페이지로 이동
   };
 
   // [비밀번호 찾기] 재설정 이메일 발송

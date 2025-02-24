@@ -77,56 +77,32 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
     navigate("/");
 
     // Supabase Auth에 회원가입 요청
-    const { error: signUpError } = await supabase.auth.signUp({
+    const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
+      options: { data: { name } },
     });
 
     if (signUpError) {
       setError("⚠ 회원가입 실패! 다시 시도해 주세요.");
-      console.error("회원가입 오류:", signUpError.message);
+      console.error("err:", signUpError.message);
       return;
     }
 
-    // 최신 유저 정보 가져오기 (이메일 인증 후 데이터 저장을 위해)
-    let attempts = 0;
-    const interval = setInterval(async () => {
-      attempts++;
-      const { data: authData, error: authError } =
-        await supabase.auth.getUser();
-
-      if (authError) {
-        console.error(
-          "⚠ 유저 정보를 가져오는 데 실패했습니다.",
-          authError?.message
-        );
-        clearInterval(interval);
-        return;
-      }
-
-      if (authData?.user?.email_confirmed_at) {
-        clearInterval(interval); // 인증 완료되면 루프 중지
-
-        console.log("이메일 인증 완료 후 유저 ID:", authData.user.id);
-
-        // users 테이블에 id와 email 저장
+    // Supabase에서 이메일 인증 후 자동 감지하여 users 테이블 업데이트
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "SIGNED_IN" && session?.user) {
         const { error: insertError } = await supabase
           .from("users")
-          .insert([{ id: authData.user.id, email, name }]); // id 값을 authData.user.id로 설정
+          .upsert([{ id: session.user.id, email: session.user.email, name }]);
 
         if (insertError) {
           console.error("⚠ 유저 정보 저장 오류:", insertError.message);
         } else {
-          console.log("📌 users 테이블에 데이터 저장 완료!");
+          console.log("users 테이블에 데이터 저장 완료");
         }
       }
-
-      // 10번 (약 1분) 시도 후 중단
-      if (attempts > 10) {
-        clearInterval(interval);
-        alert("이메일 인증이 확인되지 않았어요. 인증 후 다시 로그인해 주세요.");
-      }
-    }, 6000); // 6초마다 확인
+    });
   };
 
   return (
