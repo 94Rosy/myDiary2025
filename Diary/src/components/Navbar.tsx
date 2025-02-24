@@ -1,115 +1,98 @@
-// 헤더 - 내비게이션 기능
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { supabase } from "../utils/supabaseClient"; // Supabase 연결
-import "../styles/navbar.scss";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "../utils/supabaseClient";
 import DeleteAccountModal from "./leave/DeleteAccountModal";
+import "../styles/navbar.scss";
 
 const Navbar = () => {
   const [user, setUser] = useState<any>(null);
+  const [userName, setUserName] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // 1. 최초 렌더링 시 유저 정보 가져오기
+    // 유저 정보를 불러오는 함수
     const fetchUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data?.user);
+      const { data: authData, error: authError } =
+        await supabase.auth.getUser();
+      if (authError || !authData?.user) {
+        console.error("err:", authError?.message);
+        setUser(null);
+        setUserName(null);
+        return;
+      }
+
+      setUser(authData.user);
+
+      // 닉네임 가져오기
+      const { data: userData, error: nameError } = await supabase
+        .from("users")
+        .select("name")
+        .eq("id", authData.user.id)
+        .single();
+
+      if (nameError) {
+        console.error("err:", nameError.message);
+        setUserName("게스트");
+      } else {
+        setUserName(userData?.name || "게스트");
+      }
     };
 
-    fetchUser();
+    fetchUser(); // 페이지 로드 시 유저 정보 가져오기
 
-    // 2. Supabase 인증 상태 변화 감지 후 자동 업데이트
+    // 로그인/로그아웃 상태 감지 후 자동 업데이트
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (session?.user) {
-          setUser(session.user); // 로그인 or 비밀번호 변경 후 업데이트
-        } else {
-          setUser(null); // 로그아웃 or 세션 만료 시 업데이트
+      async (event, session) => {
+        if (event === "SIGNED_IN" && session?.user) {
+          fetchUser(); // 로그인 시 유저 정보 다시 가져오기
+        } else if (event === "SIGNED_OUT") {
+          // 로그아웃 감지됨
+          setUser(null);
+          setUserName(null);
+          navigate("/login"); // 로그인 페이지로 이동
         }
       }
     );
 
-    // 3. 컴포넌트 언마운트 시 리스너 정리
     return () => {
       authListener?.subscription.unsubscribe();
     };
   }, []);
 
+  // 로그아웃 처리 (완벽한 상태 업데이트)
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error("err:", error.message);
+      return;
+    }
+
+    // 로그아웃 후 세션 강제 제거
+    await supabase.auth.getSession(); // 세션 정보 강제 갱신
+
     setUser(null);
-  };
-
-  const handleDelete = async (reason: string, password: string) => {
-    console.log("탈퇴 사유:", reason);
-    console.log("입력한 비밀번호:", password);
-
-    // 현재 로그인한 사용자 가져오기
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser();
-
-    if (error || !user) {
-      alert("로그인이 필요합니다.");
-      return;
-    }
-
-    // 비밀번호 확인 (Supabase Auth)
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email: user?.email || "",
-      password: password,
-    });
-
-    if (authError) {
-      alert("비밀번호가 올바르지 않습니다.");
-      return;
-    }
-
-    // 탈퇴 처리: `deleted_at` 업데이트
-    const { error: updateError } = await supabase
-      .from("users")
-      .update({ deleted_at: new Date().toISOString() })
-      .eq("id", user.id);
-
-    if (updateError) {
-      alert("탈퇴 처리 중 오류가 발생했습니다.");
-      return;
-    }
-
-    // 로그아웃 처리
-    await supabase.auth.signOut();
-    setUser(null);
-    alert("회원탈퇴가 완료되었습니다.");
-    setShowModal(false);
+    setUserName(null);
+    navigate("/login");
   };
 
   return (
     <header className="header">
       <div className="logo">
-        <Link to="/">🩷💛💚💙❤️</Link> {/* 로고 클릭 시 홈으로 이동 */}
+        <Link to="/">🩷💛💚💙❤️</Link>
       </div>
       <nav>
         <ul>
           {user ? (
-            // 로그인 상태일 경우
             <li>
-              <span className="user-email">{user.email}</span>
+              <span className="user-name">{userName}</span>{" "}
+              {/* ✅ 닉네임 유지 */}
               <button className="logout-btn" onClick={handleLogout}>
                 🔓로그아웃
               </button>
-              <nav>
-                <button onClick={() => setShowModal(true)}>회원탈퇴</button>
-              </nav>
-              {showModal && (
-                <DeleteAccountModal
-                  onClose={() => setShowModal(false)}
-                  onDelete={handleDelete}
-                />
-              )}
             </li>
           ) : (
-            // 로그아웃 상태일 경우
             <>
               <li>
                 <Link to="/signup" className="signup-btn">
@@ -125,14 +108,13 @@ const Navbar = () => {
           )}
 
           <li>
-            <Link to="/emotionList">💟나의 감정 일기</Link> {/** 감정 게시판 */}
+            <Link to="/emotionList">💟나의 감정 일기</Link>
           </li>
           <li>
-            <Link to="/dashboard">📊대시보드</Link> {/** 대시보드 페이지로 */}
+            <Link to="/dashboard">📊대시보드</Link>
           </li>
           <li>
             <Link to="/contact">📞CONTACT</Link>
-            {/** 나를 소개하는 페이지로 */}
           </li>
         </ul>
       </nav>
