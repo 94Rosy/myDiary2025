@@ -9,6 +9,7 @@ interface Props {
 
 const SignupStep2: React.FC<Props> = ({ prevStep }) => {
   const navigate = useNavigate();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [error, setError] = useState("");
@@ -31,6 +32,7 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+
     setError("");
     setEmailError("");
     setPasswordError("");
@@ -42,7 +44,7 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
     }
 
     // users 테이블에서 이메일 중복 확인
-    const { data, error: fetchError } = await supabase
+    const { data: existingUser, error: fetchError } = await supabase
       .from("users")
       .select("email")
       .eq("email", email)
@@ -53,7 +55,7 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
       return;
     }
 
-    if (data) {
+    if (existingUser) {
       setEmailError("⚠ 중복된 이메일입니다.");
       return;
     }
@@ -70,8 +72,12 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
       return;
     }
 
+    alert("😊 이메일 인증을 완료한 후 로그인해 주세요.");
+    localStorage.setItem("signupComplete", "true");
+    navigate("/");
+
     // Supabase Auth에 회원가입 요청
-    const { error: signUpError, data: userData } = await supabase.auth.signUp({
+    const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
     });
@@ -82,18 +88,45 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
       return;
     }
 
-    // 회원가입 성공 시 users 테이블에 이메일 저장
-    const { error: insertError } = await supabase
-      .from("users")
-      .insert([{ email }]);
+    // 최신 유저 정보 가져오기 (이메일 인증 후 데이터 저장을 위해)
+    let attempts = 0;
+    const interval = setInterval(async () => {
+      attempts++;
+      const { data: authData, error: authError } =
+        await supabase.auth.getUser();
 
-    if (insertError) {
-      console.error("⚠ 유저 정보 저장 오류:", insertError.message);
-    }
+      if (authError) {
+        console.error(
+          "⚠ 유저 정보를 가져오는 데 실패했습니다.",
+          authError?.message
+        );
+        clearInterval(interval);
+        return;
+      }
 
-    alert("😊 이메일 인증을 완료한 후 로그인해 주세요.");
-    localStorage.setItem("signupComplete", "true");
-    navigate("/");
+      if (authData?.user?.email_confirmed_at) {
+        clearInterval(interval); // 인증 완료되면 루프 중지
+
+        console.log("이메일 인증 완료 후 유저 ID:", authData.user.id);
+
+        // users 테이블에 id와 email 저장
+        const { error: insertError } = await supabase
+          .from("users")
+          .insert([{ id: authData.user.id, email, name }]); // id 값을 authData.user.id로 설정
+
+        if (insertError) {
+          console.error("⚠ 유저 정보 저장 오류:", insertError.message);
+        } else {
+          console.log("📌 users 테이블에 데이터 저장 완료!");
+        }
+      }
+
+      // 10번 (약 1분) 시도 후 중단
+      if (attempts > 10) {
+        clearInterval(interval);
+        alert("이메일 인증이 확인되지 않았어요. 인증 후 다시 로그인해 주세요.");
+      }
+    }, 6000); // 6초마다 확인
   };
 
   return (
@@ -109,6 +142,13 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
           required
           error={!!emailError}
           helperText={emailError}
+        />
+
+        <TextField
+          label="닉네임"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
         />
 
         {/* 비밀번호 입력 */}
