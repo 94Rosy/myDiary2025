@@ -211,6 +211,7 @@ const EmotionBoard: React.FC = () => {
     );
 
     alert("이미지가 삭제되었습니다.");
+    // setIsModalOpen(false);
   };
 
   // 모달 상태 관리
@@ -311,15 +312,30 @@ const EmotionBoard: React.FC = () => {
             rows={3}
           />
           <input type="file" accept="image/*" onChange={handleFileChange} />
-          {previewUrl && <img src={previewUrl} alt="미리보기" />}
-          {selectedEmotion?.image_url && (
+          {previewUrl && (
+            <>
+              <img
+                src={previewUrl}
+                alt="미리보기"
+                style={{ width: 200, height: 200 }}
+              />
+              <button onClick={handleDeleteImage} className="delete-image-btn">
+                ❌ 삭제
+              </button>
+            </>
+          )}
+          {/* {selectedEmotion?.image_url && (
             <div className="image-preview">
-              <img src={selectedEmotion.image_url} alt="첨부 이미지" />
+              <img
+                src={selectedEmotion.image_url}
+                alt="첨부 이미지"
+                style={{ width: 200, height: 200 }}
+              />
               <button onClick={handleDeleteImage} className="delete-image-btn">
                 ❌ 삭제
               </button>
             </div>
-          )}
+          )} */}
           <Button onClick={handleSave}>저장</Button>
         </Box>
       </Modal>
