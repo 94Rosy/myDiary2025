@@ -107,7 +107,6 @@
 
         .note {
           font-size: 14px;
-          height: calc(100% - 70px);
           overflow: auto;
           text-overflow: ellipsis;
           display: -webkit-box;
@@ -115,6 +114,11 @@
           -webkit-box-orient: vertical;
           word-wrap: break-word;
           white-space: pre-wrap;
+        }
+
+        .emotion-image {
+          max-height: 150px;
+          max-width: 200px;
         }
       }
     }

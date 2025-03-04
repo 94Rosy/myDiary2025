@@ -79,6 +79,9 @@ const EmotionBoard: React.FC = () => {
   };
 
   const handleSave = async () => {
+    if (selectedEmotion && selectedEmotion.image_url && previewUrl === null) {
+      selectedEmotion.image_url = null;
+    }
     const today = new Date().toISOString().split("T")[0];
     let uploadedImageUrl = selectedEmotion?.image_url || "";
 
@@ -113,6 +116,10 @@ const EmotionBoard: React.FC = () => {
     }
 
     if (selectedEmotion) {
+      if (previewUrl === null) {
+        selectedEmotion.image_url = null;
+      }
+
       // 기존 데이터가 있으면 UPDATE 실행
       const { error } = await supabase
         .from("emotions")
@@ -174,6 +181,13 @@ const EmotionBoard: React.FC = () => {
   };
 
   const handleDeleteImage = async () => {
+    if (!selectedEmotion) return;
+
+    // 미리보기 이미지 삭제
+    setPreviewUrl(null);
+    setSelectedFile(null);
+
+    if (!selectedEmotion.image_url) return;
     if (!selectedEmotion || !selectedEmotion.image_url) {
       return;
     }
@@ -210,8 +224,7 @@ const EmotionBoard: React.FC = () => {
       )
     );
 
-    alert("이미지가 삭제되었습니다.");
-    // setIsModalOpen(false);
+    setSelectedEmotion((prev) => (prev ? { ...prev, image_url: null } : null));
   };
 
   // 모달 상태 관리
@@ -324,18 +337,6 @@ const EmotionBoard: React.FC = () => {
               </button>
             </>
           )}
-          {/* {selectedEmotion?.image_url && (
-            <div className="image-preview">
-              <img
-                src={selectedEmotion.image_url}
-                alt="첨부 이미지"
-                style={{ width: 200, height: 200 }}
-              />
-              <button onClick={handleDeleteImage} className="delete-image-btn">
-                ❌ 삭제
-              </button>
-            </div>
-          )} */}
           <Button onClick={handleSave}>저장</Button>
         </Box>
       </Modal>
