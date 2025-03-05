@@ -1,55 +1,28 @@
-import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "../store/store";
+import { fetchUser, logoutUser } from "../store/authSlice";
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
 import DeleteAccountModal from "./leave/DeleteAccountModal";
 import "../styles/navbar.scss";
 
 const Navbar = () => {
-  const [user, setUser] = useState<any>(null);
-  const [userName, setUserName] = useState<string | null>(null);
-  const [showModal, setShowModal] = useState(false);
+  const user = useSelector((state: RootState) => state.auth.user);
+  const userName = useSelector((state: RootState) => state.auth.name);
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 유저 정보를 불러오는 함수
-    const fetchUser = async () => {
-      const { data: authData, error: authError } =
-        await supabase.auth.getUser();
-      if (authError || !authData?.user) {
-        console.error("err:", authError?.message);
-        setUser(null);
-        setUserName(null);
-        return;
-      }
-
-      setUser(authData.user);
-
-      // 닉네임 가져오기
-      const { data: userData, error: nameError } = await supabase
-        .from("users")
-        .select("name")
-        .eq("id", authData.user.id)
-        .single();
-
-      if (nameError) {
-        console.error("err:", nameError.message);
-        setUserName("게스트");
-      } else {
-        setUserName(userData?.name || "게스트");
-      }
-    };
-
-    fetchUser(); // 페이지 로드 시 유저 정보 가져오기
+    dispatch(fetchUser());
 
     // 로그인/로그아웃 상태 감지 후 자동 업데이트
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === "SIGNED_IN" && session?.user) {
-          fetchUser(); // 로그인 시 유저 정보 다시 가져오기
+          dispatch(fetchUser()); // 로그인 시 유저 정보 다시 가져오기
         } else if (event === "SIGNED_OUT") {
-          // 로그아웃 감지됨
-          setUser(null);
-          setUserName(null);
+          dispatch(logoutUser()); // 로그아웃 감지됨
           navigate("/login"); // 로그인 페이지로 이동
         }
       }
@@ -58,9 +31,8 @@ const Navbar = () => {
     return () => {
       authListener?.subscription.unsubscribe();
     };
-  }, []);
+  }, [dispatch, navigate]);
 
-  // 로그아웃 처리 (완벽한 상태 업데이트)
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
 
@@ -69,12 +41,11 @@ const Navbar = () => {
       return;
     }
 
-    // 로그아웃 후 세션 강제 제거
-    await supabase.auth.getSession(); // 세션 정보 강제 갱신
+    // 로그아웃 후 세션 강제 갱신하여 즉시 반영
+    await supabase.auth.getSession();
 
-    setUser(null);
-    setUserName(null);
-    navigate("/login");
+    dispatch(logoutUser()); // Redux 상태 업데이트
+    navigate("/login"); // 로그인 페이지로 이동
   };
 
   return (
@@ -87,7 +58,6 @@ const Navbar = () => {
           {user ? (
             <li>
               <span className="user-name">{userName}님 어서오세요!</span>
-              {/* 닉네임 유지 */}
               <button className="logout-btn" onClick={handleLogout}>
                 🔓로그아웃
               </button>

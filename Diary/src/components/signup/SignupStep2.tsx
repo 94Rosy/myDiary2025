@@ -2,6 +2,9 @@ import { useState } from "react";
 import { supabase } from "../../utils/supabaseClient";
 import { Button, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { fetchUser } from "../../store/authSlice";
 
 interface Props {
   prevStep: () => void;
@@ -9,6 +12,7 @@ interface Props {
 
 const SignupStep2: React.FC<Props> = ({ prevStep }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -89,20 +93,8 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
       return;
     }
 
-    // Supabase에서 이메일 인증 후 자동 감지하여 users 테이블 업데이트
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_IN" && session?.user) {
-        const { error: insertError } = await supabase
-          .from("users")
-          .upsert([{ id: session.user.id, email: session.user.email, name }]);
-
-        if (insertError) {
-          console.error("⚠ 유저 정보 저장 오류:", insertError.message);
-        } else {
-          console.log("users 테이블에 데이터 저장 완료");
-        }
-      }
-    });
+    // Redux 상태 업데이트를 위해 fetchUser 호출
+    dispatch(fetchUser());
   };
 
   return (

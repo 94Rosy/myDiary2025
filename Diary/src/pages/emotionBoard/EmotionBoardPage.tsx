@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 import {
   Modal,
   Box,
@@ -32,6 +34,7 @@ const emotionOptions = [
 ];
 
 const EmotionBoard: React.FC = () => {
+  const user = useSelector((state: RootState) => state.auth.user); // ✅ Redux에서 user 가져오기
   const [emotions, setEmotions] = useState<EmotionEntry[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEmotion, setSelectedEmotion] = useState<EmotionEntry | null>(
@@ -79,21 +82,14 @@ const EmotionBoard: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (selectedEmotion && selectedEmotion.image_url && previewUrl === null) {
-      selectedEmotion.image_url = null;
-    }
-    const today = new Date().toISOString().split("T")[0];
-    let uploadedImageUrl = selectedEmotion?.image_url || "";
-
-    // 현재 로그인한 유저 정보 가져오기
-    const { data: user } = await supabase.auth.getUser();
-
-    if (!user?.user) {
+    if (!user) {
       alert("로그인이 필요합니다.");
       return;
     }
 
-    const user_id = user.user.id; // 현재 로그인한 유저 ID
+    const user_id = user.id; // ✅ Redux에서 user_id 가져오기
+    const today = new Date().toISOString().split("T")[0];
+    let uploadedImageUrl = selectedEmotion?.image_url || "";
 
     // 이미지 업로드 (수정하는 경우 기존 이미지 유지)
     if (selectedFile) {
@@ -106,11 +102,9 @@ const EmotionBoard: React.FC = () => {
         return;
       }
 
-      // getPublicUrl()을 올바르게 가져오기
       const { data: publicUrlData } = supabase.storage
         .from("emotion-images")
         .getPublicUrl(data.path);
-      // getPublicUrl: Supabase에서 퍼블릭하게 접근할 수 있는 파일 URL을 가져오는 기능
 
       uploadedImageUrl = publicUrlData?.publicUrl || "";
     }
@@ -136,7 +130,6 @@ const EmotionBoard: React.FC = () => {
         return;
       }
 
-      // 수정된 데이터 UI 업데이트
       setEmotions((prev) =>
         prev.map((entry) =>
           entry.id === selectedEmotion.id
@@ -145,14 +138,13 @@ const EmotionBoard: React.FC = () => {
         )
       );
     } else {
-      // 새로운 데이터면 INSERT 실행
       const newEntry = {
         id: crypto.randomUUID(),
         date: today,
         emotion,
         note,
         image_url: uploadedImageUrl,
-        user_id, // 유저 ID 추가
+        user_id,
       };
 
       const { error } = await supabase.from("emotions").insert([newEntry]);
@@ -246,7 +238,7 @@ const EmotionBoard: React.FC = () => {
   return (
     <div className="emotion-board">
       <h2>
-        게시판
+        감정 일기
         <Tooltip
           title={!isToday ? "" : "🩷 오늘의 감정은 이미 등록되어 있어요 🩷"}
           placement="bottom-start"
