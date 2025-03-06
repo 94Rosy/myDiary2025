@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store";
+import {
+  fetchEmotions,
+  addEmotion,
+  updateEmotion,
+  deleteEmotion,
+  EmotionEntry,
+} from "../../store/emotionSlice";
 import {
   Modal,
   Box,
@@ -13,16 +20,8 @@ import {
   Tooltip,
 } from "@mui/material";
 import classNames from "classnames";
-import { supabase } from "../../utils/supabaseClient"; // Supabase 연결
+import { supabase } from "../../utils/supabaseClient";
 import "./EmotionBoard.scss";
-
-type EmotionEntry = {
-  id: string;
-  date: string;
-  emotion: string;
-  note?: string;
-  image_url?: string | null;
-};
 
 const emotionOptions = [
   "😊 기쁨",
@@ -34,8 +33,9 @@ const emotionOptions = [
 ];
 
 const EmotionBoard: React.FC = () => {
-  const user = useSelector((state: RootState) => state.auth.user); // Redux에서 user 가져오기
-  const [emotions, setEmotions] = useState<EmotionEntry[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.auth.user);
+  const emotions = useSelector((state: RootState) => state.emotions.emotions);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEmotion, setSelectedEmotion] = useState<EmotionEntry | null>(
     null
@@ -46,29 +46,17 @@ const EmotionBoard: React.FC = () => {
   const isToday = emotions.some((entry) => entry.date === today);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isImageDeleted, setIsImageDeleted] = useState(false);
 
-  // Supabase에서 감정 데이터 가져오기
   useEffect(() => {
-    const fetchEmotions = async () => {
-      const { data, error } = await supabase
-        .from("emotions")
-        .select("*")
-        .order("date", { ascending: false });
-
-      if (error) {
-        console.error("error:", error);
-      } else {
-        setEmotions(data || []);
-      }
-    };
-
-    fetchEmotions();
-  }, []);
+    dispatch(fetchEmotions());
+  }, [dispatch]);
 
   // 이미지 파일 업로드 (Supabase Storage 연동)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     setSelectedFile(file);
+    setIsImageDeleted(false);
 
     if (file) {
       const reader = new FileReader();
@@ -87,11 +75,9 @@ const EmotionBoard: React.FC = () => {
       return;
     }
 
-    const user_id = user.id; // redux에서 user_id 가져오기
     const today = new Date().toISOString().split("T")[0];
     let uploadedImageUrl = selectedEmotion?.image_url || "";
 
-    // 이미지 업로드 (수정하는 경우 기존 이미지 유지)
     if (selectedFile) {
       const { data, error } = await supabase.storage
         .from("emotion-images")
@@ -110,113 +96,58 @@ const EmotionBoard: React.FC = () => {
     }
 
     if (selectedEmotion) {
-      if (previewUrl === null) {
-        selectedEmotion.image_url = null;
+      if (isImageDeleted) {
+        uploadedImageUrl = "";
       }
 
-      // 기존 데이터가 있으면 UPDATE 실행
-      const { error } = await supabase
-        .from("emotions")
-        .update({
+      dispatch(
+        updateEmotion({
+          ...selectedEmotion,
           emotion,
           note,
           image_url: uploadedImageUrl,
         })
-        .eq("id", selectedEmotion.id)
-        .eq("user_id", user_id); // 본인이 작성한 데이터만 수정 가능
-
-      if (error) {
-        console.error("err:", error);
-        return;
-      }
-
-      setEmotions((prev) =>
-        prev.map((entry) =>
-          entry.id === selectedEmotion.id
-            ? { ...entry, emotion, note, image_url: uploadedImageUrl }
-            : entry
-        )
       );
     } else {
-      const newEntry = {
-        id: crypto.randomUUID(),
-        date: today,
-        emotion,
-        note,
-        image_url: uploadedImageUrl,
-        user_id,
-      };
+      dispatch(
+        addEmotion({
+          id: crypto.randomUUID(),
+          date: today,
+          emotion,
+          note,
+          image_url: uploadedImageUrl,
+        })
+      );
+    }
 
-      const { error } = await supabase.from("emotions").insert([newEntry]);
+    if (isImageDeleted && selectedEmotion?.image_url) {
+      const imagePath = selectedEmotion.image_url.split(
+        "/storage/v1/object/public/emotion-images/"
+      )[1];
 
-      if (error) {
-        console.error("err:", error);
-        return;
+      if (imagePath) {
+        const { error } = await supabase.storage
+          .from("emotion-images")
+          .remove([imagePath]);
+
+        if (error) {
+          console.error("err:", error);
+          return;
+        }
       }
-
-      setEmotions((prev) => [newEntry, ...prev]);
     }
 
     closeModal();
   };
 
-  // 감정 데이터 삭제
-  const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("emotions").delete().eq("id", id);
-
-    if (error) {
-      console.error("err:", error);
-      return;
-    }
-
-    setEmotions((prev) => prev.filter((entry) => entry.id !== id));
+  const handleDelete = (id: string) => {
+    dispatch(deleteEmotion(id));
   };
 
   const handleDeleteImage = async () => {
-    if (!selectedEmotion) return;
-
-    // 미리보기 이미지 삭제
     setPreviewUrl(null);
     setSelectedFile(null);
-
-    if (!selectedEmotion.image_url) return;
-    if (!selectedEmotion || !selectedEmotion.image_url) {
-      return;
-    }
-
-    // Supabase Storage에서 이미지 삭제
-    const imagePath = selectedEmotion.image_url.split(
-      "/storage/v1/object/public/emotion-images/"
-    )[1];
-
-    const { error } = await supabase.storage
-      .from("emotion-images")
-      .remove([imagePath]);
-
-    if (error) {
-      console.error("error:", error);
-      return;
-    }
-
-    // 감정 데이터에서 image_url 제거
-    const { error: updateError } = await supabase
-      .from("emotions")
-      .update({ image_url: null })
-      .eq("id", selectedEmotion.id);
-
-    if (updateError) {
-      console.error("error:", updateError);
-      return;
-    }
-
-    // UI에서 이미지 삭제 반영
-    setEmotions((prev) =>
-      prev.map((entry) =>
-        entry.id === selectedEmotion.id ? { ...entry, image_url: null } : entry
-      )
-    );
-
-    setSelectedEmotion((prev) => (prev ? { ...prev, image_url: null } : null));
+    setIsImageDeleted(true);
   };
 
   // 모달 상태 관리
@@ -225,6 +156,7 @@ const EmotionBoard: React.FC = () => {
     setEmotion(emotionEntry?.emotion || "😊 기쁨");
     setNote(emotionEntry?.note || "");
     setPreviewUrl(emotionEntry?.image_url || null);
+    setIsImageDeleted(false);
     setIsModalOpen(true);
   };
 
@@ -233,6 +165,7 @@ const EmotionBoard: React.FC = () => {
     setIsModalOpen(false);
     setSelectedFile(null);
     setPreviewUrl(null);
+    setIsImageDeleted(false);
   };
 
   return (
@@ -316,7 +249,11 @@ const EmotionBoard: React.FC = () => {
             multiline
             rows={3}
           />
-          <input type="file" accept="image/*" onChange={handleFileChange} />
+
+          {!previewUrl && (
+            <input type="file" accept="image/*" onChange={handleFileChange} />
+          )}
+
           {previewUrl && (
             <>
               <img
