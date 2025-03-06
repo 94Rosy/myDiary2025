@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { supabase } from "../../utils/supabaseClient";
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from "recharts";
 import { RootState } from "../../store/store";
+import { EmotionEntry } from "../../store/emotionSlice";
+
+interface Props {
+  emotions: EmotionEntry[];
+}
 
 const EMOTION_COLORS: Record<string, string> = {
   "😊 기쁨": "#FFD700",
@@ -13,67 +17,59 @@ const EMOTION_COLORS: Record<string, string> = {
   "😱 놀람": "#FF8C00",
 };
 
-export default function DateEmotionChart() {
+const DateEmotionChart: React.FC<Props> = ({ emotions }) => {
   const selectedFilter = useSelector(
     (state: RootState) => state.filter.selectedFilter
   );
   const user = useSelector((state: RootState) => state.auth.user);
   const [chartData, setChartData] = useState<
-    { emotion: string; count: number }[]
+    { emotion: string; count: number; percentage: string }[]
   >([]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !emotions.length) return;
 
-    const fetchEmotionData = async () => {
-      const userId = user.id;
+    let startDate = new Date();
+    if (selectedFilter === "week") startDate.setDate(startDate.getDate() - 7);
+    if (selectedFilter === "month")
+      startDate.setMonth(startDate.getMonth() - 1);
+    if (selectedFilter === "3months")
+      startDate.setMonth(startDate.getMonth() - 3);
+    if (selectedFilter === "6months")
+      startDate.setMonth(startDate.getMonth() - 6);
 
-      // Redux에서 가져온 필터 값으로 데이터 필터링
-      let startDate = new Date();
-      if (selectedFilter === "week") startDate.setDate(startDate.getDate() - 7);
-      if (selectedFilter === "month")
-        startDate.setMonth(startDate.getMonth() - 1);
-      if (selectedFilter === "3months")
-        startDate.setMonth(startDate.getMonth() - 3);
-      if (selectedFilter === "6months")
-        startDate.setMonth(startDate.getMonth() - 6);
+    const formattedStartDate = startDate.toISOString().split("T")[0];
 
-      const formattedStartDate = startDate.toISOString().split("T")[0];
+    // Redux 데이터에서 필터링
+    const filteredEmotions = emotions.filter(
+      (entry) => entry.date >= formattedStartDate
+    );
 
-      const { data, error } = await supabase
-        .from("emotions")
-        .select("emotion")
-        .eq("user_id", userId)
-        .gte("date", formattedStartDate);
+    if (!filteredEmotions.length) {
+      setChartData([]);
+      return;
+    }
 
-      if (error) {
-        console.error("Error fetching emotions:", error);
-        return;
-      }
+    // 감정별 개수 카운트
+    const emotionCounts: Record<string, number> = {};
+    filteredEmotions.forEach(({ emotion }) => {
+      emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
+    });
 
-      // 감정별 개수 카운트
-      const emotionCounts: Record<string, number> = {};
-      data.forEach(({ emotion }) => {
-        emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
-      });
+    const totalCount = Object.values(emotionCounts).reduce(
+      (sum, count) => sum + count,
+      0
+    );
 
-      const totalCount = Object.values(emotionCounts).reduce(
-        (sum, count) => sum + count,
-        0
-      );
+    // 차트 데이터 형식으로 변환 (퍼센트 값 포함)
+    const finalData = Object.keys(emotionCounts).map((emotion) => ({
+      emotion,
+      count: emotionCounts[emotion],
+      percentage: ((emotionCounts[emotion] / totalCount) * 100).toFixed(1),
+    }));
 
-      // 차트 데이터 형식으로 변환 (퍼센트 값 포함)
-      const finalData = Object.keys(emotionCounts).map((emotion) => ({
-        emotion,
-        count: emotionCounts[emotion],
-        percentage: ((emotionCounts[emotion] / totalCount) * 100).toFixed(1),
-      }));
-
-      setChartData(finalData);
-    };
-
-    fetchEmotionData();
-  }, [selectedFilter, user]);
+    setChartData(finalData);
+  }, [selectedFilter, user, emotions]);
 
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -99,4 +95,6 @@ export default function DateEmotionChart() {
       </PieChart>
     </ResponsiveContainer>
   );
-}
+};
+
+export default DateEmotionChart;

@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { setFilter } from "../../store/selectedFilter";
-import { supabase } from "../../utils/supabaseClient";
 import {
   Dialog,
   DialogTitle,
@@ -11,8 +10,13 @@ import {
   Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { EmotionEntry } from "../../store/emotionSlice";
 
-export default function DateFilter() {
+interface Props {
+  emotions: EmotionEntry[];
+}
+
+const DateFilter: React.FC<Props> = ({ emotions }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const selectedFilter = useSelector(
@@ -27,37 +31,36 @@ export default function DateFilter() {
   ) => {
     dispatch(setFilter(filter));
     if (user && filter === "week") {
-      // "일주일 보기" 선택 시에만 실행
-      await analyzeEmotionTrends(user.id);
+      // 일주일 보기 선택 시에만 나타남
+      await analyzeEmotionTrends();
     }
   };
 
-  const analyzeEmotionTrends = async (userId: string) => {
+  const analyzeEmotionTrends = () => {
+    if (!emotions.length) return;
+
     let startDate = new Date();
     startDate.setDate(startDate.getDate() - 7);
     const formattedStartDate = startDate.toISOString().split("T")[0];
 
-    const { data, error } = await supabase
-      .from("emotions")
-      .select("emotion")
-      .eq("user_id", userId)
-      .gte("date", formattedStartDate);
+    // Redux 데이터에서 필터링
+    const filteredEmotions = emotions.filter(
+      (entry) => entry.date >= formattedStartDate
+    );
 
-    if (error) return;
+    if (!filteredEmotions.length) return;
 
-    // 감정별 개수 분석
     const emotionCounts: Record<string, number> = {};
-    data.forEach(({ emotion }) => {
+    filteredEmotions.forEach(({ emotion }) => {
       emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
     });
 
-    const totalEmotions = data.length;
+    const totalEmotions = filteredEmotions.length;
     const sadnessPercentage =
       ((emotionCounts["😢 슬픔"] || 0) / totalEmotions) * 100;
     const angerPercentage =
       ((emotionCounts["😡 분노"] || 0) / totalEmotions) * 100;
 
-    // 새로운 메시지 출력 방식
     if (sadnessPercentage >= 50 && angerPercentage >= 50) {
       setModalMessage(
         `최근 7일간 슬픔(😢) ${sadnessPercentage.toFixed(
@@ -134,4 +137,6 @@ export default function DateFilter() {
       </Dialog>
     </div>
   );
-}
+};
+
+export default DateFilter;

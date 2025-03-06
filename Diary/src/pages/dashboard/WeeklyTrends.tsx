@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { supabase } from "../../utils/supabaseClient";
 import {
   XAxis,
   YAxis,
@@ -12,6 +11,11 @@ import {
   Cell,
 } from "recharts";
 import { RootState } from "../../store/store";
+import { EmotionEntry } from "../../store/emotionSlice";
+
+interface Props {
+  emotions: EmotionEntry[];
+}
 
 const EMOTION_COLORS: Record<string, string> = {
   "😊 기쁨": "#FFD700",
@@ -32,69 +36,60 @@ const WEEK_DAYS = [
   "일요일",
 ];
 
-export default function WeeklyTrends() {
+const WeeklyTrends: React.FC<Props> = ({ emotions }) => {
   const selectedFilter = useSelector(
     (state: RootState) => state.filter.selectedFilter
   );
   const [chartData, setChartData] = useState<any[]>([]);
-  const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
-    if (!user) return;
+    if (!emotions.length) return;
 
-    const fetchEmotionData = async () => {
-      const userId = user.id;
+    let startDate = new Date();
+    if (selectedFilter === "week") startDate.setDate(startDate.getDate() - 7);
+    if (selectedFilter === "month")
+      startDate.setMonth(startDate.getMonth() - 1);
+    if (selectedFilter === "3months")
+      startDate.setMonth(startDate.getMonth() - 3);
+    if (selectedFilter === "6months")
+      startDate.setMonth(startDate.getMonth() - 6);
 
-      // 필터에 따라 가져올 데이터 기간 설정
-      let startDate = new Date();
-      if (selectedFilter === "week") startDate.setDate(startDate.getDate() - 7);
-      if (selectedFilter === "month")
-        startDate.setMonth(startDate.getMonth() - 1);
-      if (selectedFilter === "3months")
-        startDate.setMonth(startDate.getMonth() - 3);
-      if (selectedFilter === "6months")
-        startDate.setMonth(startDate.getMonth() - 6);
+    const formattedStartDate = startDate.toISOString().split("T")[0];
 
-      const formattedStartDate = startDate.toISOString().split("T")[0];
+    // Redux 데이터에서 필터링
+    const filteredEmotions = emotions.filter(
+      (entry) => entry.date >= formattedStartDate
+    );
 
-      const { data, error } = await supabase
-        .from("emotions")
-        .select("emotion, date")
-        .eq("user_id", userId)
-        .gte("date", formattedStartDate);
+    if (!filteredEmotions.length) {
+      setChartData([]);
+      return;
+    }
 
-      if (error) {
-        console.error("Error fetching emotions:", error);
-        return;
+    // 감정 데이터를 요일별로 그룹화
+    const emotionByDay: Record<string, Record<string, number>> = {};
+    WEEK_DAYS.forEach((day) => {
+      emotionByDay[day] = {};
+    });
+
+    filteredEmotions.forEach(({ emotion, date }) => {
+      const dayIndex = new Date(date).getDay(); // 0(일) ~ 6(토)
+      const dayName = WEEK_DAYS[dayIndex === 0 ? 6 : dayIndex - 1]; // 요일 변환 (일요일이 0이므로 보정)
+
+      if (!emotionByDay[dayName][emotion]) {
+        emotionByDay[dayName][emotion] = 0;
       }
+      emotionByDay[dayName][emotion] += 1;
+    });
 
-      // 감정 데이터를 요일별로 그룹화
-      const emotionByDay: Record<string, Record<string, number>> = {};
-      WEEK_DAYS.forEach((day) => {
-        emotionByDay[day] = {};
-      });
+    // Recharts에 맞게 데이터 변환
+    const finalChartData = WEEK_DAYS.map((day) => ({
+      day,
+      ...emotionByDay[day],
+    }));
 
-      data.forEach(({ emotion, date }) => {
-        const dayIndex = new Date(date).getDay(); // 0(일) ~ 6(토)
-        const dayName = WEEK_DAYS[dayIndex === 0 ? 6 : dayIndex - 1]; // 요일 변환 (일요일이 0이므로 보정)
-
-        if (!emotionByDay[dayName][emotion]) {
-          emotionByDay[dayName][emotion] = 0;
-        }
-        emotionByDay[dayName][emotion] += 1;
-      });
-
-      // Recharts에 맞게 데이터 변환
-      const finalChartData = WEEK_DAYS.map((day) => ({
-        day,
-        ...emotionByDay[day],
-      }));
-
-      setChartData(finalChartData);
-    };
-
-    fetchEmotionData();
-  }, [selectedFilter, user]); // Redux의 user 상태가 변경될 때도 실행됨
+    setChartData(finalChartData);
+  }, [selectedFilter, emotions]); // Redux의 emotions 상태가 변경될 때도 실행됨
 
   return (
     <div>
@@ -119,4 +114,6 @@ export default function WeeklyTrends() {
       </ResponsiveContainer>
     </div>
   );
-}
+};
+
+export default WeeklyTrends;

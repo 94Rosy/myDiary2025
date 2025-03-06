@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { supabase } from "../../utils/supabaseClient";
 import {
   BarChart,
   Bar,
@@ -11,6 +10,11 @@ import {
   Cell,
 } from "recharts";
 import { RootState } from "../../store/store";
+import { EmotionEntry } from "../../store/emotionSlice";
+
+interface Props {
+  emotions: EmotionEntry[];
+}
 
 const EMOTION_COLORS: Record<string, string> = {
   "😊 기쁨": "#FFD700",
@@ -29,7 +33,7 @@ const FILTER_LABELS: Record<string, string> = {
   "6months": "반년",
 };
 
-export default function CompareChart() {
+const CompareChart: React.FC<Props> = ({ emotions }) => {
   const selectedFilter = useSelector(
     (state: RootState) => state.filter.selectedFilter
   );
@@ -40,71 +44,60 @@ export default function CompareChart() {
   const [leastEmotion, setLeastEmotion] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchEmotionData = async () => {
-      const { data: userData, error: userError } =
-        await supabase.auth.getUser();
-      if (userError || !userData?.user) {
-        console.error("로그인한 사용자를 찾을 수 없습니다.");
-        return;
-      }
+    if (!emotions.length) return;
 
-      const userId = userData.user.id;
+    let startDate = new Date();
+    if (selectedFilter === "week") startDate.setDate(startDate.getDate() - 7);
+    if (selectedFilter === "month")
+      startDate.setMonth(startDate.getMonth() - 1);
+    if (selectedFilter === "3months")
+      startDate.setMonth(startDate.getMonth() - 3);
+    if (selectedFilter === "6months")
+      startDate.setMonth(startDate.getMonth() - 6);
 
-      // Redux에서 가져온 필터 값으로 데이터 필터링
-      let startDate = new Date();
-      if (selectedFilter === "week") startDate.setDate(startDate.getDate() - 7);
-      if (selectedFilter === "month")
-        startDate.setMonth(startDate.getMonth() - 1);
-      if (selectedFilter === "3months")
-        startDate.setMonth(startDate.getMonth() - 3);
-      if (selectedFilter === "6months")
-        startDate.setMonth(startDate.getMonth() - 6);
+    const formattedStartDate = startDate.toISOString().split("T")[0];
 
-      const formattedStartDate = startDate.toISOString().split("T")[0];
+    // Redux 데이터에서 필터링
+    const filteredEmotions = emotions.filter(
+      (entry) => entry.date >= formattedStartDate
+    );
 
-      const { data, error } = await supabase
-        .from("emotions")
-        .select("emotion")
-        .eq("user_id", userId)
-        .gte("date", formattedStartDate);
+    if (!filteredEmotions.length) {
+      setChartData([]);
+      setMostEmotion(null);
+      setLeastEmotion(null);
+      return;
+    }
 
-      if (error) {
-        console.error("Error fetching emotions:", error);
-        return;
-      }
+    // 감정별 개수 카운트
+    const emotionCounts: Record<string, number> = {};
+    filteredEmotions.forEach(({ emotion }) => {
+      emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
+    });
 
-      // 감정별 개수 카운트
-      const emotionCounts: Record<string, number> = {};
-      data.forEach(({ emotion }) => {
-        emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
-      });
+    // 가장 많이 & 적게 기록한 감정 찾기
+    const sortedEmotions = Object.entries(emotionCounts).sort(
+      (a, b) => b[1] - a[1]
+    );
+    const topEmotion = sortedEmotions[0]; // 가장 많이 기록한 감정
+    const leastEmotion = sortedEmotions[sortedEmotions.length - 1]; // 가장 적게 기록한 감정
 
-      // 가장 많이 & 적게 기록한 감정 찾기
-      const sortedEmotions = Object.entries(emotionCounts).sort(
-        (a, b) => b[1] - a[1]
-      );
-      const topEmotion = sortedEmotions[0]; // 가장 많이 기록한 감정
-      const leastEmotion = sortedEmotions[sortedEmotions.length - 1]; // 가장 적게 기록한 감정
+    if (!topEmotion || !leastEmotion) {
+      setChartData([]);
+      setMostEmotion(null);
+      setLeastEmotion(null);
+      return;
+    }
 
-      if (!topEmotion || !leastEmotion) {
-        setChartData([]);
-        setMostEmotion(null);
-        setLeastEmotion(null);
-        return;
-      }
+    setChartData([
+      { emotion: topEmotion[0], count: topEmotion[1] },
+      { emotion: leastEmotion[0], count: leastEmotion[1] },
+    ]);
 
-      setChartData([
-        { emotion: topEmotion[0], count: topEmotion[1] },
-        { emotion: leastEmotion[0], count: leastEmotion[1] },
-      ]);
-
-      // 가장 많이/적게 기록한 감정을 상태로 저장
-      setMostEmotion(topEmotion[0]);
-      setLeastEmotion(leastEmotion[0]);
-    };
-
-    fetchEmotionData();
-  }, [selectedFilter]);
+    // 가장 많이/적게 기록한 감정을 상태로 저장
+    setMostEmotion(topEmotion[0]);
+    setLeastEmotion(leastEmotion[0]);
+  }, [selectedFilter, emotions]);
 
   return (
     <div>
@@ -145,4 +138,5 @@ export default function CompareChart() {
       </ResponsiveContainer>
     </div>
   );
-}
+};
+export default CompareChart;

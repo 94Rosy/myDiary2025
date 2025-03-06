@@ -3,15 +3,28 @@ import DateFilter from "./DateFilter";
 import DateEmotionChart from "./DateEmotionChart";
 import CompareChart from "./CompareChart";
 import WeeklyTrends from "./WeeklyTrends";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store";
+import { useEffect } from "react";
+import { fetchEmotions } from "../../store/emotionSlice";
 
 const DashboardPage = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const emotions = useSelector((state: RootState) => state.emotions.emotions); // Redux에서 감정 데이터 가져오기
+
+  useEffect(() => {
+    if (!emotions.length) {
+      dispatch(fetchEmotions());
+    }
+  }, [dispatch, emotions.length]);
+
   return (
     <>
       <h1>📊 감정 차트</h1>
-      <DateFilter />
-      <DateEmotionChart />
-      <CompareChart />
-      <WeeklyTrends />
+      <DateFilter emotions={emotions} />
+      <DateEmotionChart emotions={emotions} />
+      <CompareChart emotions={emotions} />
+      <WeeklyTrends emotions={emotions} />
     </>
   );
 };
