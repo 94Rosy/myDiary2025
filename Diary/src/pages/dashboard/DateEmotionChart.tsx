@@ -17,20 +17,16 @@ export default function DateEmotionChart() {
   const selectedFilter = useSelector(
     (state: RootState) => state.filter.selectedFilter
   );
+  const user = useSelector((state: RootState) => state.auth.user);
   const [chartData, setChartData] = useState<
     { emotion: string; count: number }[]
   >([]);
 
   useEffect(() => {
-    const fetchEmotionData = async () => {
-      const { data: userData, error: userError } =
-        await supabase.auth.getUser();
-      if (userError || !userData?.user) {
-        console.error("로그인한 사용자를 찾을 수 없습니다.");
-        return;
-      }
+    if (!user) return;
 
-      const userId = userData.user.id;
+    const fetchEmotionData = async () => {
+      const userId = user.id;
 
       // Redux에서 가져온 필터 값으로 데이터 필터링
       let startDate = new Date();
@@ -61,17 +57,23 @@ export default function DateEmotionChart() {
         emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
       });
 
-      // 차트 데이터 형식으로 변환
+      const totalCount = Object.values(emotionCounts).reduce(
+        (sum, count) => sum + count,
+        0
+      );
+
+      // 차트 데이터 형식으로 변환 (퍼센트 값 포함)
       const finalData = Object.keys(emotionCounts).map((emotion) => ({
         emotion,
         count: emotionCounts[emotion],
+        percentage: ((emotionCounts[emotion] / totalCount) * 100).toFixed(1),
       }));
 
       setChartData(finalData);
     };
 
     fetchEmotionData();
-  }, [selectedFilter]); // Redux의 필터 값이 변경될 때마다 데이터 새로 가져오기
+  }, [selectedFilter, user]);
 
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -84,7 +86,7 @@ export default function DateEmotionChart() {
           cy="50%"
           outerRadius={100}
           fill="#8884d8"
-          label={({ name, value }) => `${name} (${value})`}
+          label={({ name, percentage }) => `${name} (${percentage}%)`}
         >
           {chartData.map((entry, index) => (
             <Cell
@@ -93,7 +95,7 @@ export default function DateEmotionChart() {
             />
           ))}
         </Pie>
-        <Tooltip formatter={(value, name) => [`${value}회`, `감정: ${name}`]} />
+        <Tooltip formatter={(value, name) => [`${value}회`, `${name}`]} />
       </PieChart>
     </ResponsiveContainer>
   );

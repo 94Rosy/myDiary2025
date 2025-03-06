@@ -5,8 +5,8 @@ const MainPage = () => {
   return (
     <div className="main-wrapper">
       <div className="title-content">
-        {/* <div>마음의 조각</div> */}
-        {/* <div>매일매일 나의 마음은 어떤 모양일까?</div> */}
+        <div>마음의 조각</div>
+        <div>매일매일 나의 마음은 어떤 모양일까?</div>
       </div>
 
       <div className="main-content">
@@ -24,20 +24,20 @@ const MainPage = () => {
           cardType="journal"
           link="/emotionList"
           mainText="감정 다이어리"
-          subText="나의 감정들 보러 가기"
+          subText="마음의 조각들 보러 가기"
         />
         <EmotionCard
           cardType="dashboard"
           link="/dashboard"
           mainText="감정 차트"
-          subText="요즘 내 감정들은 어땠을까?"
+          subText="마음의 조각을 모아서"
         />
         <EmotionCard
-          cardType="calendar"
-          mainText="캘린더"
-          subText="어떤 날의 감정들"
+          cardType="contact"
+          link="/contact"
+          mainText="오늘의 위로"
+          subText="위로가 필요할 때"
         />
-        <EmotionCard cardType="contact" link="/contact" mainText="Contact" />
       </div>
     </div>
   );

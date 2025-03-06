@@ -34,7 +34,7 @@ const emotionOptions = [
 ];
 
 const EmotionBoard: React.FC = () => {
-  const user = useSelector((state: RootState) => state.auth.user); // ✅ Redux에서 user 가져오기
+  const user = useSelector((state: RootState) => state.auth.user); // Redux에서 user 가져오기
   const [emotions, setEmotions] = useState<EmotionEntry[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEmotion, setSelectedEmotion] = useState<EmotionEntry | null>(
@@ -87,7 +87,7 @@ const EmotionBoard: React.FC = () => {
       return;
     }
 
-    const user_id = user.id; // ✅ Redux에서 user_id 가져오기
+    const user_id = user.id; // redux에서 user_id 가져오기
     const today = new Date().toISOString().split("T")[0];
     let uploadedImageUrl = selectedEmotion?.image_url || "";
 

@@ -57,7 +57,10 @@ const Navbar = () => {
         <ul>
           {user ? (
             <li>
-              <span className="user-name">{userName}님 어서오세요!</span>
+              <span className="user-name">
+                {/* 🐥 {userName}님 <div>오늘의 마음은 어떠세요?</div> */}
+                🐥 {userName}님
+              </span>
               <button className="logout-btn" onClick={handleLogout}>
                 🔓로그아웃
               </button>
@@ -78,7 +81,7 @@ const Navbar = () => {
           )}
 
           <li>
-            <Link to="/emotionList">💟감정 일기</Link>
+            <Link to="/emotionList">💟감정 다이어리</Link>
           </li>
           <li>
             <Link to="/dashboard">📊감정 차트</Link>

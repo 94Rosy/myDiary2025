@@ -29,7 +29,7 @@ const FILTER_LABELS: Record<string, string> = {
   "6months": "반년",
 };
 
-export default function MostLeastEmotionChart() {
+export default function CompareChart() {
   const selectedFilter = useSelector(
     (state: RootState) => state.filter.selectedFilter
   );
@@ -111,11 +111,20 @@ export default function MostLeastEmotionChart() {
       <h3>가장 많이 & 적게 기록한 감정</h3>
 
       {mostEmotion && leastEmotion && (
-        <p style={{ fontSize: "16px", marginBottom: "10px" }}>
+        <p
+          style={{ fontSize: "16px", marginBottom: "10px", fontWeight: "bold" }}
+        >
           지난 <strong>{FILTER_LABELS[selectedFilter]}</strong> 동안 가장 많이
-          기록한 감정은
-          <strong> {mostEmotion}</strong>, 가장 적게 기록한 감정은
-          <strong> {leastEmotion} </strong> 입니다.
+          느낀 감정은
+          <span style={{ color: EMOTION_COLORS[mostEmotion] }}>
+            {" "}
+            {mostEmotion}
+          </span>
+          , 가장 적게 느낀 감정은
+          <span style={{ color: EMOTION_COLORS[leastEmotion] }}>
+            {" "}
+            {leastEmotion}
+          </span>
         </p>
       )}
 
@@ -123,7 +132,7 @@ export default function MostLeastEmotionChart() {
         <BarChart data={chartData} layout="vertical">
           <XAxis type="number" />
           <YAxis dataKey="emotion" type="category" />
-          <Tooltip />
+          <Tooltip formatter={(value, name) => [`${name}: ${value}회`]} />
           <Bar dataKey="count">
             {chartData.map((entry, index) => (
               <Cell

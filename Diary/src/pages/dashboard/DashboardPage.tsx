@@ -2,6 +2,7 @@
 import DateFilter from "./DateFilter";
 import DateEmotionChart from "./DateEmotionChart";
 import CompareChart from "./CompareChart";
+import WeeklyTrends from "./WeeklyTrends";
 
 const DashboardPage = () => {
   return (
@@ -10,6 +11,7 @@ const DashboardPage = () => {
       <DateFilter />
       <DateEmotionChart />
       <CompareChart />
+      <WeeklyTrends />
     </>
   );
 };

@@ -2,8 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-import { Provider } from "react-redux"; // ✅ Redux Provider 추가
-import { store } from "./store/store"; // ✅ Redux Store 불러오기
+import { Provider } from "react-redux"; // Redux Provider 추가
+import { store } from "./store/store"; // Redux Store 불러오기
 import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(
