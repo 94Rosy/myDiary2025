@@ -10,39 +10,52 @@ interface Props {
   totalPages: number;
 }
 
+const MAX_PAGE_NUMBERS = 7; // 한 번에 보여줄 페이지 개수
+
 const Pagination: React.FC<Props> = ({ totalPages }) => {
   const dispatch = useDispatch();
-  const currentPages = useSelector(
-    (state: RootState) => state.pagination.currentPages
+  const currentPage = useSelector(
+    (state: RootState) => state.pagination.currentPage
   );
 
-  const pagingHandler = (newPage: number) => {
-    dispatch(setPage(newPage));
+  const startPage = Math.max(1, currentPage - Math.floor(MAX_PAGE_NUMBERS / 2));
+  const endPage = Math.min(totalPages, startPage + MAX_PAGE_NUMBERS - 1);
+
+  const pageNumbers = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
+
+  const pageChangeHandler = (page: number) => {
+    dispatch(setPage(page));
+  };
+
+  const firstPageHandler = () => {
+    dispatch(setPage(1));
+  };
+
+  const lastPageHandler = () => {
+    dispatch(setPage(totalPages));
   };
 
   return (
     <div className="pagination">
-      <Button
-        onClick={() => pagingHandler(currentPages - 1)}
-        disabled={currentPages === 1}
-      >
-        이전
+      <Button className="first" onClick={firstPageHandler}>
+        &laquo;
       </Button>
 
-      {Array.from({ length: totalPages }, (_, idx) => (
+      {pageNumbers.map((num) => (
         <Button
-          key={idx + 1}
-          onClick={() => pagingHandler(idx + 1)}
-          className={classNames("page_bar", { active: idx + 1 })}
+          key={num}
+          className={classNames("pagebar", { active: num === currentPage })}
+          onClick={() => pageChangeHandler(num)}
         >
-          {idx + 1}
+          {num}
         </Button>
       ))}
-      <Button
-        onClick={() => pagingHandler(currentPages + 1)}
-        disabled={currentPages === totalPages}
-      >
-        다음
+
+      <Button className="last" onClick={lastPageHandler}>
+        &raquo;
       </Button>
     </div>
   );

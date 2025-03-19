@@ -6,21 +6,18 @@
 
   button {
     padding: 8px 12px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
+    border: 1px solid #e6e6e6;
+    color: #c5c6ca;
     cursor: pointer;
 
-    .page_bar {
-      &.active {
-        background-color: #cc808f;
-        color: white;
-        font-weight: bold;
-      }
+    &.active {
+      font-weight: 700;
+      color: #191919;
     }
+  }
 
-    &.disabled {
-      background-color: #ddd;
-      cursor: not-allowed;
-    }
+  .first,
+  .last {
+    color: #191919;
   }
 }

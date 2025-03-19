@@ -21,7 +21,8 @@ import {
 } from "@mui/material";
 import classNames from "classnames";
 import { supabase } from "../../utils/supabaseClient";
-import "./EmotionBoard.scss";
+import Pagination from "../../components/common/Pagination"; // 페이지네이션 컴포넌트 추가
+import "./emotionBoard.scss";
 
 const emotionOptions = [
   "😊 기쁨",
@@ -32,10 +33,15 @@ const emotionOptions = [
   "🥰 사랑",
 ];
 
+const PAGE_PER_COUNTS = 14; // 한 페이지에 보여줄 감정 개수(14개)
+
 const EmotionBoard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.user);
   const emotions = useSelector((state: RootState) => state.emotions.emotions);
+  const currentPage = useSelector(
+    (state: RootState) => state.pagination.currentPage
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEmotion, setSelectedEmotion] = useState<EmotionEntry | null>(
     null
@@ -47,10 +53,23 @@ const EmotionBoard: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isImageDeleted, setIsImageDeleted] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    dispatch(fetchEmotions());
-  }, [dispatch]);
+    if (user) {
+      dispatch(fetchEmotions()); // 전체 감정 데이터 가져오기
+    }
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    setTotalPages(Math.ceil(emotions.length / PAGE_PER_COUNTS)); // 전체 페이지 개수 계산
+  }, [emotions]);
+
+  // 현재 페이지에 해당하는 데이터만 가져오기
+  const paginatedEmotions = emotions.slice(
+    (currentPage - 1) * PAGE_PER_COUNTS,
+    currentPage * PAGE_PER_COUNTS
+  );
 
   // 이미지 파일 업로드 (Supabase Storage 연동)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,7 +94,6 @@ const EmotionBoard: React.FC = () => {
       return;
     }
 
-    const today = new Date().toISOString().split("T")[0];
     let uploadedImageUrl = selectedEmotion?.image_url || "";
 
     if (selectedFile) {
@@ -84,7 +102,7 @@ const EmotionBoard: React.FC = () => {
         .upload(`images/${Date.now()}-${selectedFile.name}`, selectedFile);
 
       if (error) {
-        console.error("err:", error);
+        console.error("err: ", error);
         return;
       }
 
@@ -131,7 +149,7 @@ const EmotionBoard: React.FC = () => {
           .remove([imagePath]);
 
         if (error) {
-          console.error("err:", error);
+          console.error("err: ", error);
           return;
         }
       }
@@ -190,7 +208,7 @@ const EmotionBoard: React.FC = () => {
       </h2>
 
       <div className="emotion-grid">
-        {emotions.map((entry) => (
+        {paginatedEmotions.map((entry) => (
           <div key={entry.id} className="emotion-card">
             <div className="emotion-header">
               {entry.emotion}
@@ -223,6 +241,9 @@ const EmotionBoard: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {/* 페이지네이션 */}
+      <Pagination totalPages={totalPages} />
 
       {/* 감정 추가 & 수정 모달 */}
       <Modal open={isModalOpen} onClose={closeModal}>
