@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import "../../styles/emotionCard.scss";
+import "./emotionCard.scss";
 
 // 이미지 import
 import todayImg from "../../assets/today.jpg";

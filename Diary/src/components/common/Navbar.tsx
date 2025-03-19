@@ -1,11 +1,11 @@
 import { useSelector, useDispatch } from "react-redux";
-import { RootState, AppDispatch } from "../store/store";
-import { fetchUser, logoutUser } from "../store/authSlice";
+import { RootState, AppDispatch } from "../../store/store";
+import { fetchUser, logoutUser } from "../../store/authSlice";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../utils/supabaseClient";
-import DeleteAccountModal from "./leave/DeleteAccountModal";
-import "../styles/navbar.scss";
+import { supabase } from "../../utils/supabaseClient";
+import DeleteAccountModal from "../leave/DeleteAccountModal";
+import "../../styles/navbar.scss";
 
 const Navbar = () => {
   const user = useSelector((state: RootState) => state.auth.user);
