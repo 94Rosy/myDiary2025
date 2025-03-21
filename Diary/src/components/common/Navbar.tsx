@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../utils/supabaseClient";
 import DeleteAccountModal from "../leave/DeleteAccountModal";
+import { resetPage } from "../../store/paginationSlice";
 import "../../styles/navbar.scss";
 
 const Navbar = () => {
@@ -45,6 +46,7 @@ const Navbar = () => {
     await supabase.auth.getSession();
 
     dispatch(logoutUser()); // Redux 상태 업데이트
+    dispatch(resetPage()); // 로그아웃 할 경우 리덕스에 저장되어 있던 페이지네이션 초기화
     navigate("/login"); // 로그인 페이지로 이동
   };
 
@@ -96,3 +98,6 @@ const Navbar = () => {
 };
 
 export default Navbar;
+function resetEmotions(): any {
+  throw new Error("Function not implemented.");
+}

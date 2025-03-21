@@ -64,10 +64,14 @@ export const deleteEmotion = createAsyncThunk(
   }
 );
 
-const emotionsSlice = createSlice({
+const emotionSlice = createSlice({
   name: "emotions",
   initialState,
-  reducers: {},
+  reducers: {
+    resetEmotions: (state) => {
+      state.emotions = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(
@@ -105,4 +109,5 @@ const emotionsSlice = createSlice({
   },
 });
 
-export default emotionsSlice.reducer;
+export const { resetEmotions } = emotionSlice.actions;
+export default emotionSlice.reducer;

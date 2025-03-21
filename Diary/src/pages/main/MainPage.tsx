@@ -1,7 +1,15 @@
+import { useDispatch } from "react-redux";
 import EmotionCard from "./EmotionCard";
 import "./mainPage.scss";
+import { useEffect } from "react";
+import { resetPage } from "../../store/paginationSlice";
 
 const MainPage = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(resetPage()); // 메인 진입 시 감정 일기의 페이지네이션 초기화
+  }, [dispatch]);
+
   return (
     <div className="main-wrapper">
       <div className="title-content">

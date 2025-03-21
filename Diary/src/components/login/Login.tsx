@@ -2,9 +2,13 @@ import { useState } from "react";
 import { supabase } from "../../utils/supabaseClient";
 import { TextField, Button, Modal, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { resetPage } from "../../store/paginationSlice";
+import { resetEmotions } from "../../store/emotionSlice";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -27,6 +31,8 @@ const Login = () => {
     }
 
     navigate("/"); // 로그인 성공 시 메인 페이지로 이동
+    dispatch(resetPage()); // 로그인 할 경우 리덕스에 저장되어 있던 페이지네이션 초기화
+    dispatch(resetEmotions()); // 이전 유저 감정 초기화
   };
 
   // [비밀번호 찾기] 재설정 이메일 발송
