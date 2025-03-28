@@ -1,12 +1,12 @@
 // 대시보드 페이지
-import DateFilter from "./DateFilter";
-import DateEmotionChart from "./DateEmotionChart";
-import CompareChart from "./CompareChart";
-import WeeklyTrends from "./WeeklyTrends";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import { useEffect } from "react";
 import { fetchEmotions } from "../../store/emotionSlice";
+import DateFilter from "./chart/addon/DateFilter";
+import DateEmotionChart from "./chart/DateEmotionChart";
+import CompareChart from "./chart/CompareChart";
+import WeeklyTrendsChart from "./chart/WeeklyTrendsChart";
 
 const DashboardPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -24,7 +24,7 @@ const DashboardPage = () => {
       <DateFilter emotions={emotions} />
       <DateEmotionChart emotions={emotions} />
       <CompareChart emotions={emotions} />
-      <WeeklyTrends emotions={emotions} />
+      <WeeklyTrendsChart emotions={emotions} />
     </>
   );
 };

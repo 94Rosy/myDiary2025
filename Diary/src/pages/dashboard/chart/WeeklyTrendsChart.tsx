@@ -10,8 +10,8 @@ import {
   Bar,
   Cell,
 } from "recharts";
-import { RootState } from "../../store/store";
-import { EmotionEntry } from "../../store/emotionSlice";
+import { RootState } from "../../../store/store";
+import { EmotionEntry } from "../../../store/emotionSlice";
 
 interface Props {
   emotions: EmotionEntry[];
@@ -36,7 +36,7 @@ const WEEK_DAYS = [
   "일요일",
 ];
 
-const WeeklyTrends: React.FC<Props> = ({ emotions }) => {
+const WeeklyTrendsChart: React.FC<Props> = ({ emotions }) => {
   const selectedFilter = useSelector(
     (state: RootState) => state.filter.selectedFilter
   );
@@ -116,4 +116,4 @@ const WeeklyTrends: React.FC<Props> = ({ emotions }) => {
   );
 };
 
-export default WeeklyTrends;
+export default WeeklyTrendsChart;

@@ -9,8 +9,8 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import { RootState } from "../../store/store";
-import { EmotionEntry } from "../../store/emotionSlice";
+import { RootState } from "../../../store/store";
+import { EmotionEntry } from "../../../store/emotionSlice";
 
 interface Props {
   emotions: EmotionEntry[];

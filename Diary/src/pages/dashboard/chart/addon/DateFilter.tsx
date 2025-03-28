@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/store";
-import { setFilter } from "../../store/filterSlice";
+import { RootState } from "../../../../store/store";
+import { setFilter } from "../../../../store/filterSlice";
 import {
   Dialog,
   DialogTitle,
@@ -10,7 +10,7 @@ import {
   Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { EmotionEntry } from "../../store/emotionSlice";
+import { EmotionEntry } from "../../../../store/emotionSlice";
 
 interface Props {
   emotions: EmotionEntry[];

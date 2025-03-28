@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from "recharts";
-import { RootState } from "../../store/store";
-import { EmotionEntry } from "../../store/emotionSlice";
+import { RootState } from "../../../store/store";
+import { EmotionEntry } from "../../../store/emotionSlice";
 
 interface Props {
   emotions: EmotionEntry[];

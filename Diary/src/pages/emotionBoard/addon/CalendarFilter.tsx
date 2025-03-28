@@ -2,7 +2,7 @@ import Calendar from "react-calendar";
 import { EmotionEntry } from "../../../store/emotionSlice";
 import classNames from "classnames";
 import "react-calendar/dist/Calendar.css";
-import "./CalendarFilter.scss";
+import "./calendarFilter.scss";
 
 interface Props {
   selectedDate: Date | null;
@@ -43,7 +43,6 @@ const CalendarFilter: React.FC<Props> = ({
     <div className="calendar__filter">
       <Calendar
         calendarType="gregory"
-        view="month"
         showNeighboringMonth={false}
         onChange={(value) => onDateChange(value as Date)}
         value={selectedDate}

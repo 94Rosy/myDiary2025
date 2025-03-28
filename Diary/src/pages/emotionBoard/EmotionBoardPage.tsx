@@ -234,7 +234,7 @@ const EmotionBoard: React.FC = () => {
             </button>
           </span>
         </Tooltip>
-        <Tooltip title="날짜로 보기">
+        <Tooltip arrow title="날짜로 보기">
           <IconButton onClick={calendarOpen}>
             <CalendarMonthIcon />
           </IconButton>
