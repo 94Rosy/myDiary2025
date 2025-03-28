@@ -18,10 +18,14 @@ import {
   FormControl,
   InputLabel,
   Tooltip,
+  IconButton,
+  Popover,
 } from "@mui/material";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import classNames from "classnames";
 import { supabase } from "../../utils/supabaseClient";
 import Pagination from "../../components/common/Pagination"; // 페이지네이션 컴포넌트 추가
+import CalendarFilter from "./addon/CalendarFilter";
 import "./emotionBoard.scss";
 
 const emotionOptions = [
@@ -54,6 +58,8 @@ const EmotionBoard: React.FC = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isImageDeleted, setIsImageDeleted] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // 캘린더 팝오버 관련
 
   useEffect(() => {
     if (user) {
@@ -65,8 +71,19 @@ const EmotionBoard: React.FC = () => {
     setTotalPages(Math.ceil(emotions.length / PAGE_PER_COUNTS)); // 전체 페이지 개수 계산
   }, [emotions]);
 
+  // 날짜 필터링된 감정 목록
+  const filteredEmotions = selectedDate
+    ? emotions.filter((entry) => {
+        const year = selectedDate.getFullYear();
+        const month = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
+        const day = selectedDate.getDate().toString().padStart(2, "0");
+        const selected = `${year}-${month}-${day}`;
+        return entry.date === selected;
+      })
+    : emotions;
+
   // 현재 페이지에 해당하는 데이터만 가져오기
-  const paginatedEmotions = emotions.slice(
+  const paginatedEmotions = filteredEmotions.slice(
     (currentPage - 1) * PAGE_PER_COUNTS,
     currentPage * PAGE_PER_COUNTS
   );
@@ -186,6 +203,18 @@ const EmotionBoard: React.FC = () => {
     setIsImageDeleted(false);
   };
 
+  // 캘린더 팝오버 오픈
+  const calendarOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const open = Boolean(anchorEl);
+
+  // 캘린더 팝오버 닫기
+  const calendarClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <div className="emotion-board">
       <h2>
@@ -205,6 +234,26 @@ const EmotionBoard: React.FC = () => {
             </button>
           </span>
         </Tooltip>
+        <Tooltip title="날짜로 보기">
+          <IconButton onClick={calendarOpen}>
+            <CalendarMonthIcon />
+          </IconButton>
+        </Tooltip>
+        <Popover
+          open={open}
+          anchorEl={anchorEl}
+          onClose={calendarClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        >
+          <CalendarFilter
+            onDateChange={(date) => {
+              setSelectedDate(date);
+              calendarClose();
+            }}
+            selectedDate={selectedDate as Date}
+            emotionData={emotions}
+          />
+        </Popover>
       </h2>
 
       <div className="emotion-grid">

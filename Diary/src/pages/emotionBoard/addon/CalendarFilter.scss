@@ -1,0 +1,44 @@
+.react-calendar__tile {
+  position: relative;
+  height: 50px;
+
+  abbr {
+    position: relative;
+    z-index: 2; // 날짜 숫자가 항상 위에 오게
+  }
+
+  .dot {
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    z-index: 1;
+
+    &.joy {
+      background-color: #ffd700;
+    }
+
+    &.sad {
+      background-color: #4a90e2;
+    }
+
+    &.angry {
+      background-color: #ff3b30;
+    }
+
+    &.calm {
+      background-color: #a0e57c;
+    }
+
+    &.love {
+      background-color: #ff69b4;
+    }
+
+    &.surprise {
+      background-color: #ff8c00;
+    }
+  }
+}
