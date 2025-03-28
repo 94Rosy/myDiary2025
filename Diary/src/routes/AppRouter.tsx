@@ -6,7 +6,6 @@ import ResetPassword from "../components/login/ResetPassword";
 import MainPage from "../pages/main/MainPage";
 import DashboardPage from "../pages/dashboard/DashboardPage";
 import EmotionBoardPage from "../pages/emotionBoard/EmotionBoardPage";
-import ContactBoardPage from "../pages/contact/ContactBoardPage";
 
 const AppRouter = () => {
   return (
@@ -18,8 +17,7 @@ const AppRouter = () => {
         <Route path="/resetPassword" element={<ResetPassword />} />
         <Route path="/" element={<MainPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/emotionList" element={<EmotionBoardPage />} />
-        <Route path="/contact" element={<ContactBoardPage />} />
+        <Route path="/emotions" element={<EmotionBoardPage />} />
       </Routes>
     </Router>
   );

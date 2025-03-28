@@ -1,8 +1,8 @@
 import { useDispatch } from "react-redux";
-import EmotionCard from "./EmotionCard";
-import "./mainPage.scss";
 import { useEffect } from "react";
 import { resetPage } from "../../store/paginationSlice";
+import MainCardList from "./addon/MainCardList";
+import "./mainPage.scss";
 
 const MainPage = () => {
   const dispatch = useDispatch();
@@ -18,33 +18,17 @@ const MainPage = () => {
       </div>
 
       <div className="main-content">
-        <EmotionCard
-          cardType="yesterday"
-          mainText="어제의 감정"
-          subText="어제 나의 감정은 어땠을까?"
-        />
-        <EmotionCard
-          cardType="today"
-          mainText="오늘의 감정"
-          subText="오늘 나의 감정 한 줄 적기"
-        />
-        <EmotionCard
-          cardType="journal"
-          link="/emotionList"
+        <MainCardList
+          cardType="emotions"
+          link="/emotions"
           mainText="감정 다이어리"
           subText="마음의 조각들 보러 가기"
         />
-        <EmotionCard
+        <MainCardList
           cardType="dashboard"
           link="/dashboard"
           mainText="감정 차트"
           subText="마음의 조각을 모아서"
-        />
-        <EmotionCard
-          cardType="contact"
-          link="/contact"
-          mainText="오늘의 위로"
-          subText="위로가 필요할 때"
         />
       </div>
     </div>

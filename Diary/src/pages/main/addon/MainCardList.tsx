@@ -1,19 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import "./emotionCard.scss";
+import "../addon/mainCardList.scss";
 
 // 이미지 import
-import todayImg from "../../assets/today.jpg";
-import journalImg from "../../assets/journal.jpg";
-import dashboardImg from "../../assets/dashboard.jpg";
-import calendarImg from "../../assets/calendar.jpg";
+import emotionsImg from "../addon/img/emotions.jpg";
+import dashboardImg from "../addon/img/dashboard.jpg";
 
 // 카드별 이미지 매핑
 const images: { [key: string]: string } = {
-  today: todayImg,
-  journal: journalImg,
+  emotions: emotionsImg,
   dashboard: dashboardImg,
-  calendar: calendarImg,
 };
 
 interface EmotionCardProps {
@@ -24,7 +20,7 @@ interface EmotionCardProps {
   onClick?: () => void;
 }
 
-const EmotionCard = ({
+const MainCardList = ({
   cardType,
   mainText,
   subText,
@@ -61,4 +57,4 @@ const EmotionCard = ({
   );
 };
 
-export default EmotionCard;
+export default MainCardList;

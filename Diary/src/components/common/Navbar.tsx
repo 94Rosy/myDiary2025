@@ -83,7 +83,7 @@ const Navbar = () => {
           )}
 
           <li>
-            <Link to="/emotionList">💟감정 다이어리</Link>
+            <Link to="/emotions">💟감정 다이어리</Link>
           </li>
           <li>
             <Link to="/dashboard">📊감정 차트</Link>
@@ -98,6 +98,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-function resetEmotions(): any {
-  throw new Error("Function not implemented.");
-}

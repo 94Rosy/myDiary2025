@@ -33,27 +33,10 @@
 }
 
 .main-content {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: auto auto;
-  gap: 20px;
-  max-width: 800px;
-  width: 90%;
-  height: 100%;
+  display: flex;
+  align-items: center;
   justify-content: center;
-}
-
-/* 첫 번째 줄 (어제의 감정, 오늘의 감정, 감정 게시판) */
-.card:nth-child(1),
-.card:nth-child(2),
-.card:nth-child(3) {
-  grid-column: span 1;
-}
-
-/* 두 번째 줄 (대시보드, 캘린더) */
-.card:nth-child(4),
-.card:nth-child(5) {
-  grid-column: span 1;
+  gap: 20px;
 }
 
 /* 🌟 반응형 설정 */
