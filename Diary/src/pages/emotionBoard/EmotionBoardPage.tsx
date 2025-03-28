@@ -27,6 +27,7 @@ import { supabase } from "../../utils/supabaseClient";
 import Pagination from "../../components/common/Pagination"; // 페이지네이션 컴포넌트 추가
 import CalendarFilter from "./addon/CalendarFilter";
 import "./emotionBoard.scss";
+import TagFilter from "./addon/TagFilter";
 
 const emotionOptions = [
   "😊 기쁨",
@@ -59,6 +60,7 @@ const EmotionBoard: React.FC = () => {
   const [isImageDeleted, setIsImageDeleted] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // 캘린더 팝오버 관련
 
   useEffect(() => {
@@ -71,16 +73,25 @@ const EmotionBoard: React.FC = () => {
     setTotalPages(Math.ceil(emotions.length / PAGE_PER_COUNTS)); // 전체 페이지 개수 계산
   }, [emotions]);
 
-  // 날짜 필터링된 감정 목록
-  const filteredEmotions = selectedDate
-    ? emotions.filter((entry) => {
-        const year = selectedDate.getFullYear();
-        const month = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
-        const day = selectedDate.getDate().toString().padStart(2, "0");
-        const selected = `${year}-${month}-${day}`;
-        return entry.date === selected;
-      })
-    : emotions;
+  // 날짜, 태그 필터링된 감정 목록
+  const filteredEmotions = emotions.filter((entry) => {
+    let matchesDate = true;
+
+    // 날짜 필터: 선택된 날짜가 있을 경우, 해당 날짜와 일치하는 감정만 통과
+    if (selectedDate) {
+      const year = selectedDate.getFullYear();
+      const month = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
+      const day = selectedDate.getDate().toString().padStart(2, "0");
+      const selected = `${year}-${month}-${day}`;
+      matchesDate = entry.date === selected;
+    }
+
+    //  태그 필터: 선택된 감정 태그가 있을 경우, 해당 감정과 일치하는 항목만 통과
+    const matchesTag = selectedTag ? entry.emotion === selectedTag : true;
+
+    // 두 조건 모두 만족해야 필터링 결과에 포함
+    return matchesDate && matchesTag;
+  });
 
   // 현재 페이지에 해당하는 데이터만 가져오기
   const paginatedEmotions = filteredEmotions.slice(
@@ -234,6 +245,7 @@ const EmotionBoard: React.FC = () => {
             </button>
           </span>
         </Tooltip>
+        {/* 캘린더 필터 */}
         <Tooltip arrow title="날짜로 보기">
           <IconButton onClick={calendarOpen}>
             <CalendarMonthIcon />
@@ -254,6 +266,8 @@ const EmotionBoard: React.FC = () => {
             emotionData={emotions}
           />
         </Popover>
+        {/* 태그 필터 */}
+        <TagFilter selectedTag={selectedTag} setSelectedTag={setSelectedTag} />
       </h2>
 
       <div className="emotion-grid">

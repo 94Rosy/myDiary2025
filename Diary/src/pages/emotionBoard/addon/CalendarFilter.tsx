@@ -6,7 +6,7 @@ import "./calendarFilter.scss";
 
 interface Props {
   selectedDate: Date | null;
-  onDateChange: (date: Date) => void;
+  onDateChange: (date: Date | null) => void;
   emotionData: EmotionEntry[];
 }
 
@@ -39,12 +39,25 @@ const CalendarFilter: React.FC<Props> = ({
     return entry ? dotColors[entry.emotion] || "" : "";
   };
 
+  const handleDateChange = (date: Date) => {
+    // 날짜를 YYYY-MM-DD 포맷으로 비교
+    const clickedDate = date.toISOString().split("T")[0];
+    const selected = selectedDate?.toISOString().split("T")[0];
+
+    if (clickedDate === selected) {
+      // 같은 날짜를 다시 클릭하면 필터 리셋
+      onDateChange(null);
+    } else {
+      onDateChange(date);
+    }
+  };
+
   return (
     <div className="calendar__filter">
       <Calendar
         calendarType="gregory"
         showNeighboringMonth={false}
-        onChange={(value) => onDateChange(value as Date)}
+        onChange={(value) => handleDateChange(value as Date)}
         value={selectedDate}
         tileContent={({ date, view }) => {
           if (view === "month") {
