@@ -33,6 +33,22 @@ export const fetchUser = createAsyncThunk("auth/fetchUser", async () => {
   };
 });
 
+export const deleteUser = createAsyncThunk(
+  "auth/deleteUser",
+  async (user_id: string, { rejectWithValue }) => {
+    const { error } = await supabase
+      .from("users")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", user_id);
+
+    if (error) return rejectWithValue(error.message);
+
+    // auth signOut도 함께 처리
+    await supabase.auth.signOut();
+    return true;
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -53,6 +69,10 @@ const authSlice = createSlice({
     builder.addCase(fetchUser.fulfilled, (state, action) => {
       state.user = action.payload.user;
       state.name = action.payload.name;
+    });
+    builder.addCase(deleteUser.fulfilled, (state) => {
+      state.user = null;
+      state.name = null;
     });
   },
 });
