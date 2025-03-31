@@ -5,10 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { resetPage } from "../../store/paginationSlice";
 import { resetEmotions } from "../../store/emotionSlice";
+import { fetchUser } from "../../store/authSlice";
+import { AppDispatch } from "../../store/store";
 
 const Login = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,19 +22,43 @@ const Login = () => {
     e.preventDefault();
     setError("");
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data: loginData, error: loginError } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
+    if (loginError || !loginData.user) {
       setError("로그인 실패. 이메일 또는 비밀번호를 확인하세요.");
       return;
     }
 
-    navigate("/"); // 로그인 성공 시 메인 페이지로 이동
-    dispatch(resetPage()); // 로그인 할 경우 리덕스에 저장되어 있던 페이지네이션 초기화
-    dispatch(resetEmotions()); // 이전 유저 감정 초기화
+    const userId = loginData.user.id;
+
+    // delete_requests 테이블에서 탈퇴한 유저인지 확인
+    const { data: requestData, error: requestError } = await supabase
+      .from("delete_requests")
+      .select("id")
+      .eq("user_id", userId)
+      .maybeSingle(); // 없으면 null 반환됨
+
+    if (requestError) {
+      setError("서버 오류가 발생했습니다.");
+      return;
+    }
+
+    if (requestData) {
+      // 이미 탈퇴 요청한 유저일 경우
+      await supabase.auth.signOut();
+      setError("이미 탈퇴한 계정입니다. 6개월 뒤에 재가입 가능합니다.");
+      return;
+    }
+
+    // 정상 로그인 처리
+    dispatch(fetchUser());
+    dispatch(resetPage());
+    dispatch(resetEmotions());
+    navigate("/");
   };
 
   // [비밀번호 찾기] 재설정 이메일 발송

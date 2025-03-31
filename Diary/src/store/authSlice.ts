@@ -14,36 +14,67 @@ const initialState: AuthState = {
 };
 
 // Supabase에서 유저 정보 가져오기 (users 테이블에서 name도 가져옴)
-export const fetchUser = createAsyncThunk("auth/fetchUser", async () => {
-  const { data: authData } = await supabase.auth.getUser();
-  const user = authData?.user || null;
+export const fetchUser = createAsyncThunk(
+  "auth/fetchUser",
+  async (_, { rejectWithValue }) => {
+    const { data: authData, error: authError } = await supabase.auth.getUser();
+    const user = authData?.user || null;
 
-  if (!user) return { user: null, name: null };
+    if (!user) return { user: null, name: null };
 
-  // users 테이블에서 name 가져오기
-  const { data: userData } = await supabase
-    .from("users")
-    .select("name")
-    .eq("id", user.id)
-    .single();
+    const { data: userData, error } = await supabase
+      .from("users")
+      .select("name, deleted_at")
+      .eq("id", user.id)
+      .single();
 
-  return {
-    user,
-    name: userData?.name || "게스트", // 기본값 설정
-  };
-});
+    // 에러가 있거나 탈퇴한 유저인 경우 처리
+    if (error || userData?.deleted_at) {
+      // 바로 로그아웃 처리
+      await supabase.auth.signOut();
+      alert("탈퇴한 계정입니다. 6개월 후 재가입이 가능합니다.");
+      return rejectWithValue("탈퇴한 계정입니다");
+    }
+
+    return {
+      user,
+      name: userData?.name || "게스트",
+    };
+  }
+);
 
 export const deleteUser = createAsyncThunk(
   "auth/deleteUser",
-  async (user_id: string, { rejectWithValue }) => {
-    const { error } = await supabase
+  async (
+    {
+      user_id,
+      email,
+      reason,
+    }: { user_id: string; email: string; reason: string },
+    { rejectWithValue }
+  ) => {
+    // 1. users 테이블에 deleted_at 업데이트
+    const { error: updateError } = await supabase
       .from("users")
       .update({ deleted_at: new Date().toISOString() })
       .eq("id", user_id);
 
-    if (error) return rejectWithValue(error.message);
+    if (updateError) return rejectWithValue(updateError.message);
 
-    // auth signOut도 함께 처리
+    // 2. delete_requests 테이블에 탈퇴 요청 기록
+    const { error: insertError } = await supabase
+      .from("delete_requests")
+      .insert([
+        {
+          user_id,
+          email,
+          reason,
+        },
+      ]);
+
+    if (insertError) return rejectWithValue(insertError.message);
+
+    // 3. 로그아웃
     await supabase.auth.signOut();
     return true;
   }

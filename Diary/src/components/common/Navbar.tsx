@@ -1,11 +1,13 @@
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
-import { fetchUser, logoutUser } from "../../store/authSlice";
-import { useEffect } from "react";
+import { deleteUser, fetchUser, logoutUser } from "../../store/authSlice";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../utils/supabaseClient";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import DeleteAccountModal from "../leave/DeleteAccountModal";
 import { resetPage } from "../../store/paginationSlice";
+import { Button, IconButton, Popover } from "@mui/material";
 import "../../styles/navbar.scss";
 
 const Navbar = () => {
@@ -50,47 +52,109 @@ const Navbar = () => {
     navigate("/login"); // 로그인 페이지로 이동
   };
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const authOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const authClose = () => {
+    setAnchorEl(null);
+  };
+
+  const [openDelete, setOpenDelete] = useState(false);
+  const openHandler = () => setOpenDelete(true);
+  const closeHandler = () => setOpenDelete(false);
+
+  const handleDeleteAccount = async (finalReason: string, password: string) => {
+    if (!user) return;
+
+    // 비밀번호 확인 로직
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: user.email!,
+      password,
+    });
+
+    if (error || !data?.user) {
+      alert("비밀번호가 올바르지 않습니다.");
+      return;
+    }
+
+    // 탈퇴 처리 (Redux Thunk)
+    dispatch(
+      deleteUser({
+        user_id: user.id,
+        reason: finalReason || "",
+        email: user.user_metadata?.email || "",
+      })
+    );
+    setOpenDelete(false);
+    navigate("/"); // 메인으로 이동
+  };
+
   return (
     <header className="header">
       <div className="logo">
-        <Link to="/">🩷💛💚💙❤️</Link>
+        <Link to="/">🍒 My Diary</Link>
       </div>
       <nav>
         <ul>
           {user ? (
-            <li>
-              <span className="user-name">
-                {/* 🐥 {userName}님 <div>오늘의 마음은 어떠세요?</div> */}
-                🐥 {userName}님
-              </span>
-              <button className="logout-btn" onClick={handleLogout}>
-                🔓로그아웃
-              </button>
-            </li>
+            <>
+              <li>
+                <div>
+                  {userName}님 <span>환영합니다!</span>
+                  <IconButton onClick={authOpen}>
+                    <AdminPanelSettingsIcon />
+                  </IconButton>
+                </div>
+
+                <div>
+                  <Popover
+                    open={!!open}
+                    anchorEl={anchorEl}
+                    onClose={authClose}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "center",
+                    }}
+                  >
+                    <Button className="logout-btn" onClick={handleLogout}>
+                      로그아웃
+                    </Button>
+                    <Button className="leave-btn" onClick={openHandler}>
+                      회원 탈퇴
+                    </Button>
+                  </Popover>
+
+                  {openDelete && (
+                    <DeleteAccountModal
+                      onClose={closeHandler}
+                      onDelete={handleDeleteAccount}
+                    />
+                  )}
+                </div>
+              </li>
+              <li>
+                <Link to="/emotions">일기 쓰기</Link>
+              </li>
+              <li>
+                <Link to="/dashboard">감정 차트</Link>
+              </li>
+            </>
           ) : (
             <>
               <li>
                 <Link to="/signup" className="signup-btn">
-                  💡회원가입
+                  회원가입
                 </Link>
               </li>
               <li>
                 <Link to="/login" className="login-btn">
-                  🔒로그인
+                  로그인
                 </Link>
               </li>
             </>
           )}
-
-          <li>
-            <Link to="/emotions">💟감정 다이어리</Link>
-          </li>
-          <li>
-            <Link to="/dashboard">📊감정 차트</Link>
-          </li>
-          <li>
-            <Link to="/contact">🤗오늘의 위로</Link>
-          </li>
         </ul>
       </nav>
     </header>

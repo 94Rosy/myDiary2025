@@ -37,17 +37,31 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // 에러 초기화
     setError("");
     setEmailError("");
     setPasswordError("");
     setConfirmPasswordError("");
 
+    // 유효성 검사
     if (!validateEmail(email)) {
       setEmailError("⚠ 올바른 이메일 형식을 입력해주세요.");
       return;
     }
 
-    // users 테이블에서 이메일 중복 확인
+    const { data: deletedUser } = await supabase
+      .from("delete_requests")
+      .select("email")
+      .eq("email", email)
+      .single();
+
+    if (deletedUser) {
+      setEmailError(
+        "⚠ 이 이메일은 탈퇴 처리된 계정입니다. 6개월 후 재가입 가능합니다."
+      );
+      return;
+    }
+
     const { data: existingUser, error: fetchError } = await supabase
       .from("users")
       .select("email")
@@ -76,12 +90,8 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
       return;
     }
 
-    alert("😊 이메일 인증을 완료한 후 로그인해 주세요.");
-    localStorage.setItem("signupComplete", "true");
-    navigate("/");
-
-    // Supabase Auth에 회원가입 요청
-    const { data, error: signUpError } = await supabase.auth.signUp({
+    // 모든 검사 통과 후 회원가입 요청
+    const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { name } },
@@ -93,7 +103,9 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
       return;
     }
 
-    // Redux 상태 업데이트를 위해 fetchUser 호출
+    alert("😊 이메일 인증을 완료한 후 로그인해 주세요.");
+    localStorage.setItem("signupComplete", "true");
+    navigate("/");
     dispatch(fetchUser());
   };
 
