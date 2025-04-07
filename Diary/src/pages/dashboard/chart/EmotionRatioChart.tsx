@@ -3,6 +3,9 @@ import { useSelector } from "react-redux";
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from "recharts";
 import { RootState } from "../../../store/store";
 import { EmotionEntry } from "../../../store/emotionSlice";
+import { IconButton, Tooltip as Tooltips } from "@mui/material";
+import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
+import { useNavigate } from "react-router-dom";
 import "./emotionRatioChart.scss";
 
 interface Props {
@@ -10,15 +13,16 @@ interface Props {
 }
 
 const EMOTION_COLORS: Record<string, string> = {
-  "😊 기쁨": "#FFD700",
-  "😢 슬픔": "#4A90E2",
-  "😡 분노": "#FF3B30",
-  "😌 평온": "#A0E57C",
-  "🥰 사랑": "#FF69B4",
-  "😱 놀람": "#FF8C00",
+  "😊 기쁨": "#FFE07D",
+  "😢 슬픔": "#AFCBFF",
+  "😡 분노": "#FF9A8B",
+  "😌 평온": "#D4EDC9",
+  "🥰 사랑": "#FFB3D1",
+  "😱 놀람": "#FFD6A5",
 };
 
 const EmotionRatioChart: React.FC<Props> = ({ emotions }) => {
+  const navigate = useNavigate();
   const selectedFilter = useSelector(
     (state: RootState) => state.filter.selectedFilter
   );
@@ -73,29 +77,62 @@ const EmotionRatioChart: React.FC<Props> = ({ emotions }) => {
   }, [selectedFilter, user, emotions]);
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <PieChart>
-        <Pie
-          className="ratio__donut"
-          data={chartData}
-          dataKey="count"
-          nameKey="emotion"
-          cx="50%"
-          cy="50%"
-          outerRadius={100}
-          fill="#8884d8"
-          label={({ name, percentage }) => `${name} (${percentage}%)`}
-        >
-          {chartData.map((entry, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={EMOTION_COLORS[entry.emotion] || "#8884d8"}
-            />
-          ))}
-        </Pie>
-        <Tooltip formatter={(value, name) => [`${value}회`, `${name}`]} />
-      </PieChart>
-    </ResponsiveContainer>
+    <div className="cloud__chart">
+      {!chartData.length ? (
+        <>
+          <div className="main__text">도넛을 굽지 못 했어요!</div>
+          <div className="sub__text">
+            <span>도넛을 구우러 갈까요?</span>
+            <Tooltips title="등록하러 가기" placement="bottom-start" arrow>
+              <IconButton
+                size="small"
+                className="go__emotions"
+                onClick={() => navigate("/emotions")}
+                sx={{
+                  backgroundColor: "#fce624",
+                  color: "#4a4a4a",
+                  "&:hover": {
+                    backgroundColor: "#ebd723",
+                    color: "#fff",
+                    transition: "color 0.2s",
+                  },
+                }}
+              >
+                <ArrowOutwardIcon
+                  sx={{
+                    transition: "color 0.2s",
+                  }}
+                />
+              </IconButton>
+            </Tooltips>
+          </div>
+        </>
+      ) : (
+        <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
+            <Pie
+              className="ratio__donut"
+              data={chartData}
+              dataKey="count"
+              nameKey="emotion"
+              cx="50%"
+              cy="50%"
+              outerRadius={100}
+              fill="#8884d8"
+              label={({ name, percentage }) => `${name} (${percentage}%)`}
+            >
+              {chartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={EMOTION_COLORS[entry.emotion] || "#8884d8"}
+                />
+              ))}
+            </Pie>
+            <Tooltip formatter={(value, name) => [`${value}회`, `${name}`]} />
+          </PieChart>
+        </ResponsiveContainer>
+      )}
+    </div>
   );
 };
 

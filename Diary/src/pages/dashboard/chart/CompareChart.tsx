@@ -11,18 +11,22 @@ import {
 } from "recharts";
 import { RootState } from "../../../store/store";
 import { EmotionEntry } from "../../../store/emotionSlice";
+import { IconButton, Tooltip as Tooltips } from "@mui/material";
+import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
+import { useNavigate } from "react-router-dom";
+import "./compareChart.scss";
 
 interface Props {
   emotions: EmotionEntry[];
 }
 
 const EMOTION_COLORS: Record<string, string> = {
-  "😊 기쁨": "#FFD700",
-  "😢 슬픔": "#4A90E2",
-  "😡 분노": "#FF3B30",
-  "😌 평온": "#A0E57C",
-  "🥰 사랑": "#FF69B4",
-  "😱 놀람": "#FF8C00",
+  "😊 기쁨": "#FFE07D",
+  "😢 슬픔": "#AFCBFF",
+  "😡 분노": "#FF9A8B",
+  "😌 평온": "#D4EDC9",
+  "🥰 사랑": "#FFB3D1",
+  "😱 놀람": "#FFD6A5",
 };
 
 // 필터 값에 따라 문구 변경
@@ -34,6 +38,7 @@ const FILTER_LABELS: Record<string, string> = {
 };
 
 const CompareChart: React.FC<Props> = ({ emotions }) => {
+  const navigate = useNavigate();
   const selectedFilter = useSelector(
     (state: RootState) => state.filter.selectedFilter
   );
@@ -100,40 +105,77 @@ const CompareChart: React.FC<Props> = ({ emotions }) => {
   }, [selectedFilter, emotions]);
 
   return (
-    <div>
-      {mostEmotion && leastEmotion && (
-        <p
-          style={{ fontSize: "16px", marginBottom: "10px", fontWeight: "bold" }}
-        >
-          지난 <strong>{FILTER_LABELS[selectedFilter]}</strong> 동안 가장 많이
-          느낀 감정은
-          <span style={{ color: EMOTION_COLORS[mostEmotion] }}>
-            {" "}
-            {mostEmotion}
-          </span>
-          , 가장 적게 느낀 감정은
-          <span style={{ color: EMOTION_COLORS[leastEmotion] }}>
-            {" "}
-            {leastEmotion}
-          </span>
-        </p>
-      )}
+    <div className="compare__chart">
+      {!chartData.length ? (
+        <>
+          <div className="main__text">비교할 감정이 부족해요!</div>
+          <div className="sub__text">
+            <span>오늘부터 기록하러 갈까요?</span>
+            <Tooltips title="등록하러 가기" placement="bottom-start" arrow>
+              <IconButton
+                size="small"
+                className="go__emotions"
+                onClick={() => navigate("/emotions")}
+                sx={{
+                  backgroundColor: "#fce624",
+                  color: "#4a4a4a",
+                  "&:hover": {
+                    backgroundColor: "#ebd723",
+                    color: "#fff",
+                    transition: "color 0.2s",
+                  },
+                }}
+              >
+                <ArrowOutwardIcon
+                  sx={{
+                    transition: "color 0.2s",
+                  }}
+                />
+              </IconButton>
+            </Tooltips>
+          </div>
+        </>
+      ) : (
+        <div>
+          {mostEmotion && leastEmotion && (
+            <p
+              style={{
+                fontSize: "16px",
+                marginBottom: "10px",
+                fontWeight: "bold",
+              }}
+            >
+              지난 <strong>{FILTER_LABELS[selectedFilter]}</strong> 동안 가장
+              많이 느낀 감정은
+              <span style={{ color: EMOTION_COLORS[mostEmotion] }}>
+                {" "}
+                {mostEmotion}
+              </span>
+              , 가장 적게 느낀 감정은
+              <span style={{ color: EMOTION_COLORS[leastEmotion] }}>
+                {" "}
+                {leastEmotion}
+              </span>
+            </p>
+          )}
 
-      <ResponsiveContainer width={820} height={250}>
-        <BarChart data={chartData} layout="vertical">
-          <XAxis type="number" />
-          <YAxis dataKey="emotion" type="category" />
-          <Tooltip formatter={(value, name) => [`${name}: ${value}회`]} />
-          <Bar dataKey="count">
-            {chartData.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={EMOTION_COLORS[entry.emotion] || "#8884d8"}
-              />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+          <ResponsiveContainer width={820} height={250}>
+            <BarChart data={chartData} layout="vertical">
+              <XAxis type="number" />
+              <YAxis dataKey="emotion" type="category" />
+              <Tooltip formatter={(value, name) => [`${name}: ${value}회`]} />
+              <Bar dataKey="count">
+                {chartData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={EMOTION_COLORS[entry.emotion] || "#8884d8"}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
     </div>
   );
 };
