@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { fetchUser } from "../../store/authSlice";
+import "./signup2.scss";
 
 interface Props {
   prevStep: () => void;
@@ -110,60 +111,62 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
   };
 
   return (
-    <div className="auth-container">
+    <div className="signup__step2">
       <h2>회원가입</h2>
 
-      <form onSubmit={handleSignup}>
-        {/* 이메일 입력 */}
-        <TextField
-          label="이메일 입력"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          error={!!emailError}
-          helperText={emailError}
-        />
+      <div className="sign__box">
+        <form onSubmit={handleSignup}>
+          <span>이메일</span>
+          <TextField
+            label="이메일 입력"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            error={!!emailError}
+            helperText={emailError}
+          />
 
-        <TextField
-          label="닉네임"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+          <span>닉네임</span>
+          <TextField
+            label="닉네임 입력"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
 
-        {/* 비밀번호 입력 */}
-        <TextField
-          label="비밀번호 입력"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          error={!!passwordError}
-          helperText={passwordError}
-        />
+          <span>비밀번호</span>
+          <TextField
+            label="비밀번호 입력"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            error={!!passwordError}
+            helperText={passwordError}
+          />
 
-        {/* 비밀번호 재입력 */}
-        <TextField
-          label="비밀번호 재입력"
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-          error={!!confirmPasswordError}
-          helperText={confirmPasswordError}
-        />
+          <span>비밀번호</span>
+          <TextField
+            label="비밀번호 재입력"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            error={!!confirmPasswordError}
+            helperText={confirmPasswordError}
+          />
 
-        {error && <p className="error-msg">{error}</p>}
-
-        <div className="button-container">
-          <Button variant="outlined" onClick={() => prevStep()}>
-            이전으로
-          </Button>
-          <Button type="submit" variant="contained" color="primary">
-            회원가입
-          </Button>
-        </div>
-      </form>
+          {error && <p className="error__msg">{error}</p>}
+          <div className="button__container">
+            <Button variant="outlined" onClick={() => prevStep()}>
+              이전으로
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              회원가입
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

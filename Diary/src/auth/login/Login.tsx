@@ -7,6 +7,7 @@ import { resetPage } from "../../store/paginationSlice";
 import { resetEmotions } from "../../store/emotionSlice";
 import { fetchUser } from "../../store/authSlice";
 import { AppDispatch } from "../../store/store";
+import "./login.scss";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -80,33 +81,40 @@ const Login = () => {
   };
 
   return (
-    <div className="auth-container">
+    <div className="login__wrapper">
       <h2>로그인</h2>
 
-      <form onSubmit={handleLogin}>
-        <TextField
-          label="이메일"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          margin="normal"
-        />
-        <TextField
-          label="비밀번호"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          margin="normal"
-        />
-        {error && <p className="error-msg">{error}</p>}
-        <Button type="submit" variant="contained">
-          로그인
-        </Button>
-      </form>
+      <div className="sign__box">
+        <form onSubmit={handleLogin}>
+          <span>이메일</span>
+          <TextField
+            label="이메일 입력"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            margin="normal"
+          />
 
-      <p className="forgot-password">
+          <span>비밀번호</span>
+          <TextField
+            label="비밀번호 입력"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            margin="normal"
+          />
+          <div className="button__container">
+            {error && <p className="error__msg">{error}</p>}
+            <Button type="submit" variant="contained">
+              로그인
+            </Button>
+          </div>
+        </form>
+      </div>
+
+      <p className="forgot__password">
         <Button onClick={() => setShowForgotPassword(true)}>
           비밀번호를 잊으셨나요?
         </Button>
@@ -133,7 +141,7 @@ const Login = () => {
             비밀번호 재설정 링크 보내기
           </Button>
 
-          {resetMessage && <p className="info-msg">{resetMessage}</p>}
+          {resetMessage && <p className="info__msg">{resetMessage}</p>}
         </Box>
       </Modal>
     </div>
