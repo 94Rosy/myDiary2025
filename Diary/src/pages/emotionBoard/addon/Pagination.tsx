@@ -1,10 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/store";
-import { setPage } from "../../store/paginationSlice";
 import { Button } from "@mui/material";
 import classNames from "classnames";
-import "../../styles/pagination.scss";
+import { RootState } from "../../../store/store";
+import { setPage } from "../../../store/paginationSlice";
+import "./pagination.scss";
 
 interface Props {
   totalPages: number;

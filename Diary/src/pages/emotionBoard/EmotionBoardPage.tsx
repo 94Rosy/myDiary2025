@@ -27,10 +27,10 @@ import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import DeleteIcon from "@mui/icons-material/Delete";
 import classNames from "classnames";
 import { supabase } from "../../utils/supabaseClient";
-import Pagination from "../../components/common/Pagination"; // 페이지네이션 컴포넌트 추가
 import CalendarFilter from "./addon/CalendarFilter";
 import TagFilter from "./addon/TagFilter";
 import "./emotionBoard.scss";
+import Pagination from "./addon/Pagination";
 
 const emotionOptions = [
   "😊 기쁨",

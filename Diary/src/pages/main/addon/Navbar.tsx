@@ -1,15 +1,15 @@
 import { useSelector, useDispatch } from "react-redux";
-import { RootState, AppDispatch } from "../../store/store";
-import { deleteUser, fetchUser, logoutUser } from "../../store/authSlice";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../../utils/supabaseClient";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import DeleteAccountModal from "../leave/DeleteAccountModal";
-import { resetPage } from "../../store/paginationSlice";
 import { Button, IconButton, Popover } from "@mui/material";
-import "../../styles/navbar.scss";
-import { resetEmotions } from "../../store/emotionSlice";
+import { AppDispatch, RootState } from "../../../store/store";
+import { deleteUser, fetchUser, logoutUser } from "../../../store/authSlice";
+import { supabase } from "../../../utils/supabaseClient";
+import { resetEmotions } from "../../../store/emotionSlice";
+import { resetPage } from "../../../store/paginationSlice";
+import DeleteAccountModal from "../../../auth/leave/DeleteAccountModal";
+import "./navbar.scss";
 
 const Navbar = () => {
   const user = useSelector((state: RootState) => state.auth.user);

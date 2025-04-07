@@ -1,4 +1,4 @@
-@import "global";
+@import "../../../styles/global.scss";
 
 /* 헤더 스타일 */
 .header {
@@ -11,7 +11,7 @@
   padding: 0 20px;
 
   .logo {
-    background-image: url("../components/common/logo.png");
+    background-image: url("./img/logo.png");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
