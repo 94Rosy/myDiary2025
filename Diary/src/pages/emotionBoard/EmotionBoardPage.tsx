@@ -22,8 +22,8 @@ import {
   Popover,
 } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import NoteAddIcon from "@mui/icons-material/NoteAdd";
-import NoteAltIcon from "@mui/icons-material/NoteAlt";
+import CreateIcon from "@mui/icons-material/Create";
+import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import DeleteIcon from "@mui/icons-material/Delete";
 import classNames from "classnames";
 import { supabase } from "../../utils/supabaseClient";
@@ -256,7 +256,7 @@ const EmotionBoard: React.FC = () => {
                 },
               }}
             >
-              <NoteAddIcon
+              <CreateIcon
                 sx={{
                   transition: "color 0.2s",
                 }}
@@ -329,7 +329,7 @@ const EmotionBoard: React.FC = () => {
                         },
                       }}
                     >
-                      <NoteAltIcon
+                      <AutoFixHighIcon
                         sx={{
                           transition: "color 0.2s",
                         }}
