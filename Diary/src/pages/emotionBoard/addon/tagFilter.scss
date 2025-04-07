@@ -15,5 +15,10 @@
       color: #f5f5f5;
       font-weight: 700;
     }
+
+    &:hover {
+      background-color: rgb(248, 162, 179);
+      transition: transform 0.3s;
+    }
   }
 }

@@ -21,14 +21,14 @@ const MainPage = () => {
         <MainCardList
           cardType="emotions"
           link="/emotions"
-          mainText="감정 다이어리"
-          subText="마음의 조각들 보러 가기"
+          mainText="My Mood"
+          subText="일기 기록하러 가기"
         />
         <MainCardList
           cardType="dashboard"
           link="/dashboard"
-          mainText="감정 차트"
-          subText="마음의 조각을 모아서"
+          mainText="Mood Trends"
+          subText="기록 차트 보러 가기"
         />
       </div>
     </div>
