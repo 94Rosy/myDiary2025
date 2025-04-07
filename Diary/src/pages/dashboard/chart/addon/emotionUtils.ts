@@ -19,7 +19,7 @@ export function getCloudWordEmo(emotions: EmotionEntry[]): Word[] {
     const words = cleaned.split(/\s+/); // 공백으로 단어 분리
 
     words.forEach((word) => {
-      if (word.length < 3) return; // 3자 이상인 단어만 보여주기
+      if (word.length < 2) return; // 2자 이상인 단어만 보여주기
       wordMap[word] = (wordMap[word] || 0) + 1; // wordMap[word]가 없으면 0으로 시작 있으면 +1
     });
   });
@@ -27,6 +27,6 @@ export function getCloudWordEmo(emotions: EmotionEntry[]): Word[] {
   // 정제된 결과 리턴
   return Object.entries(wordMap).map(([text, count]) => ({
     text,
-    size: 15 + count * 5, // 등장 횟수에 따라 폰트 크기 설정
+    size: 5 + count * 15, // 등장 횟수에 따라 폰트 크기 설정
   }));
 }

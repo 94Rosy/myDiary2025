@@ -9,19 +9,39 @@ import WeeklyTrendsChart from "./chart/WeeklyTrendsChart";
 import EmotionRatioChart from "./chart/EmotionRatioChart";
 import KeywordCloudChart from "./chart/KeywordCloudChart";
 import { getCloudWordEmo } from "./chart/addon/emotionUtils";
+import { isWithinInterval, subDays } from "date-fns";
 import "./dashboardPage.scss";
 
 const DashboardPage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const emotions = useSelector((state: RootState) => state.emotions.emotions); // Redux에서 감정 데이터 가져오기
+  const filters = useSelector(
+    (state: RootState) => state.filter.selectedFilter
+  );
+
+  const today = new Date();
+  let startDate = subDays(today, 7); // 기본값
+
+  if (filters === "month") {
+    startDate = subDays(today, 30); // 30일 전 날짜
+  } else if (filters === "3months") {
+    startDate = subDays(today, 90);
+  } else if (filters === "6months") {
+    startDate = subDays(today, 180);
+  }
+
+  const filteredEmo = emotions.filter((entry) => {
+    const entryDate = new Date(entry.date);
+    return isWithinInterval(entryDate, { start: startDate, end: today }); // startDate와 오늘 사이의 날짜를 저장
+  });
+
+  const wordCloudEmo = getCloudWordEmo(filteredEmo);
 
   useEffect(() => {
     if (!emotions.length) {
       dispatch(fetchEmotions());
     }
   }, [dispatch, emotions.length]);
-
-  const wordCloudFromNotes = getCloudWordEmo(emotions);
 
   return (
     <div className="dashboard__page">
@@ -45,7 +65,7 @@ const DashboardPage = () => {
           <section className="cloud__wrapper">
             <div className="title">핵심 키워드 살펴보기</div>
             <div className="cloud__chart">
-              <KeywordCloudChart words={wordCloudFromNotes} />
+              <KeywordCloudChart words={wordCloudEmo} />
             </div>
           </section>
         </div>
