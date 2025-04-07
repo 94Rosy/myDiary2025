@@ -7,6 +7,8 @@ import DateFilter from "./chart/addon/DateFilter";
 import CompareChart from "./chart/CompareChart";
 import WeeklyTrendsChart from "./chart/WeeklyTrendsChart";
 import EmotionRatioChart from "./chart/EmotionRatioChart";
+import KeywordCloudChart from "./chart/KeywordCloudChart";
+import { getCloudWordEmo } from "./chart/addon/emotionUtils";
 import "./dashboardPage.scss";
 
 const DashboardPage = () => {
@@ -18,6 +20,8 @@ const DashboardPage = () => {
       dispatch(fetchEmotions());
     }
   }, [dispatch, emotions.length]);
+
+  const wordCloudFromNotes = getCloudWordEmo(emotions);
 
   return (
     <div className="dashboard__page">
@@ -41,8 +45,7 @@ const DashboardPage = () => {
           <section className="cloud__wrapper">
             <div className="title">핵심 키워드 살펴보기</div>
             <div className="cloud__chart">
-              <CompareChart emotions={emotions} />
-              {/* <KeywordCloudChart emotions={emotions} /> */}
+              <KeywordCloudChart words={wordCloudFromNotes} />
             </div>
           </section>
         </div>
