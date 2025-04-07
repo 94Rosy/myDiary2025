@@ -104,7 +104,7 @@ const Navbar = () => {
           {user ? (
             <>
               <li>
-                {userName}님 <span>환영합니다!</span>
+                <span>{userName}</span>님 환영합니다!
                 <IconButton onClick={authOpen}>
                   <ManageAccountsIcon />
                 </IconButton>

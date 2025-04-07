@@ -32,16 +32,22 @@
       margin: 0;
       align-items: center;
       height: 100%;
+      font-size: 14px;
+      font-weight: 500;
 
       li {
         display: flex;
         align-items: center;
         position: relative;
 
+        span {
+          padding-right: 3px;
+          font-weight: 700;
+        }
+
         a {
           text-decoration: none;
-          font-size: 14px;
-          font-weight: 500;
+
           color: var(--text-color);
           padding: 10px 15px;
           border-radius: 8px;
