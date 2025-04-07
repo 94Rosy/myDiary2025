@@ -22,12 +22,15 @@ import {
   Popover,
 } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import NoteAddIcon from "@mui/icons-material/NoteAdd";
+import NoteAltIcon from "@mui/icons-material/NoteAlt";
+import DeleteIcon from "@mui/icons-material/Delete";
 import classNames from "classnames";
 import { supabase } from "../../utils/supabaseClient";
 import Pagination from "../../components/common/Pagination"; // 페이지네이션 컴포넌트 추가
 import CalendarFilter from "./addon/CalendarFilter";
-import "./emotionBoard.scss";
 import TagFilter from "./addon/TagFilter";
+import "./emotionBoard.scss";
 
 const emotionOptions = [
   "😊 기쁨",
@@ -228,27 +231,59 @@ const EmotionBoard: React.FC = () => {
 
   return (
     <div className="emotion-board">
-      <h2>
+      <div className="util__wrapper">
         <Tooltip
-          title={!isToday ? "" : "🩷 오늘의 감정은 이미 등록되어 있어요 🩷"}
-          placement="bottom-start"
-          arrow
+          title={!isToday ? "기록하기" : "오늘의 감정은 이미 등록되어 있어요!"}
+          placement="top"
         >
           <span>
-            <button
+            <IconButton
               className={classNames("add-button", { disabled: isToday })}
               onClick={() => openModal()}
               disabled={isToday}
+              sx={{
+                marginRight: "8px",
+                backgroundColor: "#b3d4f3",
+                color: "#4a4a4a",
+                "&:hover": {
+                  backgroundColor: "#a4c5e4",
+                  color: "#fff",
+                  transition: "color 0.2s",
+                },
+              }}
             >
-              등록
-            </button>
+              <NoteAddIcon
+                sx={{
+                  transition: "color 0.2s",
+                }}
+              />
+            </IconButton>
           </span>
         </Tooltip>
         {/* 캘린더 필터 */}
-        <Tooltip arrow title="날짜로 보기">
-          <IconButton onClick={calendarOpen}>
-            <CalendarMonthIcon />
-          </IconButton>
+        <Tooltip title="날짜로 보기" placement="top">
+          <span>
+            <IconButton
+              onClick={calendarOpen}
+              sx={{
+                width: "36px",
+                height: "36px",
+                backgroundColor: "#cab4de",
+                color: "#4a4a4a",
+                "&:hover": {
+                  backgroundColor: "#b898d6",
+                  color: "#fff",
+                  transition: "color 0.2s",
+                },
+              }}
+            >
+              <CalendarMonthIcon
+                sx={{
+                  transition: "color 0.2s",
+                }}
+              />
+            </IconButton>
+          </span>
         </Tooltip>
         <Popover
           open={open}
@@ -267,7 +302,7 @@ const EmotionBoard: React.FC = () => {
         </Popover>
         {/* 태그 필터 */}
         <TagFilter selectedTag={selectedTag} setSelectedTag={setSelectedTag} />
-      </h2>
+      </div>
 
       <div className="emotion-grid">
         {paginatedEmotions.map((entry) => (
@@ -275,18 +310,52 @@ const EmotionBoard: React.FC = () => {
             <div className="emotion-header">
               {entry.emotion}
               <div className="card-buttons">
-                <button
-                  className="edit-button"
-                  onClick={() => openModal(entry)}
-                >
-                  수정
-                </button>
-                <button
-                  className="delete-button"
-                  onClick={() => handleDelete(entry.id)}
-                >
-                  삭제
-                </button>
+                <Tooltip title="수정하기" placement="bottom">
+                  <span>
+                    <IconButton
+                      className="edit-button"
+                      onClick={() => openModal(entry)}
+                      sx={{
+                        backgroundColor: "#cbe0c3",
+                        color: "#4a4a4a",
+                        "&:hover": {
+                          backgroundColor: "#b2cfa4",
+                          color: "#fff",
+                          transition: "color 0.2s",
+                        },
+                      }}
+                    >
+                      <NoteAltIcon
+                        sx={{
+                          transition: "color 0.2s",
+                        }}
+                      />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+                <Tooltip title="지우기" placement="bottom">
+                  <span>
+                    <IconButton
+                      className="delete-button"
+                      onClick={() => handleDelete(entry.id)}
+                      sx={{
+                        backgroundColor: "#e8b4b8",
+                        color: "#4a4a4a",
+                        "&:hover": {
+                          backgroundColor: "#e89ca4",
+                          color: "#fff",
+                          transition: "color 0.2s",
+                        },
+                      }}
+                    >
+                      <DeleteIcon
+                        sx={{
+                          transition: "color 0.2s",
+                        }}
+                      />
+                    </IconButton>
+                  </span>
+                </Tooltip>
               </div>
             </div>
             <div className="emotion-body">

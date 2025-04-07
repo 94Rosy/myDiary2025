@@ -1,35 +1,29 @@
 @mixin buttons {
-  padding: 6px 10px;
-  font-size: 16px;
-  border: none;
-  border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s;
+  border: 1px solid rgba(104, 104, 104, 0.05);
+  box-shadow: 0 1px 3px rgba(175, 174, 174, 0.08);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
 }
 
 .emotion-board {
   text-align: center;
-  padding: 20px;
+  padding: 30px 20px;
 
-  .add-button {
-    margin-left: 10px;
-    padding: 10px 14px;
-    font-size: 16px;
-    border: none;
-    background-color: #6b8ebd;
-    color: #f8f9fa;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
+  .util__wrapper {
+    align-items: center;
+    justify-content: center;
+    height: 120px;
 
-    &:hover {
-      background-color: #6b8ebd;
-    }
+    .add-button {
+      @include buttons;
 
-    &.disabled {
-      background-color: #b0b0b0;
-      cursor: not-allowed;
-      opacity: 0.6;
+      &.disabled {
+        background-color: #b0b0b0;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
     }
   }
 
@@ -39,7 +33,6 @@
     gap: 20px;
     justify-content: center;
     align-items: center;
-    width: 1500px;
     margin: 0 auto;
 
     .emotion-card {
@@ -70,24 +63,9 @@
           display: flex;
           gap: 8px;
 
-          .edit-button {
-            @include buttons;
-            background-color: #96d16f;
-            color: #f8f9fa;
-
-            &:hover {
-              background-color: #83bb63;
-            }
-          }
-
+          .edit-button,
           .delete-button {
             @include buttons;
-            background-color: #d97777;
-            color: #f8f9fa;
-
-            &:hover {
-              background-color: #c76666;
-            }
           }
         }
       }

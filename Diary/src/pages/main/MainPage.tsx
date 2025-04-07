@@ -13,8 +13,8 @@ const MainPage = () => {
   return (
     <div className="main-wrapper">
       <div className="title-content">
-        <div>마음의 조각</div>
-        <div>매일매일 나의 마음은 어떤 모양일까?</div>
+        <div>EmotionLog</div>
+        <div>Capture your feelings, track your mind!</div>
       </div>
 
       <div className="main-content">

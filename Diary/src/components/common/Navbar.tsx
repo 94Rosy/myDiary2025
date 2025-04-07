@@ -4,7 +4,7 @@ import { deleteUser, fetchUser, logoutUser } from "../../store/authSlice";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../utils/supabaseClient";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import DeleteAccountModal from "../leave/DeleteAccountModal";
 import { resetPage } from "../../store/paginationSlice";
 import { Button, IconButton, Popover } from "@mui/material";
@@ -33,6 +33,7 @@ const Navbar = () => {
 
     return () => {
       authListener?.subscription.unsubscribe();
+      authClose();
     };
   }, [dispatch, navigate]);
 
@@ -93,21 +94,18 @@ const Navbar = () => {
 
   return (
     <header className="header">
-      <div className="logo">
-        <Link to="/">🍒 My Diary</Link>
-      </div>
+      <Link to="/">
+        <div className="logo" />
+      </Link>
       <nav>
         <ul>
           {user ? (
             <>
               <li>
-                <div>
-                  {userName}님 <span>환영합니다!</span>
-                  <IconButton onClick={authOpen}>
-                    <AdminPanelSettingsIcon />
-                  </IconButton>
-                </div>
-
+                {userName}님 <span>환영합니다!</span>
+                <IconButton onClick={authOpen}>
+                  <ManageAccountsIcon />
+                </IconButton>
                 <div>
                   <Popover
                     open={!!open}
@@ -135,22 +133,22 @@ const Navbar = () => {
                 </div>
               </li>
               <li>
-                <Link to="/emotions">일기 쓰기</Link>
+                <Link to="/emotions">My Mood</Link>
               </li>
               <li>
-                <Link to="/dashboard">감정 차트</Link>
+                <Link to="/dashboard">Mood Trends</Link>
               </li>
             </>
           ) : (
             <>
               <li>
-                <Link to="/signup" className="signup-btn">
-                  회원가입
+                <Link to="/login" className="login-btn">
+                  로그인
                 </Link>
               </li>
               <li>
-                <Link to="/login" className="login-btn">
-                  로그인
+                <Link to="/signup" className="signup-btn">
+                  회원가입
                 </Link>
               </li>
             </>
