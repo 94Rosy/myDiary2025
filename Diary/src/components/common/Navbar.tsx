@@ -9,6 +9,7 @@ import DeleteAccountModal from "../leave/DeleteAccountModal";
 import { resetPage } from "../../store/paginationSlice";
 import { Button, IconButton, Popover } from "@mui/material";
 import "../../styles/navbar.scss";
+import { resetEmotions } from "../../store/emotionSlice";
 
 const Navbar = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -48,6 +49,7 @@ const Navbar = () => {
     // 로그아웃 후 세션 강제 갱신하여 즉시 반영
     await supabase.auth.getSession();
 
+    dispatch(resetEmotions()); // 감정 기록 초기화
     dispatch(logoutUser()); // Redux 상태 업데이트
     dispatch(resetPage()); // 로그아웃 할 경우 리덕스에 저장되어 있던 페이지네이션 초기화
     navigate("/login"); // 로그인 페이지로 이동
