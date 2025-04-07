@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "../../utils/supabaseClient";
 import { TextField, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import "./resetPassword.scss";
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
@@ -71,44 +72,50 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="auth-container">
+    <div className="reset__wrapper">
       <h2>비밀번호 재설정</h2>
       <p>새 비밀번호를 입력하고 변경하세요.</p>
 
-      <form onSubmit={handleResetPassword}>
-        {/* 기존 비밀번호와 동일한 경우 에러 메시지로 표시 */}
-        <TextField
-          label="새 비밀번호"
-          type="password"
-          value={newPassword}
-          onChange={(e) => {
-            setNewPassword(e.target.value);
-            setPasswordError(""); // 입력 시 에러 메시지 초기화
-          }}
-          required
-          margin="normal"
-          error={!!passwordError}
-          helperText={passwordError}
-        />
+      <div className="sign__box">
+        <form onSubmit={handleResetPassword}>
+          {/* 기존 비밀번호와 동일한 경우 에러 메시지로 표시 */}
+          <span>새 비밀번호</span>
 
-        {/* 비밀번호 확인 필드 */}
-        <TextField
-          label="새 비밀번호 확인"
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-          margin="normal"
-          error={!!error}
-          helperText={error}
-        />
+          <TextField
+            label="새 비밀번호 입력"
+            type="password"
+            value={newPassword}
+            onChange={(e) => {
+              setNewPassword(e.target.value);
+              setPasswordError(""); // 입력 시 에러 메시지 초기화
+            }}
+            required
+            margin="normal"
+            error={!!passwordError}
+            helperText={passwordError}
+          />
 
-        {successMessage && <p className="success-msg">{successMessage}</p>}
+          {/* 비밀번호 확인 필드 */}
+          <span>새 비밀번호 재입력</span>
+          <TextField
+            label="새 비밀번호 재입력"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            margin="normal"
+            error={!!error}
+            helperText={error}
+          />
 
-        <Button type="submit" variant="contained">
-          비밀번호 변경
-        </Button>
-      </form>
+          <div className="button__container">
+            <Button type="submit" variant="contained">
+              비밀번호 변경
+            </Button>
+          </div>
+          {successMessage && <p className="success-msg">{successMessage}</p>}
+        </form>
+      </div>
     </div>
   );
 };

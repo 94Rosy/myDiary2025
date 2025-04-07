@@ -156,7 +156,6 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
             helperText={confirmPasswordError}
           />
 
-          {error && <p className="error__msg">{error}</p>}
           <div className="button__container">
             <Button variant="outlined" onClick={() => prevStep()}>
               이전으로
@@ -165,6 +164,7 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
               회원가입
             </Button>
           </div>
+          {error && <p className="error__msg">{error}</p>}
         </form>
       </div>
     </div>

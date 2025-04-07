@@ -80,10 +80,10 @@ const SignupStep1: React.FC<Props> = ({ onNext }) => {
         />
       </div>
 
-      {error && <p className="error__msg">{error}</p>}
       <Button variant="contained" onClick={handleNext} fullWidth>
         다음 단계
       </Button>
+      {error && <p className="error__msg">{error}</p>}
     </div>
   );
 };

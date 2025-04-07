@@ -105,12 +105,13 @@ const Login = () => {
             required
             margin="normal"
           />
+
           <div className="button__container">
-            {error && <p className="error__msg">{error}</p>}
             <Button type="submit" variant="contained">
               로그인
             </Button>
           </div>
+          {error && <p className="error__msg">{error}</p>}
         </form>
       </div>
 
