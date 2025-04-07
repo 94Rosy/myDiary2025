@@ -9,16 +9,15 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { EmotionEntry } from "../../../../store/emotionSlice";
-
+import classNames from "classnames";
+import "./datefilter.scss";
 interface Props {
   emotions: EmotionEntry[];
 }
 
 const DateFilter: React.FC<Props> = ({ emotions }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const selectedFilter = useSelector(
     (state: RootState) => state.filter.selectedFilter
   );
@@ -98,12 +97,14 @@ const DateFilter: React.FC<Props> = ({ emotions }) => {
   };
 
   return (
-    <div>
-      <div className="filter-buttons">
+    <div className="filter__wrapper">
+      <div className="buttons__wrapper">
         {["week", "month", "3months", "6months"].map((filter) => (
-          <button
+          <Button
             key={filter}
-            className={selectedFilter === filter ? "active" : ""}
+            className={classNames("filter__buttons", {
+              active: selectedFilter === filter,
+            })}
             onClick={() =>
               handleFilterChange(
                 filter as "week" | "month" | "3months" | "6months"
@@ -117,7 +118,7 @@ const DateFilter: React.FC<Props> = ({ emotions }) => {
               : filter === "3months"
               ? "3개월 보기"
               : "6개월 보기"}
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -127,12 +128,7 @@ const DateFilter: React.FC<Props> = ({ emotions }) => {
           <p>{modalMessage}</p>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => navigate("/contact")} color="primary">
-            마음 풀러 가기
-          </Button>
-          <Button onClick={() => setOpenModal(false)} color="secondary">
-            확인
-          </Button>
+          <Button onClick={() => setOpenModal(false)}>확인</Button>
         </DialogActions>
       </Dialog>
     </div>

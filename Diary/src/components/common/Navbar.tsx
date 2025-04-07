@@ -135,7 +135,7 @@ const Navbar = () => {
                 </div>
               </li>
               <li>
-                <Link to="/emotions">My Mood</Link>
+                <Link to="/emotions">My Moods</Link>
               </li>
               <li>
                 <Link to="/dashboard">Mood Trends</Link>

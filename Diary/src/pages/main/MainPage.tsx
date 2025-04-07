@@ -21,7 +21,7 @@ const MainPage = () => {
         <MainCardList
           cardType="emotions"
           link="/emotions"
-          mainText="My Mood"
+          mainText="My Moods"
           subText="일기 기록하러 가기"
         />
         <MainCardList

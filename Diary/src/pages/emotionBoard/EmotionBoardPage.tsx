@@ -231,6 +231,10 @@ const EmotionBoard: React.FC = () => {
 
   return (
     <div className="emotion-board">
+      <div className="page__header">
+        <h2 className="main__title">My Moods</h2>
+        <p className="sub__title">매일 기록했던 감정 돌아보기</p>
+      </div>
       <div className="util__wrapper">
         <Tooltip
           title={!isToday ? "기록하기" : "오늘의 감정은 이미 등록되어 있어요!"}

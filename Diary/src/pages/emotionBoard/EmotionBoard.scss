@@ -11,10 +11,27 @@
   text-align: center;
   padding: 30px 20px;
 
+  .page__header {
+    justify-content: center;
+    padding-bottom: 10px;
+    height: 110px;
+
+    .main__title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text-color);
+      padding-right: 10px;
+    }
+
+    .sub__title {
+      font-size: 0.95rem;
+    }
+  }
+
   .util__wrapper {
     align-items: center;
     justify-content: center;
-    height: 120px;
+    height: 100px;
 
     .add-button {
       @include buttons;

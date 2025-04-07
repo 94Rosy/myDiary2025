@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from "recharts";
 import { RootState } from "../../../store/store";
 import { EmotionEntry } from "../../../store/emotionSlice";
+import "./emotionRatioChart.scss";
 
 interface Props {
   emotions: EmotionEntry[];
@@ -17,7 +18,7 @@ const EMOTION_COLORS: Record<string, string> = {
   "😱 놀람": "#FF8C00",
 };
 
-const DateEmotionChart: React.FC<Props> = ({ emotions }) => {
+const EmotionRatioChart: React.FC<Props> = ({ emotions }) => {
   const selectedFilter = useSelector(
     (state: RootState) => state.filter.selectedFilter
   );
@@ -75,6 +76,7 @@ const DateEmotionChart: React.FC<Props> = ({ emotions }) => {
     <ResponsiveContainer width="100%" height={300}>
       <PieChart>
         <Pie
+          className="ratio__donut"
           data={chartData}
           dataKey="count"
           nameKey="emotion"
@@ -97,4 +99,4 @@ const DateEmotionChart: React.FC<Props> = ({ emotions }) => {
   );
 };
 
-export default DateEmotionChart;
+export default EmotionRatioChart;

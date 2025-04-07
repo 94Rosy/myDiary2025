@@ -101,8 +101,6 @@ const CompareChart: React.FC<Props> = ({ emotions }) => {
 
   return (
     <div>
-      <h3>가장 많이 & 적게 기록한 감정</h3>
-
       {mostEmotion && leastEmotion && (
         <p
           style={{ fontSize: "16px", marginBottom: "10px", fontWeight: "bold" }}

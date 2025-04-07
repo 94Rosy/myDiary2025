@@ -93,7 +93,6 @@ const WeeklyTrendsChart: React.FC<Props> = ({ emotions }) => {
 
   return (
     <div>
-      <h3>요일별 감정 트렌드</h3>
       <ResponsiveContainer width={820} height={250}>
         <BarChart data={chartData}>
           <XAxis dataKey="day" />
