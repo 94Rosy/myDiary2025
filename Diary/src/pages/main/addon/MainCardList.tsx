@@ -5,6 +5,7 @@ import "../addon/mainCardList.scss";
 // 이미지 import
 import emotionsImg from "../addon/img/emotions.jpg";
 import dashboardImg from "../addon/img/dashboard.jpg";
+import classNames from "classnames";
 
 // 카드별 이미지 매핑
 const images: { [key: string]: string } = {
@@ -32,24 +33,26 @@ const MainCardList = ({
 
   const content = (
     <div
-      className={`card ${cardType} ${isHovered ? "hovered" : ""}`}
+      className={classNames(`card ${cardType}`, {
+        hover: isHovered,
+      })}
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className="card-top"
+        className="card__top"
         style={{ backgroundImage: `url(${bgImage})` }}
       />
       <div className="description">
-        <div className="main-text">{mainText}</div>
-        {subText && <div className="sub-text">{subText}</div>}
+        <div className="main__text">{mainText}</div>
+        {subText && <div className="sub__text">{subText}</div>}
       </div>
     </div>
   );
 
   return link ? (
-    <Link to={link} className="card-link">
+    <Link to={link} className="card__link">
       {content}
     </Link>
   ) : (
