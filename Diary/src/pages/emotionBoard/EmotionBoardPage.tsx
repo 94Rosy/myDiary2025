@@ -32,7 +32,7 @@ import { supabase } from "../../utils/supabaseClient";
 import CalendarFilter from "./addon/CalendarFilter";
 import TagFilter from "./addon/TagFilter";
 import Pagination from "./addon/Pagination";
-import "./emotionBoard.scss";
+import "./emotionBoardPage.scss";
 
 const emotionOptions = [
   "😊 기쁨",
@@ -45,7 +45,7 @@ const emotionOptions = [
 
 const PAGE_PER_COUNTS = 14; // 한 페이지에 보여줄 감정 개수(14개)
 
-const EmotionBoard: React.FC = () => {
+const EmotionBoardPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.user);
   const emotions = useSelector((state: RootState) => state.emotions.emotions);
@@ -297,6 +297,7 @@ const EmotionBoard: React.FC = () => {
           anchorEl={anchorEl}
           onClose={calendarClose}
           anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          style={{ marginTop: 10, marginLeft: 10 }}
         >
           <CalendarFilter
             onDateChange={(date) => {
@@ -421,8 +422,8 @@ const EmotionBoard: React.FC = () => {
               <div className="info__msg">
                 <InfoIcon
                   sx={{
-                    width: 13,
-                    height: 13,
+                    width: 15,
+                    height: 15,
                     color: "#ff6b6b",
                     marginRight: "3px",
                   }}
@@ -481,4 +482,4 @@ const EmotionBoard: React.FC = () => {
   );
 };
 
-export default EmotionBoard;
+export default EmotionBoardPage;

@@ -1,10 +1,53 @@
+// 캘린더 전체 스타일
+.react-calendar {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px 15px;
+  background-color: #fff;
+}
+
+// 상단 네비게이션 영역 (월/년)
+.react-calendar__navigation {
+  margin-bottom: 12px;
+
+  button {
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: #4a4a4a;
+    font-weight: 700;
+
+    &:hover {
+      background-color: #f3f3f3;
+    }
+  }
+}
+
+// 요일 헤더 (일~토)
+.react-calendar__month-view__weekdays {
+  abbr {
+    font-weight: 700;
+    color: #888;
+    text-decoration: none;
+  }
+
+  .react-calendar__month-view__weekdays__weekday:nth-child(1) abbr {
+    color: #cc808f;
+  }
+
+  .react-calendar__month-view__weekdays__weekday:nth-child(7) abbr {
+    color: #88bde9;
+  }
+}
+
+// 날짜 셀 스타일
 .react-calendar__tile {
   position: relative;
-  height: 50px;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
 
-  abbr {
-    position: relative;
-    z-index: 2; // 날짜 숫자가 항상 위에 오게
+  &:hover {
+    background-color: #f2f2f2;
   }
 
   .dot {
@@ -40,5 +83,16 @@
     &.surprise {
       background-color: #ff8c00;
     }
+  }
+
+  &--active {
+    background-color: #aee2ff !important;
+    color: #4a4a4a !important;
+    font-weight: bold;
+  }
+
+  &--now {
+    background-color: rgba(204, 128, 143, 0.15);
+    font-weight: 600;
   }
 }
