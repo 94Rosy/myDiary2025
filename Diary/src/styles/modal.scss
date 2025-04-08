@@ -1,0 +1,48 @@
+// 비밀번호 재설정 모달
+@mixin reset__modal {
+  .modal__reset__box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    background: #fbfbfb;
+    border: 1px solid #ddd;
+    padding: 10px 20px;
+    border-radius: 8px;
+    width: 500px;
+    height: 300px;
+
+    span {
+      font-weight: 700;
+    }
+
+    .modal__header {
+      height: 100px;
+    }
+
+    .modal__body {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      button {
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .info__msg {
+      font-size: 0.9rem;
+      text-align: left;
+
+      &.err__msg {
+        color: #ff6b6b;
+      }
+
+      &.reset__msg {
+        color: #81d381;
+      }
+    }
+  }
+}
