@@ -49,7 +49,7 @@ const DeleteAccountModal: React.FC<Props> = ({ onClose, onDelete }) => {
 
   return (
     <Modal open={true} onClose={onClose}>
-      <Box className="leave__auth__box">
+      <Box className="modal__leave__box">
         <div className="modal__header">
           <h2>회원탈퇴</h2>
           <p>탈퇴 사유를 선택해주세요.</p>

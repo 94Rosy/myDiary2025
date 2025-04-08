@@ -25,6 +25,8 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CreateIcon from "@mui/icons-material/Create";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ClearIcon from "@mui/icons-material/Clear";
+import InfoIcon from "@mui/icons-material/Info";
 import classNames from "classnames";
 import { supabase } from "../../utils/supabaseClient";
 import CalendarFilter from "./addon/CalendarFilter";
@@ -230,11 +232,12 @@ const EmotionBoard: React.FC = () => {
   };
 
   return (
-    <div className="emotion-board">
+    <div className="emotion__board">
       <div className="page__header">
         <h2 className="main__title">My Moods</h2>
         <p className="sub__title">매일 기록했던 감정 돌아보기</p>
       </div>
+
       <div className="util__wrapper">
         <Tooltip
           title={!isToday ? "기록하기" : "오늘의 감정은 이미 등록되어 있어요!"}
@@ -242,7 +245,7 @@ const EmotionBoard: React.FC = () => {
         >
           <span>
             <IconButton
-              className={classNames("add-button", { disabled: isToday })}
+              className={classNames("add__button", { disabled: isToday })}
               onClick={() => openModal()}
               disabled={isToday}
               sx={{
@@ -308,16 +311,16 @@ const EmotionBoard: React.FC = () => {
         <TagFilter selectedTag={selectedTag} setSelectedTag={setSelectedTag} />
       </div>
 
-      <div className="emotion-grid">
+      <div className="emotion__grid">
         {paginatedEmotions.map((entry) => (
-          <div key={entry.id} className="emotion-card">
-            <div className="emotion-header">
+          <div key={entry.id} className="emotion__card">
+            <div className="emotion__header">
               {entry.emotion}
-              <div className="card-buttons">
+              <div className="card__buttons">
                 <Tooltip title="수정하기" placement="bottom">
                   <span>
                     <IconButton
-                      className="edit-button"
+                      className="edit__button"
                       onClick={() => openModal(entry)}
                       sx={{
                         backgroundColor: "#cbe0c3",
@@ -340,7 +343,7 @@ const EmotionBoard: React.FC = () => {
                 <Tooltip title="지우기" placement="bottom">
                   <span>
                     <IconButton
-                      className="delete-button"
+                      className="delete__button"
                       onClick={() => handleDelete(entry.id)}
                       sx={{
                         backgroundColor: "#e8b4b8",
@@ -362,13 +365,13 @@ const EmotionBoard: React.FC = () => {
                 </Tooltip>
               </div>
             </div>
-            <div className="emotion-body">
+            <div className="emotion__body">
               <p className="date">{entry.date}</p>
               {entry.image_url && (
                 <img
                   src={entry.image_url}
                   alt="감정 이미지"
-                  className="emotion-image"
+                  className="emotion__image"
                 />
               )}
               <p className="note">{entry.note}</p>
@@ -382,7 +385,7 @@ const EmotionBoard: React.FC = () => {
 
       {/* 감정 추가 & 수정 모달 */}
       <Modal open={isModalOpen} onClose={closeModal}>
-        <Box className="modal-box">
+        <Box className="modal__emotion__box">
           <h3>{selectedEmotion ? "감정 수정" : "감정 등록"}</h3>
           <FormControl fullWidth margin="normal">
             <InputLabel>감정 선택</InputLabel>
@@ -407,22 +410,71 @@ const EmotionBoard: React.FC = () => {
           />
 
           {!previewUrl && (
-            <input type="file" accept="image/*" onChange={handleFileChange} />
-          )}
-
-          {previewUrl && (
             <>
+              <input
+                alt="영문 이름 파일만 첨부 가능합니다."
+                className="img__input"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+              />
+              <div className="info__msg">
+                <InfoIcon
+                  sx={{
+                    width: 13,
+                    height: 13,
+                    color: "#ff6b6b",
+                    marginRight: "3px",
+                  }}
+                />
+                <span>영문, 숫자명 파일만 첨부 가능합니다.</span>
+              </div>
+            </>
+          )}
+          {previewUrl && (
+            <div className="image__preview">
               <img
                 src={previewUrl}
                 alt="미리보기"
-                style={{ width: 200, height: 200 }}
+                style={{ width: 250, height: 250 }}
               />
-              <button onClick={handleDeleteImage} className="delete-image-btn">
-                ❌ 삭제
-              </button>
-            </>
+              <Tooltip title="파일 삭제" placement="right" arrow>
+                <IconButton
+                  className="clear__button"
+                  onClick={handleDeleteImage}
+                  sx={{
+                    color: "#d6276a",
+                    "&:hover": {
+                      transition: "color 0.2s",
+                    },
+                  }}
+                >
+                  <ClearIcon
+                    sx={{
+                      transition: "color 0.2s",
+                    }}
+                  />
+                </IconButton>
+              </Tooltip>
+            </div>
           )}
-          <Button onClick={handleSave}>저장</Button>
+          <div className="modal__buttons">
+            <Button
+              onClick={handleSave}
+              sx={{
+                width: "80px",
+                height: "50px",
+                color: "#fff",
+                backgroundColor: "#88bde9",
+                "&:hover": {
+                  color: "#fff",
+                  backgroundColor: "#6fa7d8",
+                },
+              }}
+            >
+              저장
+            </Button>
+          </div>
         </Box>
       </Modal>
     </div>

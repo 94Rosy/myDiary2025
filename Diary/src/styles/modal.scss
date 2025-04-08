@@ -51,7 +51,7 @@
 }
 
 @mixin leave {
-  .leave__auth__box {
+  .modal__leave__box {
     @include modal__layout;
 
     .modal__header {
@@ -71,5 +71,39 @@
       justify-content: flex-end;
       align-items: center;
     }
+  }
+}
+
+.modal__emotion__box {
+  @include modal__layout;
+
+  .img__input {
+    margin-top: 10px;
+  }
+
+  .info__msg {
+    padding-top: 10px;
+    color: #ff6b6b;
+    font-size: 14px;
+  }
+
+  .image__preview {
+    margin-top: 10px;
+    align-items: center;
+
+    .img {
+      width: 100%;
+      max-width: 250px;
+      max-height: 250px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      margin-right: 5px;
+    }
+  }
+
+  .modal__buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
   }
 }
