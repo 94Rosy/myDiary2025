@@ -1,5 +1,7 @@
 @import "../../styles/modal"; // 전역 스타일 가져오기
 
+@include reset__modal;
+
 .login__wrapper {
   width: 850px;
   margin: 0 auto;
@@ -53,5 +55,3 @@
     }
   }
 }
-
-@include reset__modal;

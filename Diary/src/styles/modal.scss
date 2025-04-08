@@ -1,16 +1,20 @@
 // 비밀번호 재설정 모달
+@mixin modal__layout {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  background: #fbfbfb;
+  border: 1px solid #ddd;
+  padding: 10px 20px;
+  border-radius: 8px;
+  width: 500px;
+}
+
 @mixin reset__modal {
   .modal__reset__box {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    background: #fbfbfb;
-    border: 1px solid #ddd;
-    padding: 10px 20px;
-    border-radius: 8px;
-    width: 500px;
+    @include modal__layout;
 
     span {
       font-weight: 700;
@@ -42,6 +46,30 @@
       &.reset__msg {
         color: #81d381;
       }
+    }
+  }
+}
+
+@mixin leave {
+  .leave__auth__box {
+    @include modal__layout;
+
+    .modal__header {
+      height: 100px;
+    }
+
+    .modal__body {
+      .warning {
+        color: #ff6b6b;
+        font-size: 0.9rem;
+        text-align: left;
+      }
+    }
+
+    .modal__footer {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
     }
   }
 }

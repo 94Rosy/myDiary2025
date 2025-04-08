@@ -113,7 +113,7 @@ const ResetPassword = () => {
               비밀번호 변경
             </Button>
           </div>
-          {successMessage && <p className="success-msg">{successMessage}</p>}
+          {successMessage && <p className="success__msg">{successMessage}</p>}
         </form>
       </div>
     </div>

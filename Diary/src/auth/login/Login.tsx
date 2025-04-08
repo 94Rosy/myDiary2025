@@ -32,7 +32,7 @@ const Login = () => {
       });
 
     if (loginError || !loginData.user) {
-      setError("로그인 실패. 이메일 또는 비밀번호를 확인하세요.");
+      setError("⚠️ 로그인 실패. 이메일 또는 비밀번호를 확인하세요.");
       return;
     }
 
@@ -53,7 +53,7 @@ const Login = () => {
     if (requestData) {
       // 이미 탈퇴 요청한 유저일 경우
       await supabase.auth.signOut();
-      setError("이미 탈퇴한 계정입니다. 6개월 뒤에 재가입 가능합니다.");
+      setError("⚠️ 이미 탈퇴한 계정입니다. 6개월 뒤에 재가입 가능합니다.");
       return;
     }
 
