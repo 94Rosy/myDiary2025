@@ -6,15 +6,8 @@ _감정을 기록하고, 시각화하고, 스스로를 이해하기 위한 감�
 
 ## 🧩 프로젝트 소개
 
-EmotionLog는 하루에 하나의 감정을 기록하고,  
-해당 데이터를 기반으로 감정 흐름과 통계를 제공하는 감정일기 플랫폼입니다.
+EmotionLog는 하루에 하나의 감정을 기록하고, 해당 데이터를 기반으로 감정 흐름과 통계를 제공하는 감정일기 플랫폼입니다.
 이 프로젝트는 단순 기능 나열보다도 '기획 → 구조 설계 → 상태 관리 → UI 흐름 → 통계 분석 → 배포'까지 전 과정을 실제 서비스처럼 구축하는 데 중점을 두었습니다.
-
-- ✍️ 감정 일기 작성, 파일 첨부 기능
-- 📊 감정 통계 대시보드 (도넛 차트, 막대 그래프, 워드 클라우드 등)
-- 📅 작성 캘린더 필터, 통계 기간 필터, 감정 태그 필터, 페이지네이션
-- 📌 로그인 기반 개인 감정 히스토리 저장
-- 💬 감성적인 UI/UX (디자인 테마, 컬러 시스템 적용)
 
 | 항목          | 내용                                                 |
 | ------------- | ---------------------------------------------------- |
@@ -23,50 +16,74 @@ EmotionLog는 하루에 하나의 감정을 기록하고,
 | 🛠️ 주요 기술  | React, TypeScript, Supabase, Redux Toolkit, Recharts |
 | ✨ 주요 기능  | 감정 일기, 통계 대시보드, 감정별 테마, 캘린더 필터   |
 
+- ✍️ 감정 일기 작성, 파일 첨부 기능
+- 📊 감정 통계 대시보드 (도넛 차트, 막대 그래프, 워드 클라우드 등)
+- 📅 작성 캘린더 필터, 통계 기간 필터, 감정 태그 필터, 페이지네이션
+- 📌 로그인 기반 개인 감정 히스토리 저장
+- 💬 감성적인 UI/UX (디자인 테마, 컬러 시스템 적용)
+
 ---
 
 ## 🚀 사용 기술 스택
 
-**Frontend**: React, TypeScript, SCSS, Redux Toolkit, classnames
-**UI Library**: MUI (Material UI v6), React Calendar
-**Chart**: Recharts, d3, d3-cloud
-**상태 관리**: Redux Toolkit
-**Auth & DB**: Supabase (인증, 실시간 데이터베이스, Edge Function)
-**Routing**: React Router DOM v7
-**날짜 처리**: date-fns
-**Lint & Quality**: ESLint, Prettier
-**Dev Tools**: Supabase CLI, Docker (환경 세팅용), json-server (mock용)
+**Frontend**
+React, TypeScript, SCSS, Redux Toolkit, classnames
+
+**UI Library**
+UI (Material UI v6), React Calendar
+
+**Chart**
+Recharts, d3, d3-cloud
+
+**상태 관리**
+Redux Toolkit
+
+**Auth & DB**
+Supabase (인증, 실시간 데이터베이스, Edge Function)
+
+**Routing**
+React Router DOM v7
+
+**날짜 처리**
+date-fns
+
+**Lint & Quality**
+ESLint, Prettier
+
+**Dev Tools**
+Supabase CLI, Docker (환경 세팅용), json-server (mock용)
 
 ---
 
 ## 📁 프로젝트 폴더 구조
 
+```bash
 📦src
-┣ 📂auth // 회원가입, 로그인, 탈퇴 관련 모듈
+┣ 📂auth                          // 회원가입, 로그인, 탈퇴 관련 모듈
 ┃ ┣ 📂leave
 ┃ ┣ 📂login
 ┃ ┗ 📂signup
-┣ 📂pages // 실제 화면 페이지 구성
-┃ ┣ 📂dashboard // 감정 통계 대시보드
-┃ ┃ ┗ 📂chart/addon // 차트 컴포넌트 & 서브 필터들
-┃ ┣ 📂emotionBoard // 감정 일기 게시판
-┃ ┃ ┗ 📂addon // 캘린더 필터, 감정 태그 필터, 페이지네이션 등
-┃ ┗ 📂main // 메인 페이지
-┃ ┃ ┗ 📂addon // 메인 카드 구성 및 헤더(navigation)
-┃ ┃ ┃ ┗📂img // 로고, 메인 카드의 이미지들
-┣ 📂routes // 전체 라우팅 설정
-┣ 📂store // Redux 슬라이스 (auth, 감정, 필터, 페이지네이션 등)
-┣ 📂styles // SCSS 전역 스타일 관리
-┣ 📂types // 타입 선언 파일 (예: d3-cloud 타입 등)
-┣ 📂utils // API 호출 등 유틸 함수
-┃ ┣ supabaseApi.ts // Supabase 관련 API 로직
-┃ ┗ supabaseClient.ts // Supabase 인스턴스 설정
-
+┣ 📂pages                         // 실제 화면 페이지 구성
+┃ ┣ 📂dashboard                   // 감정 통계 대시보드
+┃ ┃ ┗ 📂chart/addon               // 차트 컴포넌트 & 서브 필터들
+┃ ┣ 📂emotionBoard                // 감정 일기 게시판
+┃ ┃ ┗ 📂addon                     // 캘린더 필터, 감정 태그 필터, 페이지네이션 등
+┃ ┗ 📂main                        // 메인 페이지
+┃ ┃ ┗ 📂addon                     // 메인 카드 구성 및 헤더(navigation)
+┃ ┃ ┃ ┗📂img                      // 로고, 메인 카드의 이미지들
+┣ 📂routes                        // 전체 라우팅 설정
+┣ 📂store                         // Redux 슬라이스 (auth, 감정, 필터, 페이지네이션 등)
+┣ 📂styles                        // SCSS 전역 스타일 관리
+┣ 📂types                         // 타입 선언 파일 (예: d3-cloud 타입 등)
+┣ 📂utils                         // API 호출 등 유틸 함수
+┃ ┣ supabaseApi.ts                // Supabase 관련 API 로직
+┃ ┗ supabaseClient.ts             // Supabase 인스턴스 설정
 📦supabase
 ┗ 📂functions/delete-old-users // Edge Function: 탈퇴 회원 데이터 삭제 처리
 ┗ index.ts // 6개월 후 자동 삭제 로직 구현
 
 📜 .env, package.json, tsconfig.json 등
+```
 
 ---
 
@@ -77,7 +94,7 @@ EmotionLog는 하루에 하나의 감정을 기록하고,
 - [o] 회원가입 / 로그인 / 로그아웃 / 회원탈퇴
 - [o] 회원가입 시 이메일 확인
 - [o] 비밀번호 재설정 기능 (비밀번호 찾기)
-- [o] 회원 탈퇴 후 6개월간 데이터 보관 후 자동 삭제
+- [] 회원 탈퇴 후 6개월간 데이터 보관 후 자동 삭제
   (Supabase Edge Function을 이용한 예약 삭제 처리)
 
 ---
@@ -86,7 +103,9 @@ EmotionLog는 하루에 하나의 감정을 기록하고,
 
 - 메인 화면에서 주요 기능을 카드 형태로 안내하며 클릭 시 해당 페이지로 이동합니다.
 
-  로그인 상태에 따라 진입 제한이 있으며, 로그인하지 않은 사용자는 경고창 후 로그인 페이지로 이동됩니다.
+  (로그인 상태에 따라 진입 제한이 있으며, 로그인하지 않은 사용자는 경고창 후 로그인 페이지로 이동됩니다.)
+
+---
 
 ### 📓 감정 일기 기능
 
@@ -131,13 +150,13 @@ EmotionLog는 하루에 하나의 감정을 기록하고,
   - CLI 명령어를 활용한 로컬 DB, 인증, Storage 테스트 경험
   - `supabase start`, `supabase link`, `.env` 구성, local dev + 배포 연동 완료
 
-- [o] Supabase Edge Function 직접 배포 및 테스트
+- [] Supabase Edge Function 직접 배포 및 테스트
   - 회원 탈퇴 시 `deleted_at` 기록
   - **6개월 후 개인정보 삭제 로직 구현** (Edge Function으로 예약 자동 삭제 처리)
 
 ---
 
-### 이후 개발 예정 작업들
+### 🍒 이후 개발 예정 작업들
 
 - [] 회원가입 시 insert 정책 변경, email 중복 확인 기능
 - [] 힐링 기능(ex: 포춘쿠키, 감정 챗봇)
