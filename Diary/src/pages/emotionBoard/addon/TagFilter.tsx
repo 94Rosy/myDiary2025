@@ -12,8 +12,8 @@ const emotionTags = [
   "😢 슬픔",
   "😡 분노",
   "😌 평온",
-  "🥰 사랑",
   "😱 놀람",
+  "🥰 사랑",
 ];
 
 const TagFilter: React.FC<Props> = ({ selectedTag, setSelectedTag }) => {

@@ -3,11 +3,11 @@ import { useEffect } from "react";
 import { resetPage } from "../../store/paginationSlice";
 import MainCardList from "./addon/MainCardList";
 import { useNavigate } from "react-router-dom";
-import { RootState } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import "./mainPage.scss";
 
 const MainPage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.auth.user);
 

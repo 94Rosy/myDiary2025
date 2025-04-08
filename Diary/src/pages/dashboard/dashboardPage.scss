@@ -27,10 +27,9 @@
   }
 
   .chart__wrapper {
-    background-color: #fff4e8;
+    background-color: var(--chart-bg);
     justify-content: center;
     align-items: center;
-    width: 100%;
     height: calc(100% - 210px);
     padding: 15px;
 
@@ -38,7 +37,7 @@
       padding-bottom: 15px;
       font-weight: 700;
       font-size: 20px;
-      color: #865d6c;
+      color: var(--highlight-text-color);
     }
 
     .view__chart {

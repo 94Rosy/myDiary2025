@@ -1,12 +1,17 @@
 :root {
-  --primary-color: #cc808f; /* 강조색 */
-  --secondary-color: #aee2ff; /* 기본 하늘색 */
-  --background-color: #fdfafa; /* 아이보리 계열 */
-  --header-bg: #f1d6d6e8; /* 탁한 회색빛 분홍색 */
-  --main-bg: #eeeaeae8; /* 연한 회색 */
   --text-color: #4a3f35; /* Dark Coffee 브라운 계열 검정 */
   --highlight-text-color: #6b3e4e; /* 강조된 폰트 색상 */
-  --footer-bg: #e7d6d6; /* 하단 영역 배경색 */
+  --primary-color: #cc808f; /* 강조색 */
+  --background-color: #fdfafa; /* 아이보리 계열 */
+  --header-bg: #f1d6d6e8; /* 탁한 회색빛 분홍색 */
+  --chart-bg: #fff4e8; /* 차트 배경 색상 */
+  --filter-btn: #fad0d9; /* 필터 버튼 색상 */
+  --filter-active: #fa6283; /* 필터 버튼 액티브 색상 */
+  --filter-hover: #e0b6be; /* 필터 버튼 호버 색상 */
+  --button-hover: #ffeaeae8; /* 버튼 호버 색상 */
+  --button-text: #4a4a4a; /* 버튼 호버 색상 */
+  --check-color: #f8aabb; /* 체크박스, 아이콘 색상 */
+  --check-active-color: #fd708f; /* 체크박스, 아이콘 색상 */
 }
 
 body {

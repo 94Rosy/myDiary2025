@@ -17,8 +17,8 @@ const EMOTION_COLORS: Record<string, string> = {
   "😢 슬픔": "#AFCBFF",
   "😡 분노": "#FF9A8B",
   "😌 평온": "#D4EDC9",
+  "😱 놀람": "#E3D6FD",
   "🥰 사랑": "#FFB3D1",
-  "😱 놀람": "#FFD6A5",
 };
 
 const EmotionRatioChart: React.FC<Props> = ({ emotions }) => {

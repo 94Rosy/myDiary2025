@@ -15,8 +15,8 @@ const dotColors: Record<string, string> = {
   "😢 슬픔": "sad",
   "😡 분노": "angry",
   "😌 평온": "calm",
-  "🥰 사랑": "love",
   "😱 놀람": "surprise",
+  "🥰 사랑": "love",
 };
 
 const CalendarFilter: React.FC<Props> = ({

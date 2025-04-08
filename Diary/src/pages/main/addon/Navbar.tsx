@@ -2,18 +2,21 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import { Button, IconButton, Popover } from "@mui/material";
+import { Button, IconButton, Popover, Select } from "@mui/material";
 import { AppDispatch, RootState } from "../../../store/store";
 import { deleteUser, fetchUser, logoutUser } from "../../../store/authSlice";
 import { supabase } from "../../../utils/supabaseClient";
-import { resetEmotions } from "../../../store/emotionSlice";
+import { fetchEmotions, resetEmotions } from "../../../store/emotionSlice";
 import { resetPage } from "../../../store/paginationSlice";
 import DeleteAccountModal from "../../../auth/leave/DeleteAccountModal";
+import SelectTheme from "./SelectTheme";
+import { isToday } from "date-fns";
 import "./navbar.scss";
 
 const Navbar = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const userName = useSelector((state: RootState) => state.auth.name);
+  const emotions = useSelector((state: RootState) => state.emotions.emotions);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -55,8 +58,10 @@ const Navbar = () => {
     navigate("/login"); // 로그인 페이지로 이동
   };
 
+  // 회원 정보창(로그아웃, 탈퇴) 관련
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
   const authOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -68,6 +73,7 @@ const Navbar = () => {
   const openHandler = () => setOpenDelete(true);
   const closeHandler = () => setOpenDelete(false);
 
+  // 계정 탈퇴 처리 핸들러
   const handleDeleteAccount = async (finalReason: string, password: string) => {
     if (!user) return;
 
@@ -94,6 +100,43 @@ const Navbar = () => {
     navigate("/"); // 메인으로 이동
   };
 
+  // UI 테마 선택 관련
+  const [isFixedTheme, setIsFixedTheme] = useState(() => {
+    const savedTheme = sessionStorage.getItem("isFixedTheme");
+    return savedTheme === null ? false : JSON.parse(savedTheme);
+  });
+
+  const [theme, setTheme] = useState("default");
+
+  // 오늘의 감정이 있는지 확인, 감정 등록이 없을 경우 fallback
+  const todayEmotion = emotions.find((e) => isToday(new Date(e.date)))?.emotion;
+
+  useEffect(() => {
+    if (!isFixedTheme && todayEmotion) {
+      const emotionTheme: Record<string, string> = {
+        "😊 기쁨": "joy",
+        "😢 슬픔": "sad",
+        "😡 분노": "angry",
+        "😌 평온": "calm",
+        "😱 놀람": "surprise",
+        "🥰 사랑": "love",
+      };
+
+      const selected = emotionTheme[todayEmotion] ?? "default";
+      setTheme(selected);
+    } else {
+      setTheme("default");
+    }
+  }, [isFixedTheme, todayEmotion]);
+
+  useEffect(() => {
+    sessionStorage.setItem("isFixedTheme", JSON.stringify(isFixedTheme));
+  }, [isFixedTheme]);
+
+  useEffect(() => {
+    document.body.className = `theme-${theme}`;
+  }, [theme]);
+
   return (
     <header className="header">
       <Link to="/">
@@ -107,7 +150,6 @@ const Navbar = () => {
                 <span>{userName}</span>님 환영합니다!
                 <IconButton
                   sx={{
-                    color: "#4a4a4a",
                     "&:hover": {
                       color: "#fff",
                       transition: "color 0.2s",
@@ -135,17 +177,19 @@ const Navbar = () => {
                     sx={{
                       borderRadius: "10px",
                       boxShadow: "0 1px 3px #191919",
+                      alignItems: "flex-start",
                     }}
                   >
                     <Button
                       className="logout__btn"
                       onClick={handleLogout}
                       sx={{
+                        justifyContent: "flex-start",
                         width: "100%",
-                        color: "#4a4a4a",
+                        color: "var(--button-text)",
                         "&:hover": {
-                          backgroundColor: "#fad0d9",
-                          color: "#fff",
+                          backgroundColor: "var(--button-hover)",
+                          color: "var(--button-text)",
                         },
                       }}
                     >
@@ -155,11 +199,12 @@ const Navbar = () => {
                       className="leave__btn"
                       onClick={openHandler}
                       sx={{
+                        justifyContent: "flex-start",
                         width: "100%",
-                        color: "#4a4a4a",
+                        color: "var(--button-text)",
                         "&:hover": {
-                          backgroundColor: "#fad0d9",
-                          color: "#fff",
+                          backgroundColor: "var(--button-hover)",
+                          color: "var(--button-text)",
                         },
                       }}
                     >
@@ -196,6 +241,11 @@ const Navbar = () => {
               </li>
             </>
           )}
+
+          <SelectTheme
+            isFixedTheme={isFixedTheme}
+            setIsFixedTheme={setIsFixedTheme}
+          />
         </ul>
       </nav>
     </header>

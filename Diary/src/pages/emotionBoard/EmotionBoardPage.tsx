@@ -251,7 +251,6 @@ const EmotionBoardPage: React.FC = () => {
               sx={{
                 marginRight: "8px",
                 backgroundColor: "#b3d4f3",
-                color: "#4a4a4a",
                 "&:hover": {
                   backgroundColor: "#a4c5e4",
                   color: "#fff",
@@ -276,7 +275,6 @@ const EmotionBoardPage: React.FC = () => {
                 width: "36px",
                 height: "36px",
                 backgroundColor: "#cab4de",
-                color: "#4a4a4a",
                 "&:hover": {
                   backgroundColor: "#b898d6",
                   color: "#fff",
@@ -325,7 +323,6 @@ const EmotionBoardPage: React.FC = () => {
                       onClick={() => openModal(entry)}
                       sx={{
                         backgroundColor: "#cbe0c3",
-                        color: "#4a4a4a",
                         "&:hover": {
                           backgroundColor: "#b2cfa4",
                           color: "#fff",
@@ -348,7 +345,6 @@ const EmotionBoardPage: React.FC = () => {
                       onClick={() => handleDelete(entry.id)}
                       sx={{
                         backgroundColor: "#e8b4b8",
-                        color: "#4a4a4a",
                         "&:hover": {
                           backgroundColor: "#e89ca4",
                           color: "#fff",

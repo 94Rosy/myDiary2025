@@ -7,17 +7,17 @@
   .tags__name {
     border-radius: 10px;
     font-size: 14px;
-    background-color: #fad0d9;
+    background-color: var(--filter-btn);
     color: #191919;
 
     &.selected {
-      background-color: #fa6283;
+      background-color: var(--filter-active);
       color: #f5f5f5;
       font-weight: 700;
     }
 
     &:hover {
-      background-color: #e0b6be;
+      background-color: var(--filter-hover);
       transition: transform 0.3s;
     }
   }

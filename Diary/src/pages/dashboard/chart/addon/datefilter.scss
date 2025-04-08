@@ -9,17 +9,17 @@
   .filter__buttons {
     border-radius: 10px;
     font-size: 14px;
-    background-color: #fad0d9;
+    background-color: var(--filter-btn);
     color: #191919;
 
     &.active {
-      background-color: #fa6283;
       color: #f5f5f5;
       font-weight: 700;
+      background-color: var(--filter-active);
     }
 
     &:hover {
-      background-color: rgb(224, 182, 190);
+      background-color: var(--filter-hover);
       transition: transform 0.3s;
     }
   }

@@ -61,27 +61,27 @@
     z-index: 1;
 
     &.joy {
-      background-color: #ffd700;
+      background-color: #ffd166;
     }
 
     &.sad {
-      background-color: #4a90e2;
+      background-color: #90caf9;
     }
 
     &.angry {
-      background-color: #ff3b30;
+      background-color: #f76725;
     }
 
     &.calm {
-      background-color: #a0e57c;
-    }
-
-    &.love {
-      background-color: #ff69b4;
+      background-color: #a5d6a7;
     }
 
     &.surprise {
-      background-color: #ff8c00;
+      background-color: #a58ae7;
+    }
+
+    &.love {
+      background-color: #f48fb1;
     }
   }
 

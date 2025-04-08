@@ -37,12 +37,6 @@ const DashboardPage = () => {
 
   const wordCloudEmo = getCloudWordEmo(filteredEmo);
 
-  useEffect(() => {
-    if (!emotions.length) {
-      dispatch(fetchEmotions());
-    }
-  }, [dispatch, emotions.length]);
-
   return (
     <div className="dashboard__page">
       <div className="page__header">
