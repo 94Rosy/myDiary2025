@@ -25,13 +25,13 @@ const MainPage = () => {
   };
 
   return (
-    <div className="main-wrapper">
-      <div className="title-content">
+    <div className="main__wrapper">
+      <div className="title__content">
         <div>EmotionLog</div>
         <div>Capture your feelings, track your mind!</div>
       </div>
 
-      <div className="main-content">
+      <div className="main__content">
         <MainCardList
           cardType="emotions"
           mainText="My Moods"

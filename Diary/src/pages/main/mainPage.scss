@@ -1,26 +1,6 @@
 @import "../../styles/global"; // 전역 스타일 가져오기
 
-.title-content {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--highlight-text-color);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-.title-content div:last-child {
-  font-size: 14px;
-  font-weight: normal;
-  color: var(--text-color);
-  margin-top: 8px;
-}
-
-.main-wrapper {
+.main__wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,13 +10,33 @@
   overflow: auto;
   box-sizing: border-box;
   padding: 100px;
-}
 
-.main-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
+  .title__content {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--highlight-text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+    div:last-child {
+      font-size: 14px;
+      font-weight: normal;
+      color: var(--text-color);
+      margin-top: 8px;
+    }
+  }
+
+  .main__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
 }
 
 /* 🌟 반응형 설정 */
