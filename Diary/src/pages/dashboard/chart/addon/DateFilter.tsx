@@ -122,13 +122,33 @@ const DateFilter: React.FC<Props> = ({ emotions }) => {
         ))}
       </div>
 
-      <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-        <DialogTitle>감정 분석 결과</DialogTitle>
+      <Dialog
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        className="log__emo"
+      >
+        <DialogTitle>
+          <span>감정 분석 결과</span>
+        </DialogTitle>
         <DialogContent>
-          <p>{modalMessage}</p>
+          <div>{modalMessage}</div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenModal(false)}>확인</Button>
+          <Button
+            onClick={() => setOpenModal(false)}
+            sx={{
+              width: "80px",
+              height: "50px",
+              color: "#fff",
+              backgroundColor: "#88bde9",
+              "&:hover": {
+                color: "#fff",
+                backgroundColor: "#6fa7d8",
+              },
+            }}
+          >
+            확인
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

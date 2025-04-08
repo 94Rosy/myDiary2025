@@ -118,7 +118,17 @@ const Login = () => {
       </div>
 
       <p className="forgot__password">
-        <Button onClick={() => setShowForgotPassword(true)}>
+        <Button
+          sx={{
+            color: "#fff",
+            backgroundColor: "#88bde9",
+            "&:hover": {
+              color: "#fff",
+              backgroundColor: "#6fa7d8",
+            },
+          }}
+          onClick={() => setShowForgotPassword(true)}
+        >
           비밀번호를 잊으셨나요?
         </Button>
       </p>
