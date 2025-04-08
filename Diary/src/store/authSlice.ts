@@ -13,6 +13,31 @@ const initialState: AuthState = {
   name: null,
 };
 
+export const signupUser = createAsyncThunk(
+  "auth/signupUser",
+  async (
+    {
+      email,
+      password,
+      name,
+    }: { email: string; password: string; name: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { name } },
+      });
+
+      if (error) throw new Error(error.message);
+      return true;
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
 // Supabase에서 유저 정보 가져오기 (users 테이블에서 name도 가져옴)
 export const fetchUser = createAsyncThunk(
   "auth/fetchUser",

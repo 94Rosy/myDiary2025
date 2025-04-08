@@ -4,7 +4,7 @@ import { Button, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import { fetchUser } from "../../store/authSlice";
+import { fetchUser, signupUser } from "../../store/authSlice";
 import "./signup2.scss";
 
 interface Props {
@@ -44,12 +44,27 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
     setPasswordError("");
     setConfirmPasswordError("");
 
-    // 유효성 검사
+    // 유효성 검사 - 이메일
     if (!validateEmail(email)) {
       setEmailError("⚠ 올바른 이메일 형식을 입력해주세요.");
       return;
     }
 
+    // 유효성 검사 - 비밀번호
+    if (!validatePassword(password)) {
+      setPasswordError(
+        "⚠ 비밀번호는 8자 이상, 숫자와 특수문자를 포함해야 합니다."
+      );
+      return;
+    }
+
+    // 비밀번호 일치 여부 확인
+    if (password !== confirmPassword) {
+      setConfirmPasswordError("⚠ 비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    // 탈퇴 유저 확인
     const { data: deletedUser } = await supabase
       .from("delete_requests")
       .select("email")
@@ -63,51 +78,17 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
       return;
     }
 
-    const { data: existingUser, error: fetchError } = await supabase
-      .from("users")
-      .select("email")
-      .eq("email", email)
-      .single();
-
-    if (fetchError && fetchError.code !== "PGRST116") {
-      setError("⚠ 이메일 중복 확인 중 오류가 발생했습니다.");
-      return;
-    }
-
-    if (existingUser) {
-      setEmailError("⚠ 중복된 이메일입니다.");
-      return;
-    }
-
-    if (!validatePassword(password)) {
-      setPasswordError(
-        "⚠ 비밀번호는 8자 이상, 숫자와 특수문자를 포함해야 합니다."
-      );
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setConfirmPasswordError("⚠ 비밀번호가 일치하지 않습니다.");
-      return;
-    }
-
-    // 모든 검사 통과 후 회원가입 요청
-    const { error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { name } },
-    });
-
-    if (signUpError) {
-      setError("⚠ 회원가입 실패! 다시 시도해 주세요.");
-      console.error("err:", signUpError.message);
-      return;
-    }
-
-    alert("😊 이메일 인증을 완료한 후 로그인해 주세요.");
-    localStorage.setItem("signupComplete", "true");
-    navigate("/");
-    dispatch(fetchUser());
+    // 회원가입
+    dispatch(signupUser({ email, password, name }))
+      .unwrap()
+      .then(() => {
+        alert("이메일 인증을 완료하신 후 가입됩니다. 😇");
+        navigate("/");
+        dispatch(fetchUser());
+      })
+      .catch((err: string) => {
+        setError(`회원가입 실패: ${err}`);
+      });
   };
 
   return (
@@ -120,7 +101,10 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
           <TextField
             label="이메일 입력"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setEmailError("");
+            }}
             required
             error={!!emailError}
             helperText={emailError}
@@ -139,18 +123,23 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
             label="비밀번호 입력"
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setPassword("");
+            }}
             required
             error={!!passwordError}
             helperText={passwordError}
           />
 
-          <span>비밀번호</span>
+          <span>비밀번호 재입력</span>
           <TextField
             label="비밀번호 재입력"
             type="password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+            }}
             required
             error={!!confirmPasswordError}
             helperText={confirmPasswordError}
