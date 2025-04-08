@@ -1,3 +1,5 @@
+@import "../../styles/modal"; // 전역 스타일 가져오기
+
 .login__wrapper {
   width: 850px;
   margin: 0 auto;
@@ -34,8 +36,8 @@
       .error__msg {
         color: #ff6b6b;
         font-size: 0.9rem;
-        margin-top: -12px;
-        margin-bottom: -8px;
+        margin-top: -1px;
+        margin-bottom: -1px;
         text-align: left;
       }
     }
@@ -51,3 +53,5 @@
     }
   }
 }
+
+@include reset__modal;

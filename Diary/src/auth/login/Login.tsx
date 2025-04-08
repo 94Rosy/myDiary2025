@@ -8,6 +8,7 @@ import { resetEmotions } from "../../store/emotionSlice";
 import { fetchUser } from "../../store/authSlice";
 import { AppDispatch } from "../../store/store";
 import "./login.scss";
+import classNames from "classnames";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
+  const [errMsg, setErrMsg] = useState("");
   const [resetMessage, setResetMessage] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -71,12 +73,12 @@ const Login = () => {
     });
 
     if (error) {
-      setResetMessage("비밀번호 재설정 요청 실패! 다시 시도해 주세요.");
+      setErrMsg("비밀번호 재설정 요청 실패! 다시 시도해 주세요.");
       return;
     }
 
     setResetMessage(
-      "비밀번호 재설정 이메일이 발송되었습니다. 이메일을 확인해 주세요."
+      "비밀번호 재설정 이메일이 발송되었습니다! 이메일을 확인해 주세요."
     );
   };
 
@@ -126,23 +128,36 @@ const Login = () => {
         open={showForgotPassword}
         onClose={() => setShowForgotPassword(false)}
       >
-        <Box className="modal-box">
-          <h3>비밀번호 재설정</h3>
-          <p>가입한 이메일을 입력하면 비밀번호 재설정 이메일을 보내드려요.</p>
+        <Box className="modal__reset__box">
+          <div className="modal__header">
+            <h3>비밀번호 재설정</h3>
+            <p>가입한 이메일을 입력하면 비밀번호 재설정 이메일을 보내드려요.</p>
+          </div>
 
-          <TextField
-            label="이메일 입력"
-            value={resetEmail}
-            onChange={(e) => setResetEmail(e.target.value)}
-            required
-            margin="normal"
-          />
+          <span>이메일</span>
+          <div className="modal__body">
+            <TextField
+              className="email"
+              label="이메일 입력"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+              required
+              margin="normal"
+            />
 
-          <Button variant="contained" onClick={handlePasswordReset}>
-            비밀번호 재설정 링크 보내기
-          </Button>
+            <Button variant="contained" onClick={handlePasswordReset}>
+              링크 보내기
+            </Button>
+          </div>
 
-          {resetMessage && <p className="info__msg">{resetMessage}</p>}
+          <p
+            className={classNames("info__msg", {
+              err__msg: errMsg,
+              reset__msg: resetMessage,
+            })}
+          >
+            {resetMessage || errMsg}
+          </p>
         </Box>
       </Modal>
     </div>
