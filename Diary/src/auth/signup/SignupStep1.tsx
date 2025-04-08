@@ -58,6 +58,13 @@ const SignupStep1: React.FC<Props> = ({ onNext }) => {
         <FormControlLabel
           control={
             <Checkbox
+              disableRipple
+              sx={{
+                color: "var(--check-color)",
+                "&.Mui-checked": {
+                  color: "var(--check-active-color)",
+                },
+              }}
               checked={agreeTerms}
               onChange={(e) => setAgreeTerms(e.target.checked)}
             />
@@ -72,6 +79,13 @@ const SignupStep1: React.FC<Props> = ({ onNext }) => {
         <FormControlLabel
           control={
             <Checkbox
+              disableRipple
+              sx={{
+                color: "var(--check-color)",
+                "&.Mui-checked": {
+                  color: "var(--check-active-color)",
+                },
+              }}
               checked={agreePrivacy}
               onChange={(e) => setAgreePrivacy(e.target.checked)}
             />
@@ -80,7 +94,19 @@ const SignupStep1: React.FC<Props> = ({ onNext }) => {
         />
       </div>
 
-      <Button variant="contained" onClick={handleNext} fullWidth>
+      <Button
+        variant="contained"
+        onClick={handleNext}
+        fullWidth
+        sx={{
+          color: "#fff",
+          backgroundColor: "var(--check-color)",
+          "&:hover": {
+            color: "#fff",
+            backgroundColor: "var(--check-active-color)",
+          },
+        }}
+      >
         다음 단계
       </Button>
       {error && <p className="error__msg">{error}</p>}

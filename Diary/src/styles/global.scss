@@ -5,13 +5,18 @@
   --background-color: #fdfafa; /* 아이보리 계열 */
   --header-bg: #f1d6d6e8; /* 탁한 회색빛 분홍색 */
   --chart-bg: #fff4e8; /* 차트 배경 색상 */
+
   --filter-btn: #fad0d9; /* 필터 버튼 색상 */
   --filter-active: #fa6283; /* 필터 버튼 액티브 색상 */
   --filter-hover: #e0b6be; /* 필터 버튼 호버 색상 */
-  --button-hover: #ffeaeae8; /* 버튼 호버 색상 */
-  --button-text: #4a4a4a; /* 버튼 호버 색상 */
+  --popover-hover: #ffeaeae8; /* 팝오버 버튼 호버 색상 */
+  --popover-text: #4a4a4a; /* 팝오버 버튼 호버 색상 */
+
   --check-color: #f8aabb; /* 체크박스, 아이콘 색상 */
   --check-active-color: #fd708f; /* 체크박스, 아이콘 색상 */
+
+  --cancel-button: #ddd; /* 취소 버튼 */
+  --cancel-button-hover: #c9c9c9; /* 취소 버튼 호버 */
 }
 
 body {

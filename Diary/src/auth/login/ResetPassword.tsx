@@ -109,7 +109,18 @@ const ResetPassword = () => {
           />
 
           <div className="button__container">
-            <Button type="submit" variant="contained">
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                color: "#fff",
+                backgroundColor: "var(--check-color)",
+                "&:hover": {
+                  color: "#fff",
+                  backgroundColor: "var(--check-active-color)",
+                },
+              }}
+            >
               비밀번호 변경
             </Button>
           </div>

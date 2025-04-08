@@ -58,8 +58,6 @@ const EmotionBoardPage: React.FC = () => {
   );
   const [emotion, setEmotion] = useState("😊 기쁨");
   const [note, setNote] = useState("");
-  const today = new Date().toISOString().split("T")[0];
-  const isToday = emotions.some((entry) => entry.date === today);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isImageDeleted, setIsImageDeleted] = useState(false);
@@ -67,6 +65,18 @@ const EmotionBoardPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // 캘린더 팝오버 관련
+
+  const getLocalToday = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+    const day = now.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const today = getLocalToday();
+
+  const isToday = emotions.some((entry) => entry.date === today);
 
   useEffect(() => {
     if (user) {
@@ -462,10 +472,10 @@ const EmotionBoardPage: React.FC = () => {
                 width: "80px",
                 height: "50px",
                 color: "#fff",
-                backgroundColor: "#88bde9",
+                backgroundColor: "var(--check-color)",
                 "&:hover": {
                   color: "#fff",
-                  backgroundColor: "#6fa7d8",
+                  backgroundColor: "var(--check-active-color)",
                 },
               }}
             >

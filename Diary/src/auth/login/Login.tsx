@@ -7,8 +7,8 @@ import { resetPage } from "../../store/paginationSlice";
 import { resetEmotions } from "../../store/emotionSlice";
 import { fetchUser } from "../../store/authSlice";
 import { AppDispatch } from "../../store/store";
-import "./login.scss";
 import classNames from "classnames";
+import "./login.scss";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -109,7 +109,18 @@ const Login = () => {
           />
 
           <div className="button__container">
-            <Button type="submit" variant="contained">
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                color: "#fff",
+                backgroundColor: "var(--check-color)",
+                "&:hover": {
+                  color: "#fff",
+                  backgroundColor: "var(--check-active-color)",
+                },
+              }}
+            >
               로그인
             </Button>
           </div>
@@ -120,11 +131,11 @@ const Login = () => {
       <p className="forgot__password">
         <Button
           sx={{
-            color: "#fff",
-            backgroundColor: "#88bde9",
+            color: "#191919",
+            backgroundColor: "var(--filter-btn)",
             "&:hover": {
-              color: "#fff",
-              backgroundColor: "#6fa7d8",
+              color: "#191919",
+              backgroundColor: "var(--filter-hover)",
             },
           }}
           onClick={() => setShowForgotPassword(true)}
@@ -155,7 +166,18 @@ const Login = () => {
               margin="normal"
             />
 
-            <Button variant="contained" onClick={handlePasswordReset}>
+            <Button
+              variant="contained"
+              onClick={handlePasswordReset}
+              sx={{
+                color: "#fff",
+                backgroundColor: "var(--check-color)",
+                "&:hover": {
+                  color: "#fff",
+                  backgroundColor: "var(--check-active-color)",
+                },
+              }}
+            >
               링크 보내기
             </Button>
           </div>

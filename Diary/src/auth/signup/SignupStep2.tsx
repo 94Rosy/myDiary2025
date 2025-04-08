@@ -145,10 +145,30 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
           />
 
           <div className="button__container">
-            <Button variant="outlined" onClick={() => prevStep()}>
+            <Button
+              onClick={() => prevStep()}
+              sx={{
+                color: "#4a4a4a",
+                backgroundColor: "var(--cancel-button)",
+                "&:hover": {
+                  color: "#4a4a4a",
+                  backgroundColor: "var(--cancel-button-hover)",
+                },
+              }}
+            >
               이전으로
             </Button>
-            <Button type="submit" variant="contained" color="primary">
+            <Button
+              type="submit"
+              sx={{
+                color: "#fff",
+                backgroundColor: "var(--check-color)",
+                "&:hover": {
+                  color: "#fff",
+                  backgroundColor: "var(--check-active-color)",
+                },
+              }}
+            >
               회원가입
             </Button>
           </div>

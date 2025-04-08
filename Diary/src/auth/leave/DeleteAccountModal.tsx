@@ -106,11 +106,11 @@ const DeleteAccountModal: React.FC<Props> = ({ onClose, onDelete }) => {
                 height: "50px",
                 color: "#4a4a4a",
                 margin: "5px",
-                backgroundColor: "#dcdcdc",
+                backgroundColor: "var(--cancel-button)",
 
                 "&:hover": {
                   color: "#4a4a4a",
-                  backgroundColor: "#c9c9c9",
+                  backgroundColor: "var(--cancel-button-hover)",
                 },
               }}
             >
@@ -122,10 +122,10 @@ const DeleteAccountModal: React.FC<Props> = ({ onClose, onDelete }) => {
                 width: "80px",
                 height: "50px",
                 color: "#fff",
-                backgroundColor: "#88bde9",
+                backgroundColor: "var(--check-color)",
                 "&:hover": {
                   color: "#fff",
-                  backgroundColor: "#6fa7d8",
+                  backgroundColor: "var(--check-active-color)",
                 },
               }}
               onClick={handleSubmit}

@@ -2,11 +2,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import { Button, IconButton, Popover, Select } from "@mui/material";
+import { Button, IconButton, Popover } from "@mui/material";
 import { AppDispatch, RootState } from "../../../store/store";
 import { deleteUser, fetchUser, logoutUser } from "../../../store/authSlice";
 import { supabase } from "../../../utils/supabaseClient";
-import { fetchEmotions, resetEmotions } from "../../../store/emotionSlice";
+import { resetEmotions } from "../../../store/emotionSlice";
 import { resetPage } from "../../../store/paginationSlice";
 import DeleteAccountModal from "../../../auth/leave/DeleteAccountModal";
 import SelectTheme from "./SelectTheme";
@@ -109,7 +109,12 @@ const Navbar = () => {
   const [theme, setTheme] = useState("default");
 
   // 오늘의 감정이 있는지 확인, 감정 등록이 없을 경우 fallback
-  const todayEmotion = emotions.find((e) => isToday(new Date(e.date)))?.emotion;
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${(today.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-${today.getDate().toString().padStart(2, "0")}`;
+
+  const todayEmotion = emotions.find((e) => e.date === todayStr)?.emotion;
 
   useEffect(() => {
     if (!isFixedTheme && todayEmotion) {
@@ -186,10 +191,10 @@ const Navbar = () => {
                       sx={{
                         justifyContent: "flex-start",
                         width: "100%",
-                        color: "var(--button-text)",
+                        color: "var(--popover-text)",
                         "&:hover": {
-                          backgroundColor: "var(--button-hover)",
-                          color: "var(--button-text)",
+                          backgroundColor: "var(--popover-hover)",
+                          color: "var(--popover-text)",
                         },
                       }}
                     >
@@ -201,10 +206,10 @@ const Navbar = () => {
                       sx={{
                         justifyContent: "flex-start",
                         width: "100%",
-                        color: "var(--button-text)",
+                        color: "var(--popover-text)",
                         "&:hover": {
-                          backgroundColor: "var(--button-hover)",
-                          color: "var(--button-text)",
+                          backgroundColor: "var(--popover-hover)",
+                          color: "var(--popover-text)",
                         },
                       }}
                     >

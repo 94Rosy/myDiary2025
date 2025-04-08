@@ -5,10 +5,11 @@ body.theme-joy {
   --text-color: #484a35;
   --highlight-text-color: #b37a7f;
   --chart-bg: #fff8dc;
+
   --filter-btn: #fff2b2;
   --filter-active: #ffc643;
   --filter-hover: #ffe89a;
-  --button-hover: #fdf8e4;
+  --popover-hover: #fdf8e4;
   --check-color: #ffe08a;
   --check-active-color: #ffc107;
 }
@@ -20,10 +21,11 @@ body.theme-sad {
   --text-color: #324b5c;
   --highlight-text-color: #234052;
   --chart-bg: #eaf3ff;
+
   --filter-btn: #abd9ff;
   --filter-active: #4faffd;
   --filter-hover: #c4e2ff;
-  --button-hover: #eef6ff;
+  --popover-hover: #eef6ff;
   --check-color: #b3d9ff;
   --check-active-color: #64b5f6;
 }
@@ -35,10 +37,11 @@ body.theme-angry {
   --text-color: #5a2b1a;
   --highlight-text-color: #8e3d2b;
   --chart-bg: #fff1eb;
+
   --filter-btn: #ffc8b2;
   --filter-active: #ff7e43;
   --filter-hover: #e9a180;
-  --button-hover: #fff1ee;
+  --popover-hover: #fff1ee;
   --check-color: #ffb3a7;
   --check-active-color: #ff6b6b;
 }
@@ -50,10 +53,11 @@ body.theme-calm {
   --text-color: #355944;
   --highlight-text-color: #246f4e;
   --chart-bg: #f4fcf7;
+
   --filter-btn: #b9fad2;
   --filter-active: #62dd66;
   --filter-hover: #c8eecd;
-  --button-hover: #eef7f1;
+  --popover-hover: #eef7f1;
   --check-color: #c1f0d6;
   --check-active-color: #80d8a5;
 }
@@ -65,10 +69,11 @@ body.theme-love {
   --text-color: #633a59;
   --highlight-text-color: #8a4a5e;
   --chart-bg: #fff1f4;
+
   --filter-btn: #ffb5d0;
   --filter-active: #f35290;
   --filter-hover: #fbb0c8;
-  --button-hover: #fff0f5;
+  --popover-hover: #fff0f5;
   --check-color: #f9c4d2;
   --check-active-color: #f889ae;
 }
@@ -80,10 +85,11 @@ body.theme-surprise {
   --text-color: #4b3a6b;
   --highlight-text-color: #684e92;
   --chart-bg: #f6f0ff;
+
   --filter-btn: #d7c7fc;
   --filter-active: #8666e7;
   --filter-hover: #d3cbf0;
-  --button-hover: #f7f3ff;
+  --popover-hover: #f7f3ff;
   --check-color: #d7caff;
   --check-active-color: #b39ddb;
 }
