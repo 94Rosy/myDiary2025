@@ -125,7 +125,6 @@ const SignupStep2: React.FC<Props> = ({ prevStep }) => {
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              setPassword("");
             }}
             required
             error={!!passwordError}

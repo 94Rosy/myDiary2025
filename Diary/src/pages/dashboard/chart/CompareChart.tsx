@@ -142,17 +142,26 @@ const CompareChart: React.FC<Props> = ({ emotions }) => {
               style={{
                 fontSize: "16px",
                 marginBottom: "10px",
-                fontWeight: "bold",
               }}
             >
               지난 <strong>{FILTER_LABELS[selectedFilter]}</strong> 동안 가장
               많이 느낀 감정은
-              <span style={{ color: EMOTION_COLORS[mostEmotion] }}>
+              <span
+                style={{
+                  fontWeight: "bold",
+                  color: EMOTION_COLORS[mostEmotion],
+                }}
+              >
                 {" "}
                 {mostEmotion}
               </span>
               , 가장 적게 느낀 감정은
-              <span style={{ color: EMOTION_COLORS[leastEmotion] }}>
+              <span
+                style={{
+                  fontWeight: "bold",
+                  color: EMOTION_COLORS[leastEmotion],
+                }}
+              >
                 {" "}
                 {leastEmotion}
               </span>

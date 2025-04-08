@@ -10,12 +10,13 @@
     .main__title {
       font-size: 1.8rem;
       font-weight: 700;
-      color: var(--text-color);
+      color: var(--highlight-text-color);
       padding-right: 10px;
     }
 
     .sub__title {
       font-size: 0.95rem;
+      color: #191919;
     }
   }
 
@@ -37,6 +38,7 @@
       padding-bottom: 15px;
       font-weight: 700;
       font-size: 20px;
+      color: #865d6c;
     }
 
     .view__chart {

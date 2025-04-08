@@ -29,8 +29,8 @@ import classNames from "classnames";
 import { supabase } from "../../utils/supabaseClient";
 import CalendarFilter from "./addon/CalendarFilter";
 import TagFilter from "./addon/TagFilter";
-import "./emotionBoard.scss";
 import Pagination from "./addon/Pagination";
+import "./emotionBoard.scss";
 
 const emotionOptions = [
   "😊 기쁨",
@@ -364,7 +364,6 @@ const EmotionBoard: React.FC = () => {
             </div>
             <div className="emotion-body">
               <p className="date">{entry.date}</p>
-              <p className="note">{entry.note}</p>
               {entry.image_url && (
                 <img
                   src={entry.image_url}
@@ -372,6 +371,7 @@ const EmotionBoard: React.FC = () => {
                   className="emotion-image"
                 />
               )}
+              <p className="note">{entry.note}</p>
             </div>
           </div>
         ))}

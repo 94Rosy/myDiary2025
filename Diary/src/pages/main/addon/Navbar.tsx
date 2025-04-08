@@ -105,11 +105,26 @@ const Navbar = () => {
             <>
               <li>
                 <span>{userName}</span>님 환영합니다!
-                <IconButton onClick={authOpen}>
-                  <ManageAccountsIcon />
+                <IconButton
+                  sx={{
+                    color: "#4a4a4a",
+                    "&:hover": {
+                      color: "#fff",
+                      transition: "color 0.2s",
+                    },
+                    marginLeft: "3px",
+                  }}
+                  onClick={authOpen}
+                >
+                  <ManageAccountsIcon
+                    sx={{
+                      transition: "color 0.2s",
+                    }}
+                  />
                 </IconButton>
                 <div>
                   <Popover
+                    className="auth__popover"
                     open={!!open}
                     anchorEl={anchorEl}
                     onClose={authClose}
@@ -117,11 +132,37 @@ const Navbar = () => {
                       vertical: "bottom",
                       horizontal: "center",
                     }}
+                    sx={{
+                      borderRadius: "10px",
+                      boxShadow: "0 1px 3px #191919",
+                    }}
                   >
-                    <Button className="logout-btn" onClick={handleLogout}>
+                    <Button
+                      className="logout__btn"
+                      onClick={handleLogout}
+                      sx={{
+                        width: "100%",
+                        color: "#4a4a4a",
+                        "&:hover": {
+                          backgroundColor: "#fad0d9",
+                          color: "#fff",
+                        },
+                      }}
+                    >
                       로그아웃
                     </Button>
-                    <Button className="leave-btn" onClick={openHandler}>
+                    <Button
+                      className="leave__btn"
+                      onClick={openHandler}
+                      sx={{
+                        width: "100%",
+                        color: "#4a4a4a",
+                        "&:hover": {
+                          backgroundColor: "#fad0d9",
+                          color: "#fff",
+                        },
+                      }}
+                    >
                       회원 탈퇴
                     </Button>
                   </Popover>
@@ -144,12 +185,12 @@ const Navbar = () => {
           ) : (
             <>
               <li>
-                <Link to="/login" className="login-btn">
+                <Link to="/login" className="login__btn">
                   로그인
                 </Link>
               </li>
               <li>
-                <Link to="/signup" className="signup-btn">
+                <Link to="/signup" className="signup__btn">
                   회원가입
                 </Link>
               </li>
