@@ -137,13 +137,11 @@ const DateFilter: React.FC<Props> = ({ emotions }) => {
           <Button
             onClick={() => setOpenModal(false)}
             sx={{
-              width: "80px",
-              height: "50px",
               color: "#fff",
-              backgroundColor: "#88bde9",
+              backgroundColor: "var(--check-color)",
               "&:hover": {
                 color: "#fff",
-                backgroundColor: "#6fa7d8",
+                backgroundColor: "var(--check-active-color)",
               },
             }}
           >
