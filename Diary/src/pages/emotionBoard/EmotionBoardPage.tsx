@@ -12,6 +12,7 @@ import Pagination from "./addon/Pagination";
 import EmotionNoteModal from "./modal/EmotionNoteModal";
 import EmotionCard from "./EmotionCard";
 import "./emotionBoardPage.scss";
+import Spinner from "../../global/Spinner";
 
 const emotionOptions = [
   "😊 기쁨",
@@ -36,7 +37,7 @@ const EmotionBoardPage: React.FC = () => {
   );
   const [totalPages, setTotalPages] = useState(1);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // 캘린더 팝오버 관련
 
   const today = useMemo(() => {
@@ -67,7 +68,8 @@ const EmotionBoardPage: React.FC = () => {
     }
 
     //  태그 필터: 선택된 감정 태그가 있을 경우, 해당 감정과 일치하는 항목만 통과
-    const matchesTag = selectedTag ? entry.emotion === selectedTag : true;
+    const matchesTag =
+      selectedTags.length === 0 ? true : selectedTags.includes(entry.emotion);
 
     // 두 조건 모두 만족해야 필터링 결과에 포함
     return matchesDate && matchesTag;
@@ -105,6 +107,9 @@ const EmotionBoardPage: React.FC = () => {
   const calendarClose = () => {
     setAnchorEl(null);
   };
+
+  const { filterLoading } = useSelector((state: RootState) => state.emotions);
+  if (filterLoading) return <Spinner />;
 
   return (
     <div className="emotion__board">
@@ -184,7 +189,10 @@ const EmotionBoardPage: React.FC = () => {
             emotionData={emotions}
           />
         </Popover>
-        <TagFilter selectedTag={selectedTag} setSelectedTag={setSelectedTag} />
+        <TagFilter
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+        />
       </div>
 
       {/* 감정 카드 리스트 */}
