@@ -112,3 +112,25 @@
     }
   }
 }
+
+@mixin delete {
+  .modal__delete__box {
+    @include modal__layout;
+    width: 400px;
+    height: 150px;
+
+    .delete__msg {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      height: 100px;
+      font-weight: 700;
+    }
+
+    .modal__buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 5px;
+    }
+  }
+}

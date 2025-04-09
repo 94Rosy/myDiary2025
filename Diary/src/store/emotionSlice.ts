@@ -97,12 +97,22 @@ const emotionSlice = createSlice({
           state.status = "succeeded";
         }
       )
+      .addCase(addEmotion.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(
         addEmotion.fulfilled,
         (state, action: PayloadAction<EmotionEntry>) => {
           state.emotions.unshift(action.payload);
+          state.loading = false;
         }
       )
+      .addCase(addEmotion.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(updateEmotion.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(
         updateEmotion.fulfilled,
         (state, action: PayloadAction<EmotionEntry>) => {
@@ -112,16 +122,27 @@ const emotionSlice = createSlice({
           if (index !== -1) {
             state.emotions[index] = action.payload;
           }
+          state.loading = false;
         }
       )
+      .addCase(updateEmotion.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteEmotion.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(
         deleteEmotion.fulfilled,
         (state, action: PayloadAction<string>) => {
           state.emotions = state.emotions.filter(
             (e) => e.id !== action.payload
           );
+          state.loading = false;
         }
-      );
+      )
+      .addCase(deleteEmotion.rejected, (state) => {
+        state.loading = false;
+      });
   },
 });
 

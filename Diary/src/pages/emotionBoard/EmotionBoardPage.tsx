@@ -1,7 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
-import { deleteEmotion, EmotionEntry } from "../../store/emotionSlice";
+import {
+  deleteEmotion,
+  EmotionEntry,
+  startGridLoading,
+  stopGridLoading,
+} from "../../store/emotionSlice";
 import { Tooltip, IconButton, Popover, Modal } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CreateIcon from "@mui/icons-material/Create";
@@ -11,8 +16,8 @@ import TagFilter from "./addon/TagFilter";
 import Pagination from "./addon/Pagination";
 import EmotionNoteModal from "./modal/EmotionNoteModal";
 import EmotionCard from "./EmotionCard";
-import "./emotionBoardPage.scss";
 import Spinner from "../../global/Spinner";
+import "./emotionBoardPage.scss";
 
 const emotionOptions = [
   "😊 기쁨",
@@ -81,8 +86,12 @@ const EmotionBoardPage: React.FC = () => {
     currentPage * PAGE_PER_COUNTS
   );
 
-  const handleDelete = (id: string) => {
-    dispatch(deleteEmotion(id));
+  const handleDelete = async (id: string) => {
+    dispatch(startGridLoading());
+
+    await dispatch(deleteEmotion(id)).unwrap();
+    await new Promise((res) => setTimeout(res, 250));
+    dispatch(stopGridLoading());
   };
 
   // 모달 상태 관리

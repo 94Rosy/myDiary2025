@@ -1,4 +1,3 @@
-// 감정 등록, 수정, 파일 첨부 모달
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store/store";
@@ -6,6 +5,8 @@ import {
   addEmotion,
   EmotionEntry,
   updateEmotion,
+  startGridLoading,
+  stopGridLoading,
 } from "../../../store/emotionSlice";
 import {
   Box,
@@ -37,14 +38,12 @@ const EmotionNoteModal: React.FC<Props> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.user);
-
   const [emotion, setEmotion] = useState("😊 기쁨");
   const [note, setNote] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isImageDeleted, setIsImageDeleted] = useState(false);
 
-  // 이미지 파일 업로드 (Supabase Storage 연동)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     setSelectedFile(file);
@@ -67,71 +66,68 @@ const EmotionNoteModal: React.FC<Props> = ({
       return;
     }
 
-    let uploadedImageUrl = selectedEmotion?.image_url || "";
+    dispatch(startGridLoading());
+    await new Promise((res) => setTimeout(res, 250));
 
-    if (selectedFile) {
-      const { data, error } = await supabase.storage
-        .from("emotion-images")
-        .upload(`images/${Date.now()}-${selectedFile.name}`, selectedFile);
+    try {
+      let uploadedImageUrl = selectedEmotion?.image_url || "";
 
-      if (error) {
-        console.error("err: ", error);
-        return;
-      }
-
-      const { data: publicUrlData } = supabase.storage
-        .from("emotion-images")
-        .getPublicUrl(data.path);
-
-      uploadedImageUrl = publicUrlData?.publicUrl || "";
-    }
-
-    if (selectedEmotion) {
-      if (isImageDeleted) {
-        uploadedImageUrl = "";
-      }
-
-      dispatch(
-        updateEmotion({
-          ...selectedEmotion,
-          emotion,
-          note,
-          image_url: uploadedImageUrl,
-        })
-      );
-    } else {
-      dispatch(
-        addEmotion({
-          id: crypto.randomUUID(),
-          date: today,
-          emotion,
-          note,
-          image_url: uploadedImageUrl,
-        })
-      );
-    }
-
-    if (isImageDeleted && selectedEmotion?.image_url) {
-      const imagePath = selectedEmotion.image_url.split(
-        "/storage/v1/object/public/emotion-images/"
-      )[1];
-
-      if (imagePath) {
-        const { error } = await supabase.storage
+      if (selectedFile) {
+        const { data, error } = await supabase.storage
           .from("emotion-images")
-          .remove([imagePath]);
+          .upload(`images/${Date.now()}-${selectedFile.name}`, selectedFile);
 
-        if (error) {
-          console.error("err: ", error);
-          return;
+        if (error) throw new Error(error.message);
+
+        const { data: publicUrlData } = supabase.storage
+          .from("emotion-images")
+          .getPublicUrl(data.path);
+
+        uploadedImageUrl = publicUrlData?.publicUrl || "";
+      }
+
+      if (selectedEmotion) {
+        if (isImageDeleted) uploadedImageUrl = "";
+
+        await dispatch(
+          updateEmotion({
+            ...selectedEmotion,
+            emotion,
+            note,
+            image_url: uploadedImageUrl,
+          })
+        ).unwrap();
+      } else {
+        await dispatch(
+          addEmotion({
+            id: crypto.randomUUID(),
+            date: today,
+            emotion,
+            note,
+            image_url: uploadedImageUrl,
+          })
+        ).unwrap();
+      }
+
+      // 이미지 삭제 로직
+      if (isImageDeleted && selectedEmotion?.image_url) {
+        const imagePath = selectedEmotion.image_url.split(
+          "/storage/v1/object/public/emotion-images/"
+        )[1];
+        if (imagePath) {
+          await supabase.storage.from("emotion-images").remove([imagePath]);
         }
       }
-    }
 
-    onClose();
+      onClose();
+    } catch (err) {
+      console.error("감정 저장 실패:", err);
+    } finally {
+      dispatch(stopGridLoading());
+    }
   };
 
-  const handleDeleteImage = async () => {
+  const handleDeleteImage = () => {
     setPreviewUrl(null);
     setSelectedFile(null);
     setIsImageDeleted(true);
@@ -195,6 +191,7 @@ const EmotionNoteModal: React.FC<Props> = ({
           </div>
         </>
       )}
+
       {previewUrl && (
         <div className="image__preview">
           <img
@@ -206,23 +203,30 @@ const EmotionNoteModal: React.FC<Props> = ({
             <IconButton
               className="clear__button"
               onClick={handleDeleteImage}
-              sx={{
-                color: "#d6276a",
-                "&:hover": {
-                  transition: "color 0.2s",
-                },
-              }}
+              sx={{ color: "#d6276a", "&:hover": { transition: "color 0.2s" } }}
             >
-              <ClearIcon
-                sx={{
-                  transition: "color 0.2s",
-                }}
-              />
+              <ClearIcon sx={{ transition: "color 0.2s" }} />
             </IconButton>
           </Tooltip>
         </div>
       )}
+
       <div className="modal__buttons">
+        <Button
+          onClick={onClose}
+          sx={{
+            width: "80px",
+            height: "50px",
+            color: "#4a4a4a",
+            backgroundColor: "var(--cancel-button)",
+            "&:hover": {
+              color: "#4a4a4a",
+              backgroundColor: "var(--cancel-button-hover)",
+            },
+          }}
+        >
+          취소
+        </Button>
         <Button
           onClick={handleSave}
           sx={{

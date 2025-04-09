@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../store/store";
-import { setFilter } from "../../../../store/filterSlice";
+import {
+  setFilter,
+  startChartLoading,
+  stopChartLoading,
+} from "../../../../store/filterSlice";
 import {
   Dialog,
   DialogTitle,
@@ -29,10 +33,16 @@ const DateFilter: React.FC<Props> = ({ emotions }) => {
     filter: "week" | "month" | "3months" | "6months"
   ) => {
     dispatch(setFilter(filter));
+    dispatch(startChartLoading());
+
     if (user && filter === "week") {
       // 일주일 보기 선택 시에만 나타남
       await analyzeEmotionTrends();
     }
+
+    setTimeout(() => {
+      dispatch(stopChartLoading());
+    }, 250);
   };
 
   const analyzeEmotionTrends = () => {
