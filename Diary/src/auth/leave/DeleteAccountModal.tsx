@@ -1,3 +1,11 @@
+// 회원 탈퇴 모달
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { User } from "@supabase/supabase-js";
+import { deleteUser } from "../../store/authSlice";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../../utils/supabaseClient";
 import {
   Box,
   Button,
@@ -9,18 +17,47 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import { useState } from "react";
 import "./deleteAccountModal.scss";
 interface Props {
   onClose: () => void;
-  onDelete: (finalReason: string, password: string) => void;
+  user: User;
 }
 
-const DeleteAccountModal: React.FC<Props> = ({ onClose, onDelete }) => {
+const DeleteAccountModal: React.FC<Props> = ({ onClose, user }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const [reason, setReason] = useState("");
   const [customReason, setCustomReason] = useState("");
   const [password, setPassword] = useState("");
   const [showWarning, setShowWarning] = useState(false);
+
+  // 계정 탈퇴 처리 핸들러
+  const handleDeleteAccount = async (finalReason: string, password: string) => {
+    if (!user) return;
+
+    // 비밀번호 확인 로직
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: user.email!,
+      password,
+    });
+
+    if (error || !data?.user) {
+      alert("비밀번호가 올바르지 않습니다.");
+      return;
+    }
+
+    // 탈퇴 처리 (Redux Thunk)
+    dispatch(
+      deleteUser({
+        user_id: user.id,
+        reason: finalReason || "",
+        email: user.user_metadata?.email || "",
+      })
+    );
+
+    navigate("/"); // 메인으로 이동
+    onClose();
+  };
 
   const reasons = [
     "회원탈퇴 기능 확인 중이에요.",
@@ -44,7 +81,7 @@ const DeleteAccountModal: React.FC<Props> = ({ onClose, onDelete }) => {
       alert("비밀번호를 입력해주세요.");
       return;
     }
-    onDelete(finalReason, password);
+    handleDeleteAccount(finalReason, password);
   };
 
   return (
