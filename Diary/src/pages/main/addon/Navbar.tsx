@@ -4,21 +4,34 @@ import { Link, useNavigate } from "react-router-dom";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { Button, IconButton, Popover } from "@mui/material";
 import { AppDispatch, RootState } from "../../../store/store";
-import { deleteUser, fetchUser, logoutUser } from "../../../store/authSlice";
+import { fetchUser, logoutUser } from "../../../store/authSlice";
 import { supabase } from "../../../utils/supabaseClient";
-import { resetEmotions } from "../../../store/emotionSlice";
+import { fetchEmotions, resetEmotions } from "../../../store/emotionSlice";
 import { resetPage } from "../../../store/paginationSlice";
 import DeleteAccountModal from "../../../auth/leave/DeleteAccountModal";
 import SelectTheme from "./SelectTheme";
-import { isToday } from "date-fns";
 import "./navbar.scss";
 
 const Navbar = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const userName = useSelector((state: RootState) => state.auth.name);
-  const emotions = useSelector((state: RootState) => state.emotions.emotions);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+
+  // 회원 정보창 팝오버 관련
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const authOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const authClose = () => {
+    setAnchorEl(null);
+  };
+
+  const [openDelete, setOpenDelete] = useState(false);
+  const openHandler = () => setOpenDelete(true);
+  const closeHandler = () => setOpenDelete(false);
 
   useEffect(() => {
     dispatch(fetchUser());
@@ -28,6 +41,7 @@ const Navbar = () => {
       async (event, session) => {
         if (event === "SIGNED_IN" && session?.user) {
           dispatch(fetchUser()); // 로그인 시 유저 정보 다시 가져오기
+          dispatch(fetchEmotions());
         } else if (event === "SIGNED_OUT") {
           dispatch(logoutUser()); // 로그아웃 감지됨
           navigate("/login"); // 로그인 페이지로 이동
@@ -57,90 +71,6 @@ const Navbar = () => {
     dispatch(resetPage()); // 로그아웃 할 경우 리덕스에 저장되어 있던 페이지네이션 초기화
     navigate("/login"); // 로그인 페이지로 이동
   };
-
-  // 회원 정보창(로그아웃, 탈퇴) 관련
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const authOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const authClose = () => {
-    setAnchorEl(null);
-  };
-
-  const [openDelete, setOpenDelete] = useState(false);
-  const openHandler = () => setOpenDelete(true);
-  const closeHandler = () => setOpenDelete(false);
-
-  // 계정 탈퇴 처리 핸들러
-  const handleDeleteAccount = async (finalReason: string, password: string) => {
-    if (!user) return;
-
-    // 비밀번호 확인 로직
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: user.email!,
-      password,
-    });
-
-    if (error || !data?.user) {
-      alert("비밀번호가 올바르지 않습니다.");
-      return;
-    }
-
-    // 탈퇴 처리 (Redux Thunk)
-    dispatch(
-      deleteUser({
-        user_id: user.id,
-        reason: finalReason || "",
-        email: user.user_metadata?.email || "",
-      })
-    );
-    setOpenDelete(false);
-    navigate("/"); // 메인으로 이동
-  };
-
-  // UI 테마 선택 관련
-  const [isFixedTheme, setIsFixedTheme] = useState(() => {
-    const savedTheme = sessionStorage.getItem("isFixedTheme");
-    return savedTheme === null ? false : JSON.parse(savedTheme);
-  });
-
-  const [theme, setTheme] = useState("default");
-
-  // 오늘의 감정이 있는지 확인, 감정 등록이 없을 경우 fallback
-  const today = new Date();
-  const todayStr = `${today.getFullYear()}-${(today.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}-${today.getDate().toString().padStart(2, "0")}`;
-
-  const todayEmotion = emotions.find((e) => e.date === todayStr)?.emotion;
-
-  useEffect(() => {
-    if (!isFixedTheme && todayEmotion) {
-      const emotionTheme: Record<string, string> = {
-        "😊 기쁨": "joy",
-        "😢 슬픔": "sad",
-        "😡 분노": "angry",
-        "😌 평온": "calm",
-        "😱 놀람": "surprise",
-        "🥰 사랑": "love",
-      };
-
-      const selected = emotionTheme[todayEmotion] ?? "default";
-      setTheme(selected);
-    } else {
-      setTheme("default");
-    }
-  }, [isFixedTheme, todayEmotion]);
-
-  useEffect(() => {
-    sessionStorage.setItem("isFixedTheme", JSON.stringify(isFixedTheme));
-  }, [isFixedTheme]);
-
-  useEffect(() => {
-    document.body.className = `theme-${theme}`;
-  }, [theme]);
 
   return (
     <header className="header">
@@ -218,10 +148,7 @@ const Navbar = () => {
                   </Popover>
 
                   {openDelete && (
-                    <DeleteAccountModal
-                      onClose={closeHandler}
-                      onDelete={handleDeleteAccount}
-                    />
+                    <DeleteAccountModal onClose={closeHandler} user={user} />
                   )}
                 </div>
               </li>
@@ -247,10 +174,8 @@ const Navbar = () => {
             </>
           )}
 
-          <SelectTheme
-            isFixedTheme={isFixedTheme}
-            setIsFixedTheme={setIsFixedTheme}
-          />
+          {/* 테마 컬러 변경 */}
+          <SelectTheme />
         </ul>
       </nav>
     </header>

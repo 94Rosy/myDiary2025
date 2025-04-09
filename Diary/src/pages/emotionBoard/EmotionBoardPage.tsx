@@ -79,12 +79,6 @@ const EmotionBoardPage: React.FC = () => {
   const isToday = emotions.some((entry) => entry.date === today);
 
   useEffect(() => {
-    if (user) {
-      dispatch(fetchEmotions()); // 전체 감정 데이터 가져오기
-    }
-  }, [dispatch, user]);
-
-  useEffect(() => {
     setTotalPages(Math.ceil(emotions.length / PAGE_PER_COUNTS)); // 전체 페이지 개수 계산
   }, [emotions]);
 

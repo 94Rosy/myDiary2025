@@ -13,12 +13,14 @@ interface EmotionsState {
   emotions: EmotionEntry[];
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
+  loading: boolean;
 }
 
 const initialState: EmotionsState = {
   emotions: [],
   status: "idle",
   error: null,
+  loading: false,
 };
 
 export const fetchEmotions = createAsyncThunk(
@@ -74,9 +76,15 @@ const emotionSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchEmotions.pending, (state) => {
+        state.loading = true;
+        state.status = "loading";
+      })
+
       .addCase(
         fetchEmotions.fulfilled,
         (state, action: PayloadAction<EmotionEntry[]>) => {
+          state.loading = false;
           state.emotions = action.payload;
           state.status = "succeeded";
         }

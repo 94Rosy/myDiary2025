@@ -13,7 +13,6 @@ import { isWithinInterval, subDays } from "date-fns";
 import "./dashboardPage.scss";
 
 const DashboardPage = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const emotions = useSelector((state: RootState) => state.emotions.emotions); // Redux에서 감정 데이터 가져오기
   const filters = useSelector(
     (state: RootState) => state.filter.selectedFilter
