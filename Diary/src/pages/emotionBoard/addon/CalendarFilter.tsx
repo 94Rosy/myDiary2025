@@ -1,5 +1,10 @@
+import { useDispatch } from "react-redux";
 import Calendar from "react-calendar";
-import { EmotionEntry } from "../../../store/emotionSlice";
+import {
+  EmotionEntry,
+  startGridLoading,
+  stopGridLoading,
+} from "../../../store/emotionSlice";
 import classNames from "classnames";
 import "react-calendar/dist/Calendar.css";
 import "./calendarFilter.scss";
@@ -24,6 +29,7 @@ const CalendarFilter: React.FC<Props> = ({
   onDateChange,
   emotionData,
 }) => {
+  const dispatch = useDispatch();
   const checkedEmotions = (date: Date) => {
     // const dateStr = date.toISOString().split("T")[0];
     // const entry = emotionData.find((e) => e.date === dateStr);
@@ -40,6 +46,8 @@ const CalendarFilter: React.FC<Props> = ({
   };
 
   const handleDateChange = (date: Date) => {
+    dispatch(startGridLoading());
+
     // 날짜를 YYYY-MM-DD 포맷으로 비교
     const clickedDate = date.toISOString().split("T")[0];
     const selected = selectedDate?.toISOString().split("T")[0];
@@ -50,6 +58,11 @@ const CalendarFilter: React.FC<Props> = ({
     } else {
       onDateChange(date);
     }
+
+    // 로딩 느낌 주기 위한 약간의 딜레이 후 stop
+    setTimeout(() => {
+      dispatch(stopGridLoading());
+    }, 250);
   };
 
   return (

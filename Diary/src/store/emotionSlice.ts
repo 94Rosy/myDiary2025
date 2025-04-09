@@ -14,6 +14,7 @@ interface EmotionsState {
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   loading: boolean;
+  filterLoading: boolean;
 }
 
 const initialState: EmotionsState = {
@@ -21,6 +22,7 @@ const initialState: EmotionsState = {
   status: "idle",
   error: null,
   loading: false,
+  filterLoading: false,
 };
 
 export const fetchEmotions = createAsyncThunk(
@@ -73,14 +75,20 @@ const emotionSlice = createSlice({
     resetEmotions: (state) => {
       state.emotions = [];
     },
+    startGridLoading: (state) => {
+      state.filterLoading = true;
+    },
+    stopGridLoading: (state) => {
+      state.filterLoading = false;
+    },
   },
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchEmotions.pending, (state) => {
         state.loading = true;
         state.status = "loading";
       })
-
       .addCase(
         fetchEmotions.fulfilled,
         (state, action: PayloadAction<EmotionEntry[]>) => {
@@ -117,5 +125,7 @@ const emotionSlice = createSlice({
   },
 });
 
-export const { resetEmotions } = emotionSlice.actions;
+export const { resetEmotions, startGridLoading, stopGridLoading } =
+  emotionSlice.actions;
+
 export default emotionSlice.reducer;
