@@ -2,7 +2,7 @@ import { Button } from "@mui/material";
 import classNames from "classnames";
 import { useDispatch } from "react-redux";
 import { startGridLoading, stopGridLoading } from "../../../store/emotionSlice";
-import "./tagFilter.scss";
+import "./tagFilter_temp.scss";
 
 interface Props {
   selectedTags: string[];
