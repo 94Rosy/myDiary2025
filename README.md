@@ -43,7 +43,7 @@ _감정을 기록하고, 시각화하고, 스스로를 이해하기 위한 감�
 
 ## 🔗 데모 / 배포 링크
 
-👉 [EmotionLog 보러가기](https://)
+👉 [EmotionLog 보러가기](https://my-diary2025-8afm.vercel.app/)
 
 ---
 
