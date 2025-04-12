@@ -7,7 +7,7 @@ import {
 } from "../../../store/emotionSlice";
 import classNames from "classnames";
 import "react-calendar/dist/Calendar.css";
-import "./calendarFilter_temp.scss";
+import "./calendarFilter.scss";
 
 interface Props {
   selectedDate: Date | null;
