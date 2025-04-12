@@ -75,21 +75,18 @@ const SelectTheme = () => {
       <IconButton
         onClick={handleOpen}
         sx={{
-          "&:hover": {
+          color: "var(--filter-active)",
+          transition: "color 0.2s",
+          "&:active": {
             color: "#fff",
+          },
+          "&:hover": {
+            color: "var(--popover-hover)",
             transition: "color 0.2s",
           },
-          marginLeft: "3px",
         }}
       >
-        <ColorLensIcon
-          sx={{
-            transition: "color 0.2s",
-            "&:active": {
-              color: "#fff",
-            },
-          }}
-        />
+        <ColorLensIcon />
       </IconButton>
       <Popover
         open={open}

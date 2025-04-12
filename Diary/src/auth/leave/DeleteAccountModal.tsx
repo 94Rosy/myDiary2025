@@ -63,7 +63,7 @@ const DeleteAccountModal: React.FC<Props> = ({ onClose, user }) => {
     "회원탈퇴 기능 확인 중이에요.",
     "기능을 다 확인했어요.",
     "개인정보 삭제를 원해요.",
-    "기타 (직접 입력)",
+    "(기타) 피드백을 드려요.",
   ];
 
   const handleReasonChange = (e: SelectChangeEvent) => {
@@ -76,7 +76,8 @@ const DeleteAccountModal: React.FC<Props> = ({ onClose, user }) => {
   };
 
   const handleSubmit = () => {
-    const finalReason = reason === "기타 (직접 입력)" ? customReason : reason;
+    const finalReason =
+      reason === "(기타) 피드백을 드려요." ? customReason : reason;
     if (!password) {
       alert("비밀번호를 입력해주세요.");
       return;
@@ -108,10 +109,10 @@ const DeleteAccountModal: React.FC<Props> = ({ onClose, user }) => {
               ))}
             </Select>
 
-            {reason === "기타 (직접 입력)" && (
+            {reason === "(기타) 피드백을 드려요." && (
               <TextField
                 type="text"
-                placeholder="탈퇴 사유를 입력하세요."
+                placeholder="피드백이 있다면 알려주세요. :)"
                 value={customReason}
                 onChange={(e) => setCustomReason(e.target.value)}
                 fullWidth
