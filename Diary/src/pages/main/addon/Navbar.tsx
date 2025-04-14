@@ -2,7 +2,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import { Button, IconButton, Popover } from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
+import { Button, IconButton, Popover, Tooltip } from "@mui/material";
 import { AppDispatch, RootState } from "../../../store/store";
 import { fetchUser, logoutUser } from "../../../store/authSlice";
 import { supabase } from "../../../utils/supabaseClient";
@@ -17,6 +18,8 @@ const Navbar = () => {
   const userName = useSelector((state: RootState) => state.auth.name);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  // 테스트 유저
+  const isTestUser = user?.email === "test@emolog.com";
 
   // 회원 정보창 팝오버 관련
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -130,21 +133,66 @@ const Navbar = () => {
                     >
                       로그아웃
                     </Button>
-                    <Button
-                      className="leave__btn"
-                      onClick={openHandler}
-                      sx={{
-                        justifyContent: "flex-start",
-                        width: "100%",
-                        color: "var(--popover-text)",
-                        "&:hover": {
-                          backgroundColor: "var(--popover-hover)",
+
+                    {isTestUser ? (
+                      <Tooltip
+                        title="테스트 계정은 회원 탈퇴가 제한됩니다."
+                        arrow
+                      >
+                        <span>
+                          <Button
+                            disabled
+                            className="leave__btn"
+                            sx={{
+                              justifyContent: "flex-start",
+                              width: "100%",
+                              color: "var(--popover-text)",
+                              "&:hover": {
+                                backgroundColor: "var(--popover-hover)",
+                                color: "var(--popover-text)",
+                              },
+                            }}
+                          >
+                            회원 탈퇴
+                            <span
+                              style={{
+                                marginLeft: "5px",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                pointerEvents: "none", // 아이콘 자체에 이벤트 전달 방지
+                              }}
+                            >
+                              <InfoIcon
+                                sx={{
+                                  width: 20,
+                                  height: 20,
+                                  color: "var(--check-color)",
+                                  "&:hover": {
+                                    color: "var(--check-active-color)",
+                                  },
+                                }}
+                              />
+                            </span>
+                          </Button>
+                        </span>
+                      </Tooltip>
+                    ) : (
+                      <Button
+                        onClick={openHandler}
+                        className="leave__btn"
+                        sx={{
+                          justifyContent: "flex-start",
+                          width: "100%",
                           color: "var(--popover-text)",
-                        },
-                      }}
-                    >
-                      회원 탈퇴
-                    </Button>
+                          "&:hover": {
+                            backgroundColor: "var(--popover-hover)",
+                            color: "var(--popover-text)",
+                          },
+                        }}
+                      >
+                        회원 탈퇴
+                      </Button>
+                    )}
                   </Popover>
 
                   {openDelete && (
