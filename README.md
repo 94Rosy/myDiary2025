@@ -39,19 +39,20 @@ _감정을 기록하고, 시각화하고, 스스로를 이해하기 위한 감�
 <table>
   <tr>
     <td align="center">
-      <img src="./screenshots/main.png" width="300" /><br />
+      <img src="./screenshots/main.png" width="600" /><br />
       <sub><b>메인 화면</b></sub>
     </td>
     <td align="center">
-      <img src="./screenshots/mymoods.png" width="300" /><br />
+      <img src="./screenshots/mymoods.png" width="600" /><br />
       <sub><b>감정 기록</b></sub>
     </td>
     <td align="center">
-      <img src="./screenshots/moodtrends.png" width="300" /><br />
+      <img src="./screenshots/moodtrends.png" width="600" /><br />
       <sub><b>감정 통계</b></sub>
     </td>
   </tr>
 </table>
+
 ---
 
 ## 🔗 데모 / 배포 링크
