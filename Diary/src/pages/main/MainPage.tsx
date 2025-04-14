@@ -5,6 +5,7 @@ import MainCardList from "./addon/MainCardList";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../../store/store";
 import "./mainPage.scss";
+import TestUserNotice from "./addon/TestUserNotice";
 
 const MainPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -30,6 +31,7 @@ const MainPage = () => {
         <div>EmotionLog</div>
         <div>Capture your feelings, track your mind!</div>
       </div>
+      <TestUserNotice userEmail={user?.email ?? null} />
 
       <div className="main__content">
         <MainCardList
