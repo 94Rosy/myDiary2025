@@ -23,6 +23,7 @@ _감정을 기록하고, 시각화하고, 스스로를 이해하기 위한 감�
 - 📌 로그인 기반 개인 감정 히스토리 저장
 - 💬 감성적인 UI/UX (오늘의 감정에 따라 테마와 컬러 자동 변화)
 - ✨ 감정 등록/수정/삭제, 필터 선택, 새로고침 시 로딩 스피너 처리로 UX 흐름 최적화
+  -> UX 흐름을 자연스럽고 감성적으로 개선
 
 **EmotionLog**는 하루에 하나의 감정을 기록하고, 해당 데이터를 기반으로 감정 흐름과 통계를 제공하는 감정일기 플랫폼입니다.
 
@@ -35,15 +36,36 @@ _감정을 기록하고, 시각화하고, 스스로를 이해하기 위한 감�
 
 ## 🖼️ 주요 화면 미리보기
 
-| 메인 화면                       | 감정 기록                         | 감정 통계                         |
-| ------------------------------- | --------------------------------- | --------------------------------- |
-| ![main](./screenshots/main.png) | ![write](./screenshots/write.png) | ![chart](./screenshots/chart.png) |
-
+<table>
+  <tr>
+    <td align="center">
+      <img src="./screenshots/main.png" width="300" /><br />
+      <sub><b>메인 화면</b></sub>
+    </td>
+    <td align="center">
+      <img src="./screenshots/mymoods.png" width="300" /><br />
+      <sub><b>감정 기록</b></sub>
+    </td>
+    <td align="center">
+      <img src="./screenshots/moodtrends.png" width="300" /><br />
+      <sub><b>감정 통계</b></sub>
+    </td>
+  </tr>
+</table>
 ---
 
 ## 🔗 데모 / 배포 링크
 
-👉 [EmotionLog 보러가기](https://my-diary2025-8afm.vercel.app/)
+**EmotionLog 직접 사용해보기**
+👉 [https://my-diary2025-8afm.vercel.app](https://my-diary2025-8afm.vercel.app)
+
+테스트 계정 ID: `test@emolog.com` / 비밀번호: `qwe123qwe123!`
+
+❗테스트 계정은 EmotionLog의 전체 흐름과 주요 기능을 체험할 수 있도록 제공됩니다.
+
+- 감정 조회, 필터 기능, 페이지네이션, 감정 통계 대시보드 등 **모든 조회 기능 사용 가능**
+- 감정 등록, 수정, 삭제 및 테마 변경은 **회원가입 후 이용 가능**
+- 테스트 계정은 **서비스 가이드 목적**으로 운영되며, **회원 탈퇴는 불가능합니다**
 
 ---
 
@@ -51,57 +73,58 @@ _감정을 기록하고, 시각화하고, 스스로를 이해하기 위한 감�
 
 ### **Frontend**
 
-React, TypeScript, SCSS, Redux Toolkit, classnames
+`React, TypeScript, SCSS, Redux Toolkit, classnames`
 
 - SPA 구조 설계 및 기능별 컴포넌트/페이지 분리 구현
 
 ### **UI Library**
 
-Material UI v6, React Calendar
+`Material UI v6, React Calendar`
 
 - MUI 기반 팝업/모달/입력 필드/체크박스 구성, 아이콘 사용, 캘린더 필터 구현
 
 ### **Chart**
 
-Recharts(시각화), d3(데이터 흐름 제어), d3-cloud(워드 클라우드)
+`Recharts(시각화), d3(데이터 흐름 제어), d3-cloud(워드 클라우드)`
 
 - 감정 비율 도넛차트, 요일별 분석 막대차트, 최대/최소 감정 비교 막대차트, 감정 메모 기반 워드클라우드 구현
 
 ### **상태 관리**
 
-Redux Toolkit
+`Redux Toolkit`
 
 - 감정 상태, 필터, 사용자 관리, 페이지네이션 등 전역 상태 통합 관리
 
 ### **Auth & DB**
 
-Supabase (인증, 실시간 데이터베이스, Edge Function)
+`Supabase (인증, 실시간 데이터베이스, Edge Function)`
 
 - 회원가입/로그인/탈퇴, 감정 기록 저장 및 삭제 처리 구현
 
 ### **Routing**
 
-React Router DOM v7
+`React Router DOM v7`
 
 - 인증 기반 페이지 보호 및 메인/기록/통계 화면 분기 처리
 
 ### **날짜 처리**
 
-date-fns
+`date-fns`
 
 - 감정 기록 날짜 비교 및 필터링
 
 ### **Lint & Quality**
 
-ESLint, Prettier
+`ESLint, Prettier`
 
 - 코드 일관성과 가독성을 위한 린팅 및 자동 정렬 적용
 
 ### **Dev Tools**
 
-Supabase CLI, Docker, json-server
+`Supabase CLI, Docker`
 
-- 로컬 DB 테스트, Edge Function 배포, 가상 API mock 테스트 구성
+- 로컬 DB 및 Edge Function 테스트/배포 경험
+- Supabase 환경에서 직접 테스트 데이터 구성 및 관리
 
 ---
 
@@ -168,12 +191,24 @@ EmotionLog는 기능별로 폴더를 명확히 분리해 유지보수성을 고�
   - 비밀번호 재설정(찾기) 기능도 함께 제공하여, 사용자의 접근성을 향상시킴
 
 - 회원 탈퇴 시 즉시 데이터 삭제 대신 deleted_at 필드로 소프트 삭제 처리
+
   - 6개월 후 Supabase Edge Function을 이용한 개인정보 자동 삭제 설계
   - 예약 삭제 로직은 비동기 Edge Function으로 구성
 
 ---
 
-### 🏠 메인 페이지 구성
+### 🔒 테스트 계정 안내
+
+- EmotionLog의 전체적인 흐름과 통계 기능 확인을 위한 **읽기 전용 계정**
+
+  - 감정 등록, 수정, 삭제, 테마 변경, 회원 탈퇴 기능이 제한됨
+  - 로그인 시, 해당 계정임을 알리는 Snackbar 알림을 통해 기능 제약을 안내
+  - 감정 목록, 대시보드, 필터, 페이지네이션 등의 기능은 모두 확인 가능
+  - Supabase RLS 정책을 통해 감정 기록 및 회원 정보에 대한 보안적 제약 적용됨
+
+---
+
+### 🏠 메인 페이지
 
 - 카드 형태의 직관적인 UI 제공
 
@@ -247,21 +282,25 @@ EmotionLog는 기능별로 폴더를 명확히 분리해 유지보수성을 고�
 - Docker & WSL 설치 및 환경 구성 완료
 
   - 로컬 리눅스 개발 환경 구축을 위해 Docker + WSL2 설정 완료
-  - **(현재 서비스는 Docker 기반으로 구동하진 않지만, 전체 설치 및 연동 경험 보유)**
+  - **(현재 EmotionLog는 Docker 기반으로 동작하진 않지만, 전체 설치 및 연동 경험 보유)**
 
 - Supabase CLI 설치 및 프로젝트 초기화
 
-  - CLI 명령어를 활용한 로컬 DB, 인증, Storage 테스트 경험
-  - `supabase start`, `supabase link`, `.env` 구성, local dev + 배포 연동 완료
+  - `supabase start`, `supabase link`, `.env` 구성 등 CLI 명령어 활용 경험
+  - 로컬 DB, 인증, Storage 테스트 및 배포 환경 설정 완료
 
 - Supabase Edge Function 직접 배포 및 테스트
 
-  - 회원 탈퇴 시 `deleted_at` 기록
-  - **6개월 후 개인정보 삭제 로직 구현** (Edge Function으로 예약 자동 삭제 처리)
+  - 회원 탈퇴 시 `deleted_at` 필드를 활용한 소프트 삭제 구현
+  - Edge Function을 통한 **6개월 후 개인정보 자동 삭제 로직** 구성
+
+- Vercel을 통한 실시간 배포 운영 경험 보유
+  - 환경 변수 보안 이슈(URL, Key 노출) 대응 및 Git 히스토리 정리 (BFG Repo-Cleaner 사용)
+  - `.env` 파일 누락/노출 이슈 대응 → 수동 등록 및 재배포로 실무 대응력 향상
 
 ---
 
-### 🍒 이후 개발 예정 작업들
+### ✏️ 이후 개발 예정 작업들
 
 - 메인 페이지 개선
 
