@@ -42,6 +42,12 @@
       .edit__button,
       .delete__button {
         @include buttons;
+
+        &.disabled {
+          background-color: #b0b0b0;
+          cursor: not-allowed;
+          opacity: 0.6;
+        }
       }
     }
   }

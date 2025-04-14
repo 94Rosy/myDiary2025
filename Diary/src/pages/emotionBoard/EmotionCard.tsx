@@ -3,7 +3,10 @@ import { EmotionEntry } from "../../store/emotionSlice";
 import { Tooltip, IconButton, Modal, Box, Button } from "@mui/material";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 import "./emotionCard.scss";
+import classNames from "classnames";
 
 interface Props {
   entry: EmotionEntry;
@@ -12,17 +15,35 @@ interface Props {
 }
 
 const EmotionCard: React.FC<Props> = ({ entry, onDelete, onEdit }) => {
+  const user = useSelector((state: RootState) => state.auth.user);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  // 테스트 유저
+  const isTestUser = user?.email === "test@emolog.com";
+
+  const edit__msg = () => {
+    if (isTestUser) return "테스트 계정은 수정이 제한되어 있습니다.";
+
+    return "수정하기";
+  };
+
+  const delete__msg = () => {
+    if (isTestUser) return "테스트 계정은 삭제가 제한되어 있습니다.";
+
+    return "지우기";
+  };
 
   return (
     <div className="emotion__card">
       <div className="emotion__header">
         {entry.emotion}
         <div className="card__buttons">
-          <Tooltip title="수정하기" placement="bottom">
+          <Tooltip title={edit__msg()} placement="bottom">
             <span>
               <IconButton
-                className="edit__button"
+                className={classNames("edit__button", {
+                  disabled: isTestUser,
+                })}
+                disabled={isTestUser}
                 onClick={() => onEdit(entry)}
                 sx={{
                   backgroundColor: "#cbe0c3",
@@ -38,10 +59,13 @@ const EmotionCard: React.FC<Props> = ({ entry, onDelete, onEdit }) => {
             </span>
           </Tooltip>
 
-          <Tooltip title="지우기" placement="bottom">
+          <Tooltip title={delete__msg()} placement="bottom">
             <span>
               <IconButton
-                className="delete__button"
+                className={classNames("delete__button", {
+                  disabled: isTestUser,
+                })}
+                disabled={isTestUser}
                 onClick={() => setConfirmDelete(true)}
                 sx={{
                   backgroundColor: "#e8b4b8",

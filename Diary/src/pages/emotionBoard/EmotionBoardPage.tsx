@@ -28,11 +28,12 @@ const emotionOptions = [
   "🥰 사랑",
 ];
 
-const PAGE_PER_COUNTS = 14; // 한 페이지에 보여줄 감정 개수(14개)
+const PAGE_PER_COUNTS = 16; // 한 페이지에 보여줄 감정 개수(16개)
 
 const EmotionBoardPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const emotions = useSelector((state: RootState) => state.emotions.emotions);
+  const user = useSelector((state: RootState) => state.auth.user);
   const currentPage = useSelector(
     (state: RootState) => state.pagination.currentPage
   );
@@ -44,6 +45,8 @@ const EmotionBoardPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // 캘린더 팝오버 관련
+  // 테스트 유저
+  const isTestUser = user?.email === "test@emolog.com";
 
   const today = useMemo(() => {
     const now = new Date();
@@ -120,6 +123,15 @@ const EmotionBoardPage: React.FC = () => {
   const { filterLoading } = useSelector((state: RootState) => state.emotions);
   if (filterLoading) return <Spinner />;
 
+  const add__msg = () => {
+    if (isToday) {
+      return "오늘의 감정은 이미 등록되어 있어요! ";
+    }
+    if (isTestUser) return "테스트 계정은 등록이 제한되어 있습니다.";
+
+    return "기록하기";
+  };
+
   return (
     <div className="emotion__board">
       <div className="page__header">
@@ -128,15 +140,14 @@ const EmotionBoardPage: React.FC = () => {
       </div>
 
       <div className="util__wrapper">
-        <Tooltip
-          title={!isToday ? "기록하기" : "오늘의 감정은 이미 등록되어 있어요!"}
-          placement="top"
-        >
+        <Tooltip title={add__msg()} placement="top">
           <span>
             <IconButton
-              className={classNames("add__button", { disabled: isToday })}
+              className={classNames("add__button", {
+                disabled: isToday || isTestUser,
+              })}
+              disabled={isToday || isTestUser}
               onClick={() => openModal()}
-              disabled={isToday}
               sx={{
                 marginRight: "8px",
                 backgroundColor: "#b3d4f3",
