@@ -13,7 +13,7 @@ const TestUserNotice = ({ userEmail }: { userEmail: string | null }) => {
     if (isTestUser) {
       setOpen(true); // 상태 열기
     }
-  }, [user]);
+  }, [isTestUser]);
 
   return (
     <Snackbar
