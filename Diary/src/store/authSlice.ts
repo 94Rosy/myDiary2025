@@ -21,7 +21,7 @@ export const signupUser = createAsyncThunk(
       password,
       name,
     }: { email: string; password: string; name: string },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const { error } = await supabase.auth.signUp({
@@ -35,14 +35,14 @@ export const signupUser = createAsyncThunk(
     } catch (err: any) {
       return rejectWithValue(err.message);
     }
-  }
+  },
 );
 
 // Supabase에서 유저 정보 가져오기 (users 테이블에서 name도 가져옴)
 export const fetchUser = createAsyncThunk(
   "auth/fetchUser",
   async (_, { rejectWithValue }) => {
-    const { data: authData, error: authError } = await supabase.auth.getUser();
+    const { data: authData } = await supabase.auth.getUser();
     const user = authData?.user || null;
 
     if (!user) return { user: null, name: null };
@@ -65,7 +65,7 @@ export const fetchUser = createAsyncThunk(
       user,
       name: userData?.name || "게스트",
     };
-  }
+  },
 );
 
 export const deleteUser = createAsyncThunk(
@@ -76,7 +76,7 @@ export const deleteUser = createAsyncThunk(
       email,
       reason,
     }: { user_id: string; email: string; reason: string },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     // 1. users 테이블에 deleted_at 업데이트
     const { error: updateError } = await supabase
@@ -102,7 +102,7 @@ export const deleteUser = createAsyncThunk(
     // 3. 로그아웃
     await supabase.auth.signOut();
     return true;
-  }
+  },
 );
 
 const authSlice = createSlice({
@@ -111,7 +111,7 @@ const authSlice = createSlice({
   reducers: {
     setUser: (
       state,
-      action: PayloadAction<{ user: User | null; name: string | null }>
+      action: PayloadAction<{ user: User | null; name: string | null }>,
     ) => {
       state.user = action.payload.user;
       state.name = action.payload.name;
